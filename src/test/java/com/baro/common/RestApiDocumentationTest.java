@@ -20,6 +20,8 @@ import org.springframework.restdocs.RestDocumentationExtension;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public abstract class RestApiDocumentationTest {
 
+    protected static final String DEFAULT_REST_DOCS_PATH = "{class_name}/{method_name}";
+
     @LocalServerPort
     private int port;
 
@@ -29,6 +31,7 @@ public abstract class RestApiDocumentationTest {
     void setUp(final RestDocumentationContextProvider contextProvider) {
         RestAssured.port = port;
         requestSpec = new RequestSpecBuilder()
+                .setPort(port)
                 .addFilter(documentationConfiguration(contextProvider)
                         .operationPreprocessors()
                         .withRequestDefaults(prettyPrint())
