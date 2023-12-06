@@ -34,3 +34,21 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+tasks.named('compileJava') {
+    inputs.files(tasks.named('processResources'))
+}
+
+processResources.dependsOn('copySecret')
+
+tasks.register('copySecret', Copy) {
+    from './submodule'
+    include "application*.yml"
+    into './src/main/resources/'
+}
+
+ext.profile = (!project.hasProperty('profile') || !profile) ? 'dev' : profile
+
+bootJar {
+    dependsOn 'copySecret'
+}
