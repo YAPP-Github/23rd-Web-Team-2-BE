@@ -60,11 +60,6 @@ tasks.register('copySecret', Copy) {
 
 ext.profile = (!project.hasProperty('profile') || !profile) ? 'dev' : profile
 
-bootJar {
-    dependsOn 'copySecret'
-}
-
-
 tasks.named('jar') {
     enabled = false
 }
@@ -106,6 +101,7 @@ tasks.register('copyToLocal', Copy) {
 }
 
 bootJar {
+    dependsOn 'copySecret'
     dependsOn 'copyToLocal'
 }
 
