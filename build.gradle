@@ -2,6 +2,8 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.0'
     id 'io.spring.dependency-management' version '1.1.4'
+    id 'com.epages.restdocs-api-spec' version '0.18.2'
+    id 'org.hidetake.swagger.generator' version '2.18.2'
 }
 
 group = 'com'
@@ -24,11 +26,20 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
+
     annotationProcessor 'org.projectlombok:lombok'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.18.2' // For OpenApi Wrapper
+    testImplementation 'com.epages:restdocs-api-spec-restassured:0.18.2'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
+    testImplementation 'io.rest-assured:rest-assured:5.3.0'
+    swaggerUI 'org.webjars:swagger-ui:4.11.1'
 }
 
 tasks.named('test') {
@@ -49,6 +60,48 @@ tasks.register('copySecret', Copy) {
 
 ext.profile = (!project.hasProperty('profile') || !profile) ? 'dev' : profile
 
+tasks.named('jar') {
+    enabled = false
+}
+
+swaggerSources {
+    sample {
+        setInputFile(file("${buildDir}/api-spec/openapi3.yaml"))
+    }
+}
+
+openapi3 {
+    servers = [
+            { url = "http://localhost:8080"}
+    ]
+    title = "Baro API"
+    description = "Baro API Docs"
+    version = "1.0.0"
+    format = "yaml"
+}
+
+tasks.withType(GenerateSwaggerUI) {
+    dependsOn 'openapi3'
+}
+
+tasks.register('copySwaggerUI', Copy) {
+    dependsOn 'resolveMainClassName'
+    dependsOn 'generateSwaggerUISample'
+
+    def generateSwaggerUISampleTask = tasks.named('generateSwaggerUISample', GenerateSwaggerUI).get()
+
+    from("${generateSwaggerUISampleTask.outputDir}")
+    into "${buildDir}/resources/main/static/docs"
+}
+
+tasks.register('copyToLocal', Copy) {
+    dependsOn 'copySwaggerUI'
+    from("${buildDir}/resources/main/static/docs")
+    into './src/main/resources/static/docs'
+}
+
 bootJar {
     dependsOn 'copySecret'
+    dependsOn 'copyToLocal'
 }
+
