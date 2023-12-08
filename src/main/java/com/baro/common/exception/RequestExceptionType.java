@@ -2,7 +2,7 @@ package com.baro.common.exception;
 
 import org.springframework.http.HttpStatus;
 
-interface RequestExceptionType {
+public interface RequestExceptionType {
 
     String exceptionCode();
 
