@@ -34,7 +34,7 @@ public class SimpleController3 {
     public ResponseEntity<?> created() {
         HttpHeaders headers = new HttpHeaders();
         headers.set("location", "/created/1");
-        return ApiReponse.successWithHeader(Responses.SUCCESS_POST_MEMO, headers);
+        return ApiReponse.success(Responses.SUCCESS_POST_MEMO, headers);
     }
 
     @GetMapping("/accepted")
@@ -49,7 +49,7 @@ public class SimpleController3 {
             return ResponseEntity.status(response.getStatus()).build();
         }
 
-        public static ResponseEntity<?> successWithHeader(Responses response, HttpHeaders headers) {
+        public static ResponseEntity<?> success(Responses response, HttpHeaders headers) {
             return ResponseEntity.status(response.getStatus()).headers(headers).body(response.getMessage());
         }
     }
