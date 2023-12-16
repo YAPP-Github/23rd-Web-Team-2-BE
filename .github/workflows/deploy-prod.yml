@@ -55,5 +55,5 @@ jobs:
             
             sudo docker run -p ${{ secrets.SERVER_PORT }}:${{ secrets.SERVER_PORT }} \
             --name ${{ secrets.PROJECT_NAME }} \
-            -v ${{ secrets.ACCESS_LOG_DIR }}:/app/logs
+            -v ${{ secrets.ACCESS_LOG_DIR }}:/app/logs \
             -d ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}:prod

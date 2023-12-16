@@ -1,5 +1,4 @@
-name: Deploy to production
-
+name: Deploy to develop
 on:
   push:
     branches: [ develop ]
@@ -53,7 +52,8 @@ jobs:
             sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}:dev
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}:dev
             
-            sudo docker run -p ${{ secrets.SERVER_PORT }}:${{ secrets.SERVER_PORT }} \
+            docker run -p ${{ secrets.SERVER_PORT }}:${{ secrets.SERVER_PORT }} \
             --name ${{ secrets.PROJECT_NAME }} \
-            -v ${{ secrets.ACCESS_LOG_DIR }}:/app/logs
+            -v ${{ secrets.ACCESS_LOG_DIR }}:/logs \
+            -e SPRING_PROFILES_ACTIVE=dev \
             -d ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}:dev
