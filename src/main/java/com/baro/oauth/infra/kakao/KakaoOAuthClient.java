@@ -1,8 +1,10 @@
 package com.baro.oauth.infra.kakao;
 
 import com.baro.oauth.application.OAuthClient;
+import com.baro.oauth.application.dto.OAuthMemberInfo;
 import com.baro.oauth.application.dto.OAuthTokenInfo;
 import com.baro.oauth.domain.OAuthServiceType;
+import com.baro.oauth.infra.kakao.dto.KakaoMemberResponse;
 import com.baro.oauth.infra.kakao.dto.KakaoTokenResponse;
 import com.baro.oauth.infra.kakao.entity.KakaoOAuthProperty;
 import java.util.LinkedHashMap;
@@ -39,6 +41,13 @@ public class KakaoOAuthClient implements OAuthClient {
         params.put("client_secret", kakaoOAuthProperty.clientSecret());
         KakaoTokenResponse kakaoTokenResponse = kakaoRequestApi.requestToken(params);
         return kakaoTokenResponse.toOAuthTokenInfo();
+    }
+
+    @Override
+    public OAuthMemberInfo requestMemberInfo(OAuthTokenInfo oAuthTokenInfo) {
+        String authorization = "Bearer " + oAuthTokenInfo.accessToken();
+        KakaoMemberResponse response = kakaoRequestApi.requestMemberInfo(authorization);
+        return response.toOAuthMemberInfo();
     }
 
     @Override
