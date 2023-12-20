@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
@@ -24,5 +25,11 @@ public class OAuthController {
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create(signInUrl));
         return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+    }
+
+    @GetMapping("/sign-in/{oauthService}")
+    ResponseEntity<Void> signIn(@PathVariable String oauthService, @RequestParam String authCode) {
+        oAuthService.signIn(oauthService, authCode);
+        return ResponseEntity.ok().build(); //TODO: 로그인 처리 후 응답 변경
     }
 }
