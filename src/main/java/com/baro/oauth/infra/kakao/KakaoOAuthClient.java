@@ -1,6 +1,7 @@
 package com.baro.oauth.infra.kakao;
 
 import com.baro.oauth.application.OAuthClient;
+import com.baro.oauth.domain.OAuthServiceType;
 import com.baro.oauth.infra.kakao.entity.KakaoOAuthProperty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -21,5 +22,10 @@ public class KakaoOAuthClient implements OAuthClient {
                 .queryParam("redirect_uri", kakaoOAuthProperty.redirectUrl())
                 .queryParam("scope", String.join(",", kakaoOAuthProperty.scope()))
                 .toUriString();
+    }
+
+    @Override
+    public OAuthServiceType getOAuthService() {
+        return OAuthServiceType.KAKAO;
     }
 }

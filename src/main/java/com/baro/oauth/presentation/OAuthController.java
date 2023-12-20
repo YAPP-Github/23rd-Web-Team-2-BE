@@ -1,6 +1,6 @@
 package com.baro.oauth.presentation;
 
-import com.baro.oauth.application.OAuthClient;
+import com.baro.oauth.application.OAuthService;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class OAuthController {
 
-    private final OAuthClient kakaoOAuthClient;
+    private final OAuthService oAuthService;
 
-    @GetMapping("/{oauthServiceType}")
-    ResponseEntity<Void> signInRequestUrl(@PathVariable String oauthServiceType) {
-        String redirectUrl = kakaoOAuthClient.getSignInUrl();
+    @GetMapping("/{oauthService}")
+    ResponseEntity<Void> signInRequestUrl(@PathVariable String oauthService) {
+        String signInUrl = oAuthService.getSignInUrl(oauthService);
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(redirectUrl));
+        headers.setLocation(URI.create(signInUrl));
         return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
     }
 }
