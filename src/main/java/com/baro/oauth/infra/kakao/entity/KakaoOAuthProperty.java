@@ -9,6 +9,7 @@ public record KakaoOAuthProperty(
         String responseType,
         String signInAuthorizeUrl,
         String[] scope,
-        String grantType
+        String grantType,
+        String clientSecret
 ) {
 }

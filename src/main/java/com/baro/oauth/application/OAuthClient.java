@@ -1,5 +1,6 @@
 package com.baro.oauth.application;
 
+import com.baro.oauth.application.dto.OAuthTokenInfo;
 import com.baro.oauth.domain.OAuthServiceType;
 
 public interface OAuthClient {
@@ -7,4 +8,6 @@ public interface OAuthClient {
     String getSignInUrl();
 
     OAuthServiceType getOAuthService();
+
+    OAuthTokenInfo requestAccessToken(String code);
 }
