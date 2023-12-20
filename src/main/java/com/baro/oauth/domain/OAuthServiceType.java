@@ -1,5 +1,7 @@
 package com.baro.oauth.domain;
 
+import com.baro.oauth.exception.OAuthException;
+import com.baro.oauth.exception.OAuthExceptionType;
 import java.util.Arrays;
 
 public enum OAuthServiceType {
@@ -11,6 +13,6 @@ public enum OAuthServiceType {
         return Arrays.stream(OAuthServiceType.values())
                 .filter(type -> type.name().equalsIgnoreCase(oAuthServiceType))
                 .findFirst()
-                .orElseThrow(); //TODO 예외 처리
+                .orElseThrow(() -> new OAuthException(OAuthExceptionType.NOT_SUPPORTED_OAUTH_TYPE));
     }
 }
