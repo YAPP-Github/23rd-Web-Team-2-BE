@@ -1,4 +1,4 @@
-package com.baro.oauth.infra.kakao.entity;
+package com.baro.oauth.infra.kakao.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
