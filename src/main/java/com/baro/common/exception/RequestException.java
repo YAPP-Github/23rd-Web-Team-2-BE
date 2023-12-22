@@ -1,5 +1,6 @@
 package com.baro.common.exception;
 
-abstract class RequestException extends RuntimeException{
-    abstract RequestExceptionType exceptionType();
+public abstract class RequestException extends RuntimeException {
+
+    public abstract RequestExceptionType exceptionType();
 }
