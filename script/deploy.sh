@@ -7,13 +7,17 @@ if [ -z "$IS_GREEN" ]; then
 
   BEFORE_COMPOSE_COLOR="blue"
   AFTER_COMPOSE_COLOR="green"
+
+  sudo sed -i 's/$backend_port 8081/$backend_port 8080/' /etc/nginx/sites-available/default
 else
   echo "green -> blue"
-    docker rm baro-blue
-    docker-compose --profile blue -p baro-blue -f docker-compose.yml up -d
+  docker rm baro-blue
+  docker-compose --profile blue -p baro-blue -f docker-compose.yml up -d
 
-    BEFORE_COMPOSE_COLOR="green"
-    AFTER_COMPOSE_COLOR="blue"
+  BEFORE_COMPOSE_COLOR="green"
+  AFTER_COMPOSE_COLOR="blue"
+
+  sudo sed -i 's/$backend_port 8080/$backend_port 8081/' /etc/nginx/sites-available/default
 fi
 
 while true
@@ -22,7 +26,6 @@ do
 
   EXIST_AFTER=$(docker-compose -p baro-${AFTER_COMPOSE_COLOR} -f docker-compose.yml ps | grep Up)
   if [ -n "$EXIST_AFTER" ]; then
-    cp /etc/nginx/nginx.${AFTER_COMPOSE_COLOR}.conf /etc/nginx/nginx.conf
     nginx -s reload
 
     docker-compose -p baro-${BEFORE_COMPOSE_COLOR} stop
