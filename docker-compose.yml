@@ -1,0 +1,20 @@
+version: '3'
+services:
+  baro-green:
+    container_name: ${PROJECT_NAME}-green
+    image: ${DOCKERHUB_USERNAME}/${PROJECT_NAME}:${SERVER_ENVIRONMENT}
+    profiles:
+      - green
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+  baro-blue:
+    container_name: ${PROJECT_NAME}-blue
+    image: ${DOCKERHUB_USERNAME}/${PROJECT_NAME}:${SERVER_ENVIRONMENT}
+    profiles:
+      - blue
+    ports:
+      - "8081:8080"
+    env_file:
+      - .env
