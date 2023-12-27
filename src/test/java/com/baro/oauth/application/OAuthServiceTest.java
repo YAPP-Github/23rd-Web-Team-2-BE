@@ -6,7 +6,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 import com.baro.member.domain.Member;
-import com.baro.member.domain.MemberRepository;
+import com.baro.member.infrastructure.MemberJpaRepository;
 import com.baro.oauth.application.dto.OAuthMemberInfo;
 import com.baro.oauth.application.dto.OAuthTokenInfo;
 import java.util.List;
@@ -29,7 +29,7 @@ class OAuthServiceTest {
     @Autowired
     private OAuthService oAuthService;
     @Autowired
-    private MemberRepository memberRepository;
+    private MemberJpaRepository memberRepository;
 
     @MockBean
     private OAuthClientComponents components;
