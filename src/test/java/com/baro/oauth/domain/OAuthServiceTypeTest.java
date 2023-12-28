@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 class OAuthServiceTypeTest {
 
     @Test
-    void Service_이름으로_타입_조회_테스트() {
+    void Kakao_Service_이름으로_타입_조회_테스트() {
         // given
         String requestServiceName = "kakao";
 
@@ -20,6 +20,18 @@ class OAuthServiceTypeTest {
 
         // then
         assertThat(oAuthServiceType).isEqualTo(OAuthServiceType.KAKAO);
+    }
+
+    @Test
+    void Naver_Service_이름으로_타입_조회_테스트() {
+        // given
+        String requestServiceName = "naver";
+
+        // when
+        OAuthServiceType oAuthServiceType = OAuthServiceType.from(requestServiceName);
+
+        // then
+        assertThat(oAuthServiceType).isEqualTo(OAuthServiceType.NAVER);
     }
 
     @Test
