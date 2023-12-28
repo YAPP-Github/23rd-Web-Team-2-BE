@@ -31,6 +31,6 @@ public class TemporalMemo extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Member member;
 
-    @Column(length = 65535, nullable = false)
+    @Column(length = 512, nullable = false)
     private String content;
 }

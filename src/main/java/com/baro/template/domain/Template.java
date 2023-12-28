@@ -25,7 +25,7 @@ public class Template extends BaseEntity {
 
     private String subCategory;
 
-    @Column(length = 65535, nullable = false)
+    @Column(length = 512, nullable = false)
     private String content;
 
     private int copiedCount;

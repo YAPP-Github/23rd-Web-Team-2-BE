@@ -36,6 +36,6 @@ public class Memo extends BaseEntity {
     @JoinColumn(name = "memo_folder_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private MemoFolder memoFolder;
 
-    @Column(length = 65535, nullable = false)
+    @Column(length = 512, nullable = false)
     private String content;
 }
