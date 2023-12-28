@@ -15,7 +15,8 @@ public record KakaoMemberResponse(
     public OAuthMemberInfo toOAuthMemberInfo() {
         return new OAuthMemberInfo(
                 String.valueOf(id),
-                properties.nickname
+                properties.nickname,
+                "email" //TODO: 비즈앱 전환후 email 추가
         );
     }
 

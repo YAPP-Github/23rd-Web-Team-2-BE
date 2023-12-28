@@ -1,5 +1,7 @@
 package com.baro.oauth.application;
 
+import com.baro.member.domain.Member;
+import com.baro.member.domain.MemberRepository;
 import com.baro.oauth.application.dto.OAuthMemberInfo;
 import com.baro.oauth.application.dto.OAuthTokenInfo;
 import com.baro.oauth.domain.OAuthServiceType;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class OAuthService {
 
     private final OAuthClientComponents clientComponents;
+    private final MemberRepository memberRepository;
 
     @Transactional(readOnly = true)
     public String getSignInUrl(String oAuthService) {
@@ -24,10 +27,22 @@ public class OAuthService {
         OAuthClient client = getClientByOAuthService(oAuthService);
         OAuthTokenInfo oAuthTokenInfo = client.requestAccessToken(authCode);
         OAuthMemberInfo oAuthMemberInfo = client.requestMemberInfo(oAuthTokenInfo);
-        //TODO: 인증된 OAuth 정보로 회원가입 또는 로그인 처리
+        Member member = memberRepository.findByOAuthIdAndOAuthServiceType(oAuthMemberInfo.oAuthId(), oAuthService)
+                .orElseGet(() -> createMember(oAuthService, oAuthMemberInfo));
+        //TODO 인증 토큰 추가
     }
 
-    private OAuthClient getClientByOAuthService(final String oAuthService) {
+    private Member createMember(String oAuthService, OAuthMemberInfo oAuthMemberInfo) {
+        Member member = Member.builder()
+                .name(oAuthMemberInfo.name())
+                .email(oAuthMemberInfo.email())
+                .oAuthId(oAuthMemberInfo.oAuthId())
+                .oAuthServiceType(oAuthService)
+                .build();
+        return memberRepository.save(member);
+    }
+
+    private OAuthClient getClientByOAuthService(String oAuthService) {
         OAuthServiceType oAuthServiceType = OAuthServiceType.from(oAuthService);
         return clientComponents.getClient(oAuthServiceType);
     }
