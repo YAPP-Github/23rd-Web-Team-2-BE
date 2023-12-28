@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
 import com.baro.member.fake.FakeMemberRepository;
+import com.baro.oauth.fake.FakeGoogleOAuthClient;
 import com.baro.oauth.fake.FakeKakaoOAuthClient;
 import java.util.List;
 import java.util.Set;
@@ -24,7 +25,8 @@ class OAuthServiceTest {
     @BeforeEach
     void setUpOAuthClientRequest() {
         OAuthClient fakeKakaoOAuthClient = new FakeKakaoOAuthClient();
-        OAuthClientComponents components = new OAuthClientComponents(Set.of(fakeKakaoOAuthClient));
+        OAuthClient fakeGoogleOAuthClient = new FakeGoogleOAuthClient();
+        OAuthClientComponents components = new OAuthClientComponents(Set.of(fakeKakaoOAuthClient, fakeGoogleOAuthClient));
 
         oAuthService = new OAuthService(components, memberRepository);
     }
@@ -34,6 +36,20 @@ class OAuthServiceTest {
         // given
         String oAuthServiceType = "kakao";
         String authCode = "kakaoAuthCode";
+
+        // when
+        oAuthService.signIn(oAuthServiceType, authCode);
+
+        // then
+        List<Member> members = memberRepository.findAll();
+        assertThat(members).hasSize(1);
+    }
+
+    @Test
+    void Google로_최초_소셜_로그인시_회원을_추가_한다() {
+        // given
+        String oAuthServiceType = "google";
+        String authCode = "googleAuthCode";
 
         // when
         oAuthService.signIn(oAuthServiceType, authCode);
@@ -54,6 +70,26 @@ class OAuthServiceTest {
                 .build());
         String oAuthServiceType = "kakao";
         String authCode = "kakaoAuthCode";
+
+        // when
+        oAuthService.signIn(oAuthServiceType, authCode);
+
+        // then
+        List<Member> members = memberRepository.findAll();
+        assertThat(members).hasSize(1);
+    }
+
+    @Test
+    void Google_로그인시_이미_존재_하는_회원인_경우_추가_절차_없이_로그인_처리_한다() {
+        // given
+        memberRepository.save(Member.builder()
+                .name("googleName")
+                .email("googleEmail")
+                .oAuthId("googleId")
+                .oAuthServiceType("google")
+                .build());
+        String oAuthServiceType = "google";
+        String authCode = "googleAuthCode";
 
         // when
         oAuthService.signIn(oAuthServiceType, authCode);
