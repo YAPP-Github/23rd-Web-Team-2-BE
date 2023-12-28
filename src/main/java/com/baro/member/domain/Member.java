@@ -9,13 +9,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(uniqueConstraints = @UniqueConstraint(
         name = "UK_oauth_id_oauth_service_type",
@@ -28,14 +26,20 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
     private Long id;
+
     @Column(nullable = false)
     private String name;
+
     @Column(nullable = false)
     private String email;
+
     private String nickname;
+
     private String profileImageUrl;
+
     @Column(nullable = false)
     private String oAuthId;
+
     @Column(nullable = false)
     private String oAuthServiceType;
 
