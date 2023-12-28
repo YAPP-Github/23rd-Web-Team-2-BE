@@ -20,7 +20,7 @@ public record KakaoMemberResponse(
         );
     }
 
-    record Properties(
+    public record Properties(
             String nickname
     ) {
     }
