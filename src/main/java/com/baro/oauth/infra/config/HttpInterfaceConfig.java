@@ -1,5 +1,6 @@
 package com.baro.oauth.infra.config;
 
+import com.baro.oauth.infra.google.GoogleRequestApi;
 import com.baro.oauth.infra.kakao.KakaoRequestApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,11 @@ public class HttpInterfaceConfig {
     @Bean
     public KakaoRequestApi kakaoApiClient() {
         return createHttpInterface(KakaoRequestApi.class);
+    }
+
+    @Bean
+    public GoogleRequestApi googleRequestApi() {
+        return createHttpInterface(GoogleRequestApi.class);
     }
 
     private <T> T createHttpInterface(Class<T> clazz) {
