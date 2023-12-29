@@ -5,8 +5,7 @@ import com.baro.oauth.application.dto.OAuthMemberInfo;
 import com.baro.oauth.application.dto.OAuthTokenInfo;
 import com.baro.oauth.domain.OAuthServiceType;
 
-public class FakeKakaoOAuthClient implements OAuthClient {
-
+public class FakeNaverOAuthClient implements OAuthClient {
     @Override
     public String getSignInUrl() {
         return null;
@@ -14,16 +13,16 @@ public class FakeKakaoOAuthClient implements OAuthClient {
 
     @Override
     public OAuthServiceType getOAuthService() {
-        return OAuthServiceType.KAKAO;
+        return OAuthServiceType.NAVER;
     }
 
     @Override
-    public OAuthTokenInfo requestAccessToken(final String code) {
+    public OAuthTokenInfo requestAccessToken(String code) {
         return new OAuthTokenInfo("accessToken", "refreshToken", 1000);
     }
 
     @Override
-    public OAuthMemberInfo requestMemberInfo(final OAuthTokenInfo oAuthTokenInfo) {
-        return new OAuthMemberInfo("kakaoId", "kakaoName", "kakaoEmail");
+    public OAuthMemberInfo requestMemberInfo(OAuthTokenInfo oAuthTokenInfo) {
+        return new OAuthMemberInfo("naverId", "naverName", "naverEmail");
     }
 }
