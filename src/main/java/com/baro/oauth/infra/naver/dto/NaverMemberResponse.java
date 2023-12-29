@@ -20,7 +20,7 @@ public record NaverMemberResponse(
         );
     }
 
-    record Response(
+    public record Response(
             String id,
             String name,
             String email

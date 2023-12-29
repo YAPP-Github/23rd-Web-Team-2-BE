@@ -77,7 +77,6 @@ class OAuthApiDocumentTest extends RestApiDocumentationTest {
                         queryParameters(
                                 parameterWithName("authCode").description("OAuth 소셜로그인 authcode")
                         )
-
                 ))
                 .queryParam("authCode", "authCode")
                 .when().get(url, "kakao")

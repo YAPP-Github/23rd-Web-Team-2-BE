@@ -6,6 +6,7 @@ import com.baro.oauth.application.dto.OAuthTokenInfo;
 import com.baro.oauth.domain.OAuthServiceType;
 
 public class FakeKakaoOAuthClient implements OAuthClient {
+
     @Override
     public String getSignInUrl() {
         return null;
