@@ -23,6 +23,18 @@ class OAuthServiceTypeTest {
     }
 
     @Test
+    void Google_Service_이름으로_타입_조회_테스트() {
+        // given
+        String requestServiceName = "google";
+
+        // when
+        OAuthServiceType oAuthServiceType = OAuthServiceType.from(requestServiceName);
+
+        // then
+        assertThat(oAuthServiceType).isEqualTo(OAuthServiceType.GOOGLE);
+    }
+
+    @Test
     void Naver_Service_이름으로_타입_조회_테스트() {
         // given
         String requestServiceName = "naver";

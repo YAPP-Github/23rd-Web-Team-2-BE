@@ -7,6 +7,7 @@ import java.util.Arrays;
 public enum OAuthServiceType {
 
     KAKAO,
+    GOOGLE,
     NAVER,
     ;
 
