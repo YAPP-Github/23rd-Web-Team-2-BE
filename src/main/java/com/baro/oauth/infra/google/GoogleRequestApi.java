@@ -12,6 +12,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
 
 public interface GoogleRequestApi {
+
     @PostExchange(url = "https://oauth2.googleapis.com/token", contentType = APPLICATION_FORM_URLENCODED_VALUE)
     GoogleTokenResponse requestToken(@RequestParam Map<String, String> params);
 
