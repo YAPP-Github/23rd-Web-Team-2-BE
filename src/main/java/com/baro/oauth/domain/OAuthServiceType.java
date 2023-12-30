@@ -8,6 +8,7 @@ public enum OAuthServiceType {
 
     KAKAO,
     GOOGLE,
+    NAVER,
     ;
 
     public static OAuthServiceType from(String oAuthServiceType) {

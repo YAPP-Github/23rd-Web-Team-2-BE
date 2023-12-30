@@ -2,6 +2,7 @@ package com.baro.oauth.infra.config;
 
 import com.baro.oauth.infra.google.GoogleRequestApi;
 import com.baro.oauth.infra.kakao.KakaoRequestApi;
+import com.baro.oauth.infra.naver.NaverRequestApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,6 +15,11 @@ public class HttpInterfaceConfig {
     @Bean
     public KakaoRequestApi kakaoApiClient() {
         return createHttpInterface(KakaoRequestApi.class);
+    }
+
+    @Bean
+    public NaverRequestApi naverRequestApi() {
+        return createHttpInterface(NaverRequestApi.class);
     }
 
     @Bean
