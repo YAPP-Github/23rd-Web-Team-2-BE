@@ -23,28 +23,50 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    jwtVersion = '0.12.3'
+}
+
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // spring boot
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // jpa
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // actuator
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // webclient
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64'
 
-    implementation 'org.flywaydb:flyway-core'
-    implementation 'org.flywaydb:flyway-mysql'
-
-    compileOnly 'org.projectlombok:lombok'
+    // db
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
 
+    // flyway
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-mysql'
+
+    // lombok
+    compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // swagger & restdocs
     testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.18.2' // For OpenApi Wrapper
     testImplementation 'com.epages:restdocs-api-spec-restassured:0.18.2'
     testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
     testImplementation 'io.rest-assured:rest-assured:5.3.0'
     swaggerUI 'org.webjars:swagger-ui:4.11.1'
+
+    // jwt
+    implementation 'io.jsonwebtoken:jjwt-api:${jwtVersion}'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:${jwtVersion}'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:${jwtVersion}'
+
 }
 
 tasks.named('test') {
