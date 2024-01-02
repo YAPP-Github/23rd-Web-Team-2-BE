@@ -63,9 +63,9 @@ dependencies {
     swaggerUI 'org.webjars:swagger-ui:4.11.1'
 
     // jwt
-    implementation 'io.jsonwebtoken:jjwt-api:${jwtVersion}'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:${jwtVersion}'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:${jwtVersion}'
+    implementation 'io.jsonwebtoken:jjwt-api:' + jwtVersion
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:' + jwtVersion
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:' + jwtVersion
 
 }
 
