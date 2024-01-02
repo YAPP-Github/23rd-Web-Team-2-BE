@@ -1,4 +1,4 @@
-package com.baro.auth.infra.oauth.kakao.config;
+package com.baro.auth.infra.oauth.google.config;
 
 import com.baro.auth.infra.oauth.google.config.GoogleOAuthProperty;
 import org.junit.jupiter.api.Test;
