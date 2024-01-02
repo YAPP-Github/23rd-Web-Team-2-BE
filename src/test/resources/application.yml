@@ -18,3 +18,10 @@ spring:
 
     hibernate:
       ddl-auto: create
+
+aws:
+  s3:
+    access_key: test-key
+    secret_key: test-secret-key
+    bucket: "bucket"
+    key: "test/directory/"
