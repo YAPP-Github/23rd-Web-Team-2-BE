@@ -1,13 +1,7 @@
 package com.baro.member.domain;
 
 import com.baro.common.entity.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,10 +9,10 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(uniqueConstraints = @UniqueConstraint(
-        name = "UK_oauth_id_oauth_service_type",
-        columnNames = {"oAuthId", "oAuthServiceType"}
-))
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "UK_oauth_id_oauth_service_type", columnNames = {"oAuthId", "oAuthServiceType"}),
+        @UniqueConstraint(name = "UK_nickname", columnNames = {"nickname"})
+})
 @Entity
 public class Member extends BaseEntity {
 
@@ -44,17 +38,19 @@ public class Member extends BaseEntity {
     private String oAuthServiceType;
 
     @Builder
-    public Member(String name, String email, String oAuthId, String oAuthServiceType) {
+    public Member(String name, String email, String nickname, String oAuthId, String oAuthServiceType) {
         this.name = name;
         this.email = email;
+        this.nickname = nickname;
         this.oAuthId = oAuthId;
         this.oAuthServiceType = oAuthServiceType;
     }
 
-    public Member(Long id, String name, String email, String oAuthId, String oAuthServiceType) {
+    public Member(Long id, String name, String email, String nickname, String oAuthId, String oAuthServiceType) {
         this.id = id;
         this.name = name;
         this.email = email;
+        this.nickname = nickname;
         this.oAuthId = oAuthId;
         this.oAuthServiceType = oAuthServiceType;
     }
