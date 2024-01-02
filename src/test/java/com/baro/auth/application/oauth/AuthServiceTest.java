@@ -2,15 +2,17 @@ package com.baro.auth.application.oauth;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.baro.auth.fake.oauth.FakeGoogleOAuthClient;
+import com.baro.auth.application.AuthService;
+import com.baro.auth.application.TokenProvider;
+import com.baro.auth.fake.oauth.*;
+import com.baro.member.application.MemberCreator;
 import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
 import com.baro.member.fake.FakeMemberRepository;
-import com.baro.auth.fake.oauth.FakeKakaoOAuthClient;
+
 import java.util.List;
 import java.util.Set;
 
-import com.baro.auth.fake.oauth.FakeNaverOAuthClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -18,30 +20,29 @@ import org.junit.jupiter.api.Test;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
-class OAuthServiceTest {
+class AuthServiceTest {
 
-    private OAuthService oAuthService;
-
-    private final MemberRepository memberRepository = new FakeMemberRepository();
+    private AuthService authService;
+    private MemberRepository memberRepository;
 
     @BeforeEach
     void setUpOAuthClientRequest() {
-        OAuthClient fakeKakaoOAuthClient = new FakeKakaoOAuthClient();
-        OAuthClient fakeNaverOAuthClient = new FakeNaverOAuthClient();
-        OAuthClient fakeGoogleOAuthClient = new FakeGoogleOAuthClient();
-        OAuthClientComponents components = new OAuthClientComponents(Set.of(fakeKakaoOAuthClient, fakeNaverOAuthClient, fakeGoogleOAuthClient));
-
-        oAuthService = new OAuthService(components, memberRepository);
+        memberRepository = new FakeMemberRepository();
+        MemberCreator memberCreator = new MemberCreator(memberRepository, new FakeNicknameCreator());
+        TokenProvider tokenProvider = new FakeTokenProvider();
+        authService = new AuthService(memberRepository, memberCreator, tokenProvider);
     }
 
     @Test
     void Kakao로_최초_소셜_로그인시_회원을_추가_한다() {
         // given
-        String oAuthServiceType = "kakao";
-        String authCode = "kakaoAuthCode";
+        String name = "kakaoName";
+        String email = "kakaoEmail@test.com";
+        String oauthId = "kakaoId";
+        String oauthType = "kakao";
 
         // when
-        oAuthService.signIn(oAuthServiceType, authCode);
+        authService.signIn(name, email, oauthId, oauthType);
 
         // then
         List<Member> members = memberRepository.findAll();
@@ -51,11 +52,13 @@ class OAuthServiceTest {
     @Test
     void Google로_최초_소셜_로그인시_회원을_추가_한다() {
         // given
-        String oAuthServiceType = "google";
-        String authCode = "googleAuthCode";
+        String name = "googleName";
+        String email = "googleEmail@test.com";
+        String oauthId = "googleId";
+        String oauthType = "google";
 
         // when
-        oAuthService.signIn(oAuthServiceType, authCode);
+        authService.signIn(name, email, oauthId, oauthType);
 
         // then
         List<Member> members = memberRepository.findAll();
@@ -65,11 +68,13 @@ class OAuthServiceTest {
     @Test
     void Naver로_최초_소셜_로그인시_회원을_추가_한다() {
         // given
-        String oAuthServiceType = "naver";
-        String authCode = "naverAuthCode";
+        String name = "naverName";
+        String email = "naverEmail@test.com";
+        String oauthId = "naverId";
+        String oauthType = "naver";
 
         // when
-        oAuthService.signIn(oAuthServiceType, authCode);
+        authService.signIn(name, email, oauthId, oauthType);
 
         // then
         List<Member> members = memberRepository.findAll();
@@ -85,11 +90,13 @@ class OAuthServiceTest {
                 .oAuthId("kakaoId")
                 .oAuthServiceType("kakao")
                 .build());
-        String oAuthServiceType = "kakao";
-        String authCode = "kakaoAuthCode";
+        String name = "kakaoName";
+        String email = "kakaoEmail@test.com";
+        String oauthId = "kakaoId";
+        String oauthType = "kakao";
 
         // when
-        oAuthService.signIn(oAuthServiceType, authCode);
+        authService.signIn(name, email, oauthId, oauthType);
 
         // then
         List<Member> members = memberRepository.findAll();
@@ -105,11 +112,13 @@ class OAuthServiceTest {
                 .oAuthId("naverId")
                 .oAuthServiceType("naver")
                 .build());
-        String oAuthServiceType = "naver";
-        String authCode = "naverAuthCode";
+        String name = "naverName";
+        String email = "naverEmail@test.com";
+        String oauthId = "naverId";
+        String oauthType = "naver";
 
         // when
-        oAuthService.signIn(oAuthServiceType, authCode);
+        authService.signIn(name, email, oauthId, oauthType);
 
         // then
         List<Member> members = memberRepository.findAll();
@@ -125,11 +134,13 @@ class OAuthServiceTest {
                 .oAuthId("googleId")
                 .oAuthServiceType("google")
                 .build());
-        String oAuthServiceType = "google";
-        String authCode = "googleAuthCode";
+        String name = "googleName";
+        String email = "googleEmail@test.com";
+        String oauthId = "googleId";
+        String oauthType = "google";
 
         // when
-        oAuthService.signIn(oAuthServiceType, authCode);
+        authService.signIn(name, email, oauthId, oauthType);
 
         // then
         List<Member> members = memberRepository.findAll();

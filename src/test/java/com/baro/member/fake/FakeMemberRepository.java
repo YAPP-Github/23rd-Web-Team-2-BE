@@ -29,6 +29,7 @@ public class FakeMemberRepository implements MemberRepository {
                     id.getAndIncrement(),
                     member.getName(),
                     member.getEmail(),
+                    member.getNickname(),
                     member.getOAuthId(),
                     member.getOAuthServiceType()
             );
