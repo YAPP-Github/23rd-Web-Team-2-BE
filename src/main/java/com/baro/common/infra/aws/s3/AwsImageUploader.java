@@ -23,7 +23,7 @@ public class AwsImageUploader implements ImageUploader {
         try {
             String urlSafetyKey = changeToUrlSafetyKey(file);
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                    .bucket(awsS3Property.bucketName())
+                    .bucket(awsS3Property.bucket())
                     .key(awsS3Property.key() + urlSafetyKey)
                     .contentType(file.getContentType())
                     .contentDisposition("inline")

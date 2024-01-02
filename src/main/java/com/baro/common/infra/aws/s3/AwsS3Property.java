@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "aws.s3")
 public record AwsS3Property(
-        String bucketName,
+        String bucket,
         String key,
         String accessKey,
         String secretKey
