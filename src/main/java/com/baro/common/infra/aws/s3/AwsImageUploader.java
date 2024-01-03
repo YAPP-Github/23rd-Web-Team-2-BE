@@ -1,6 +1,7 @@
 package com.baro.common.infra.aws.s3;
 
-import com.baro.common.client.ImageUploader;
+import com.baro.common.image.ImageUploader;
+import com.baro.common.image.dto.ImageUploadResult;
 import com.baro.common.utils.ImageExtensionConverter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -21,7 +22,7 @@ public class AwsImageUploader implements ImageUploader {
     private final AwsS3Property awsS3Property;
 
     @Override
-    public void upload(MultipartFile file) {
+    public ImageUploadResult upload(MultipartFile file) {
         String urlSafetyKey = changeToUrlSafetyKey(file);
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(awsS3Property.bucket())
@@ -36,6 +37,7 @@ public class AwsImageUploader implements ImageUploader {
             RequestBody requestBody = RequestBody.fromInputStream(inputStream, jpegImageBytes.length);
             inputStream.close();
             s3Client.putObject(putObjectRequest, requestBody);
+            return new ImageUploadResult(urlSafetyKey);
         } catch (IOException ioException) {
             throw new RuntimeException(ioException); //TODO: custom exception 으로 수정
         }
