@@ -15,13 +15,13 @@ public class AuthService {
 
     private final MemberRepository memberRepository;
     private final MemberCreator memberCreator;
-    private final TokenProvider tokenProvider;
+    private final TokenTranslator tokenTranslator;
 
     public Token signIn(String name, String email, String oauthId, String oauthType) {
         Member member = memberRepository.findByOAuthIdAndOAuthServiceType(oauthId, oauthType)
                 .orElseGet(() -> memberCreator.create(name, email, oauthId, oauthType));
 
-        return tokenProvider.provide(member);
+        return tokenTranslator.encode(member);
     }
 
     public void signOut(String token) {

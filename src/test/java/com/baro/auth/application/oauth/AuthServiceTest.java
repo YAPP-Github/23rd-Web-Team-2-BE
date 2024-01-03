@@ -3,7 +3,7 @@ package com.baro.auth.application.oauth;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.baro.auth.application.AuthService;
-import com.baro.auth.application.TokenProvider;
+import com.baro.auth.application.TokenTranslator;
 import com.baro.auth.fake.oauth.*;
 import com.baro.member.application.MemberCreator;
 import com.baro.member.domain.Member;
@@ -11,7 +11,6 @@ import com.baro.member.domain.MemberRepository;
 import com.baro.member.fake.FakeMemberRepository;
 
 import java.util.List;
-import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -29,8 +28,8 @@ class AuthServiceTest {
     void setUpOAuthClientRequest() {
         memberRepository = new FakeMemberRepository();
         MemberCreator memberCreator = new MemberCreator(memberRepository, new FakeNicknameCreator());
-        TokenProvider tokenProvider = new FakeTokenProvider();
-        authService = new AuthService(memberRepository, memberCreator, tokenProvider);
+        TokenTranslator tokenTranslator = new FakeTokenTranslator();
+        authService = new AuthService(memberRepository, memberCreator, tokenTranslator);
     }
 
     @Test
