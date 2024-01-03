@@ -14,6 +14,7 @@ public class JwtTokenTranslator implements TokenTranslator {
 
     private final TimeServer timeServer;
     private final JwtTokenCreator jwtTokenCreator;
+    private final JwtTokenDecrypter jwtTokenDecrypter;
 
     @Override
     public Token encode(Member member) {
@@ -22,6 +23,6 @@ public class JwtTokenTranslator implements TokenTranslator {
 
     @Override
     public AuthMember decode(String token) {
-        return null;
+        return jwtTokenDecrypter.decrypt(token);
     }
 }

@@ -9,6 +9,7 @@ public enum JwtTokenExceptionType implements RequestExceptionType {
 
     EXPIRED_JWT_TOKEN("만료된 토큰 입니다.", HttpStatus.BAD_REQUEST),
     INVALID_JWT_TOKEN("유효하지 않은 토큰 입니다.", HttpStatus.BAD_REQUEST),
+    NOT_BEARER_TYPE("Bearer 타입이 아닙니다.", HttpStatus.BAD_REQUEST),
     ;
 
     private final String errorMessage;
