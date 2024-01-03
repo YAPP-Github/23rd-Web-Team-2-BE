@@ -22,21 +22,20 @@ public class AwsImageUploader implements ImageUploader {
 
     @Override
     public void upload(MultipartFile file) {
-        try {
-            String urlSafetyKey = changeToUrlSafetyKey(file);
-            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                    .bucket(awsS3Property.bucket())
-                    .key(awsS3Property.key() + urlSafetyKey)
-                    .contentType(file.getContentType())
-                    .contentDisposition("inline")
-                    .build();
+        String urlSafetyKey = changeToUrlSafetyKey(file);
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(awsS3Property.bucket())
+                .key(awsS3Property.key() + urlSafetyKey)
+                .contentType(file.getContentType())
+                .contentDisposition("inline")
+                .build();
 
+        try {
             byte[] jpegImageBytes = ImageExtensionConverter.toJpeg(file);
             ByteArrayInputStream inputStream = new ByteArrayInputStream(jpegImageBytes);
             RequestBody requestBody = RequestBody.fromInputStream(inputStream, jpegImageBytes.length);
-
-            s3Client.putObject(putObjectRequest, requestBody);
             inputStream.close();
+            s3Client.putObject(putObjectRequest, requestBody);
         } catch (IOException ioException) {
             throw new RuntimeException(ioException); //TODO: custom exception 으로 수정
         }
