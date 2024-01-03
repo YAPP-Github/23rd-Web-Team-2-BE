@@ -16,10 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import java.util.Set;
 
 @SuppressWarnings("NonAsciiCharacters")
-@SpringBootTest(webEnvironment = WebEnvironment.NONE)
 class OAuthInfoProviderTest {
 
-    @Autowired
     private OAuthInfoProvider oAuthInfoProvider;
 
     @BeforeEach
@@ -31,14 +29,14 @@ class OAuthInfoProviderTest {
     }
 
 //    @Test
-//    void Client_조회_테스트() {
+//    void 카카오의_SignInUrl을_가져온다() {
 //        // given
-//        OAuthServiceType oAuthServiceType = OAuthServiceType.KAKAO;
+//        String oAuthService = OAuthServiceType.KAKAO.name();
 //
 //        // when
-//        OAuthClient client = clientComponents.getClient(oAuthServiceType);
+//        String signInUrl = oAuthInfoProvider.getSignInUrl(oAuthService);
 //
 //        // then
-//        assertThat(client).isInstanceOf(KakaoOAuthClient.class);
+//        assertThat(signInUrl).isEqualTo(KakaoOAuthClient.SIGN_IN_URL);
 //    }
 }

@@ -1,10 +1,13 @@
 package com.baro.auth.application.oauth;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.baro.auth.application.AuthService;
 import com.baro.auth.application.TokenTranslator;
-import com.baro.auth.fake.oauth.*;
+import com.baro.auth.domain.Token;
+import com.baro.member.fake.FakeNicknameCreator;
+import com.baro.auth.fake.jwt.FakeTokenTranslator;
 import com.baro.member.application.MemberCreator;
 import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
@@ -144,5 +147,35 @@ class AuthServiceTest {
         // then
         List<Member> members = memberRepository.findAll();
         assertThat(members).hasSize(1);
+    }
+
+    @Test
+    void 로그인시_액세스_토큰을_반환한다() {
+        // given
+        String name = "kakaoName";
+        String email = "kakaoEmail@test.com";
+        String oauthId = "kakaoId";
+        String oauthType = "kakao";
+
+        // when
+        Token token = authService.signIn(name, email, oauthId, oauthType);
+
+        // then
+        assertEquals(token.accessToken(), "accessToken");
+    }
+
+    @Test
+    void 로그인시_리프레쉬_토큰을_반환한다() {
+        // given
+        String name = "kakaoName";
+        String email = "kakaoEmail@test.com";
+        String oauthId = "kakaoId";
+        String oauthType = "kakao";
+
+        // when
+        Token token = authService.signIn(name, email, oauthId, oauthType);
+
+        // then
+        assertEquals(token.refreshToken(), "refreshToken");
     }
 }

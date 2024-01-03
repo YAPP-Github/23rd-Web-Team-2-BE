@@ -1,4 +1,4 @@
-package com.baro.auth.fake.oauth;
+package com.baro.auth.fake.jwt;
 
 import com.baro.auth.application.TokenTranslator;
 import com.baro.auth.domain.Token;

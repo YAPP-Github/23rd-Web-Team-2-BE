@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@Transactional(readOnly = true)
 public class OAuthInfoProvider {
 
     private final Map<OAuthServiceType, OAuthClient> clients;
@@ -22,7 +23,6 @@ public class OAuthInfoProvider {
                 .collect(toMap(OAuthClient::getOAuthService, identity()));
     }
 
-    @Transactional(readOnly = true)
     public String getSignInUrl(String oAuthService) {
         OAuthClient client = getClient(oAuthService);
         return client.getSignInUrl();

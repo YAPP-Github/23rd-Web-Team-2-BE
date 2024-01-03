@@ -1,4 +1,4 @@
-package com.baro.auth.fake.oauth;
+package com.baro.member.fake;
 
 import com.baro.member.application.NicknameCreator;
 
