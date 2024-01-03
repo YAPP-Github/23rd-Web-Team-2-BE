@@ -1,6 +1,8 @@
 package com.baro.common.infra.aws.s3;
 
 import com.baro.common.client.ImageUploader;
+import com.baro.common.utils.ImageExtensionConverter;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
@@ -29,8 +31,12 @@ public class AwsImageUploader implements ImageUploader {
                     .contentDisposition("inline")
                     .build();
 
-            RequestBody requestBody = RequestBody.fromInputStream(file.getInputStream(), file.getSize());
+            byte[] jpegImageBytes = ImageExtensionConverter.toJpeg(file);
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(jpegImageBytes);
+            RequestBody requestBody = RequestBody.fromInputStream(inputStream, jpegImageBytes.length);
+
             s3Client.putObject(putObjectRequest, requestBody);
+            inputStream.close();
         } catch (IOException ioException) {
             throw new RuntimeException(ioException); //TODO: custom exception 으로 수정
         }
