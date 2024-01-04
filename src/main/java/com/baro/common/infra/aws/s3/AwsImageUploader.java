@@ -1,5 +1,6 @@
 package com.baro.common.infra.aws.s3;
 
+import com.baro.common.image.ImageUploadException;
 import com.baro.common.image.ImageUploader;
 import com.baro.common.image.dto.ImageUploadResult;
 import com.baro.common.utils.ImageExtensionConverter;
@@ -39,7 +40,7 @@ public class AwsImageUploader implements ImageUploader {
             s3Client.putObject(putObjectRequest, requestBody);
             return new ImageUploadResult(urlSafetyKey);
         } catch (IOException ioException) {
-            throw new RuntimeException(ioException); //TODO: custom exception 으로 수정
+            throw new ImageUploadException("Error on converting or uploading image", ioException);
         }
     }
 
