@@ -21,7 +21,9 @@ public class AuthService {
         Member member = memberRepository.findByOAuthIdAndOAuthServiceType(oauthId, oauthType)
                 .orElseGet(() -> memberCreator.create(name, email, oauthId, oauthType));
 
-        return tokenTranslator.encode(member);
+        Token token = tokenTranslator.encode(member);
+        // TODO refresh token 저장
+        return token;
     }
 
     public void signOut(String token) {
