@@ -10,4 +10,6 @@ public interface MemberRepository {
     Member save(Member member);
 
     List<Member> findAll();
+
+    boolean existByNickname(String nickname);
 }

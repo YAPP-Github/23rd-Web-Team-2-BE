@@ -27,4 +27,9 @@ public class MemberRepositoryImpl implements MemberRepository {
     public List<Member> findAll() {
         return memberJpaRepository.findAll();
     }
+
+    @Override
+    public boolean existByNickname(String nickname) {
+        return memberJpaRepository.existsByNickname(nickname);
+    }
 }

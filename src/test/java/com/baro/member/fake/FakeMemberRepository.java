@@ -44,4 +44,10 @@ public class FakeMemberRepository implements MemberRepository {
     public List<Member> findAll() {
         return List.copyOf(members.values());
     }
+
+    @Override
+    public boolean existByNickname(String nickname) {
+        return members.values().stream()
+                .anyMatch(member -> member.getNickname().equals(nickname));
+    }
 }

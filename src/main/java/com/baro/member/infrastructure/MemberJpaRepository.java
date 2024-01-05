@@ -9,4 +9,6 @@ public interface MemberJpaRepository extends JpaRepository<Member, Long> {
 
     @Query("SELECT m FROM Member m WHERE m.oAuthId = :oAuthId AND m.oAuthServiceType = :oAuthServiceType")
     Optional<Member> findByOAuthIdAndOAuthServiceType(String oAuthId, String oAuthServiceType);
+
+    boolean existsByNickname(String nickname);
 }

@@ -6,6 +6,7 @@ import com.baro.auth.application.oauth.OAuthInfoProvider;
 import java.net.URI;
 
 import com.baro.auth.application.oauth.dto.OAuthMemberInfo;
+import com.baro.auth.domain.Token;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -33,10 +34,10 @@ public class AuthController {
     }
 
     @GetMapping("/oauth/sign-in/{oauthType}")
-    ResponseEntity<Void> signIn(@PathVariable String oauthType, @RequestParam String authCode) {
+    ResponseEntity<Token> signIn(@PathVariable String oauthType, @RequestParam String authCode) {
         OAuthMemberInfo memberInfo = oAuthInfoProvider.getMemberInfo(oauthType, authCode);
-        authService.signIn(memberInfo.name(), memberInfo.email(), memberInfo.oAuthId(), oauthType);
-        return ResponseEntity.ok().build();
+        Token token = authService.signIn(memberInfo.name(), memberInfo.email(), memberInfo.oAuthId(), oauthType);
+        return ResponseEntity.ok().body(token);
     }
 
     @GetMapping("/sign-out")
