@@ -12,11 +12,11 @@ import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
-class JwtTokenCreator {
+class JwtTokenCreator implements TokenCreator{
 
     private final JwtProperty jwtProperty;
 
-    Token createToken(Long id, Instant now) {
+    public Token createToken(Long id, Instant now) {
         SecretKey secretKey = Keys.hmacShaKeyFor(jwtProperty.secretKey().getBytes());
         Instant accessTokenExpiresIn = now.plusSeconds(jwtProperty.accessTokenExpireTime());
         Instant refreshTokenExpiresIn = now.plusSeconds(jwtProperty.refreshTokenExpireTime());

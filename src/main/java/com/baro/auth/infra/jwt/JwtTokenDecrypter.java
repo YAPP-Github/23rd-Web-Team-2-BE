@@ -13,11 +13,11 @@ import javax.crypto.SecretKey;
 
 @RequiredArgsConstructor
 @Component
-class JwtTokenDecrypter {
+class JwtTokenDecrypter implements TokenDecrypter {
 
     private final JwtProperty jwtProperty;
 
-    Long decrypt(String authHeader) {
+    public Long decrypt(String authHeader) {
         String token = validateTokenType(authHeader);
         SecretKey secretKey = Keys.hmacShaKeyFor(jwtProperty.secretKey().getBytes());
         try {
@@ -35,8 +35,8 @@ class JwtTokenDecrypter {
     }
 
     private String validateTokenType(String authHeader) {
-        if(authHeader.startsWith(jwtProperty.bearerType())) {
-            return authHeader.substring(jwtProperty.bearerType().length());
+        if(!authHeader.isBlank() && authHeader.startsWith(jwtProperty.bearerType())) {
+            return authHeader.substring(jwtProperty.bearerType().length() + 1);
         }
         throw new JwtTokenException(JwtTokenExceptionType.NOT_BEARER_TYPE);
     }

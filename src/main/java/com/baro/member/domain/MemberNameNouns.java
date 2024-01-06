@@ -20,4 +20,9 @@ public enum MemberNameNouns {
     ;
 
     private final String noun;
+
+    public static String pickRandom() {
+        int randomIndex = (int) (Math.random() * MemberNameNouns.values().length);
+        return MemberNameNouns.values()[randomIndex].getNoun();
+    }
 }

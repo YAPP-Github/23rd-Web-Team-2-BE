@@ -18,7 +18,7 @@ public class MemberCreator {
     @Transactional
     public Member create(String name, String email, String oauthId, String oauthType) {
         while (true) {
-            String randomNickname = nicknameCreator.createRandomNickname();
+            String randomNickname = nicknameCreator.create();
             if(!memberRepository.existByNickname(randomNickname)) {
                 Member member = Member.builder()
                         .name(name)

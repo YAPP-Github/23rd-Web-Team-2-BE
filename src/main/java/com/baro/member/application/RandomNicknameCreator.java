@@ -10,8 +10,7 @@ import org.springframework.stereotype.Component;
 class RandomNicknameCreator implements NicknameCreator {
 
     @Override
-    public String createRandomNickname() {
-        return MemberNameAdjectives.values()[(int) (Math.random() * MemberNameAdjectives.values().length)].getAdjective() +
-                MemberNameNouns.values()[(int) (Math.random() * MemberNameNouns.values().length)].getNoun();
+    public String create() {
+        return MemberNameAdjectives.pickRandom() + MemberNameNouns.pickRandom();
     }
 }

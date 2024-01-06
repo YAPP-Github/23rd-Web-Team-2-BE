@@ -4,7 +4,7 @@ import com.baro.member.application.NicknameCreator;
 
 public class FakeNicknameCreator implements NicknameCreator {
     @Override
-    public String createRandomNickname() {
+    public String create() {
         return "nickname";
     }
 }

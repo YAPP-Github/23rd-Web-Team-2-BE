@@ -19,4 +19,9 @@ public enum MemberNameAdjectives {
     ;
 
     private final String adjective;
+
+    public static String pickRandom() {
+        int randomIndex = (int) (Math.random() * MemberNameAdjectives.values().length);
+        return MemberNameAdjectives.values()[randomIndex].getAdjective();
+    }
 }
