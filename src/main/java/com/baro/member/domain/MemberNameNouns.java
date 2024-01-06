@@ -1,9 +1,12 @@
 package com.baro.member.domain;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-public enum Nouns {
+@RequiredArgsConstructor
+public enum MemberNameNouns {
+
     EXAMPLE_NOUN1("명사1"),
     EXAMPLE_NOUN2("명사2"),
     EXAMPLE_NOUN3("명사3"),
@@ -17,8 +20,4 @@ public enum Nouns {
     ;
 
     private final String noun;
-
-    Nouns(String noun) {
-        this.noun = noun;
-    }
 }

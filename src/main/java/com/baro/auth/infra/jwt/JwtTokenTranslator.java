@@ -2,7 +2,7 @@ package com.baro.auth.infra.jwt;
 
 import com.baro.auth.application.TokenTranslator;
 import com.baro.auth.domain.Token;
-import com.baro.common.auth.AuthMember;
+import com.baro.auth.domain.AuthMember;
 import com.baro.common.time.TimeServer;
 import com.baro.member.domain.Member;
 import lombok.RequiredArgsConstructor;

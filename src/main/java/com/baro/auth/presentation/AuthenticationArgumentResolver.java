@@ -1,7 +1,7 @@
 package com.baro.auth.presentation;
 
 import com.baro.auth.application.TokenTranslator;
-import com.baro.common.auth.AuthMember;
+import com.baro.auth.domain.AuthMember;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
@@ -24,7 +24,8 @@ public class AuthenticationArgumentResolver implements HandlerMethodArgumentReso
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+                                  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String authHeader = webRequest.getHeader("Authorization");
         return translator.decode(authHeader);
     }

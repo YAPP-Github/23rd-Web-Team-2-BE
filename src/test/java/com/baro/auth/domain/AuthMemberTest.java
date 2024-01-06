@@ -1,4 +1,4 @@
-package com.baro.common.auth;
+package com.baro.auth.domain;
 
 import org.junit.jupiter.api.Test;
 

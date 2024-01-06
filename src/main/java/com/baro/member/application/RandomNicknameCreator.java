@@ -1,7 +1,7 @@
 package com.baro.member.application;
 
-import com.baro.member.domain.Adjectives;
-import com.baro.member.domain.Nouns;
+import com.baro.member.domain.MemberNameAdjectives;
+import com.baro.member.domain.MemberNameNouns;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +11,7 @@ class RandomNicknameCreator implements NicknameCreator {
 
     @Override
     public String createRandomNickname() {
-        return Adjectives.values()[(int) (Math.random() * Adjectives.values().length)].getAdjective() +
-                Nouns.values()[(int) (Math.random() * Nouns.values().length)].getNoun();
+        return MemberNameAdjectives.values()[(int) (Math.random() * MemberNameAdjectives.values().length)].getAdjective() +
+                MemberNameNouns.values()[(int) (Math.random() * MemberNameNouns.values().length)].getNoun();
     }
 }

@@ -1,4 +1,4 @@
-package com.baro.common.auth;
+package com.baro.auth.domain;
 
 public record AuthMember(
         Long id

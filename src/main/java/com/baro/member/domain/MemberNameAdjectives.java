@@ -1,9 +1,12 @@
 package com.baro.member.domain;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-public enum Adjectives {
+@RequiredArgsConstructor
+public enum MemberNameAdjectives {
+
     EXAMPLE_ADJECTIVE1("형용사1"),
     EXAMPLE_ADJECTIVE2("형용사2"),
     EXAMPLE_ADJECTIVE3("형용사3"),
@@ -16,8 +19,4 @@ public enum Adjectives {
     ;
 
     private final String adjective;
-
-    Adjectives(String adjective) {
-        this.adjective = adjective;
-    }
 }

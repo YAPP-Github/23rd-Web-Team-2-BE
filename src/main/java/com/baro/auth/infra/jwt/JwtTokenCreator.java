@@ -23,13 +23,13 @@ class JwtTokenCreator {
         Instant accessTokenExpiresIn = now.plusSeconds(jwtProperty.accessTokenExpireTime());
         Instant refreshTokenExpiresIn = now.plusSeconds(jwtProperty.refreshTokenExpireTime());
 
-        var accessToken = Jwts.builder()
+        String accessToken = Jwts.builder()
                 .claim("id", member.getId())
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(accessTokenExpiresIn))
                 .signWith(secretKey)
                 .compact();
-        var refreshToken = Jwts.builder()
+        String refreshToken = Jwts.builder()
                 .expiration(Date.from(refreshTokenExpiresIn))
                 .signWith(secretKey)
                 .compact();

@@ -1,7 +1,7 @@
 package com.baro.auth.presentation;
 
 import com.baro.auth.application.TokenTranslator;
-import com.baro.common.auth.AuthMember;
+import com.baro.auth.domain.AuthMember;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -49,11 +48,11 @@ class AuthenticationArgumentResolverTest {
         // when
         Response response = RestAssured
                 .given()
-                    .log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                    .header("Authorization", testToken)
-                    .get("/test/auth");
+                .header("Authorization", testToken)
+                .get("/test/auth");
 
         // then
         String result = response.then().log().all()
