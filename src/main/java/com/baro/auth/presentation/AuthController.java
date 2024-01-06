@@ -1,6 +1,7 @@
 package com.baro.auth.presentation;
 
 import com.baro.auth.application.AuthService;
+import com.baro.auth.application.dto.SignInDto;
 import com.baro.auth.application.oauth.OAuthInfoProvider;
 
 import java.net.URI;
@@ -36,7 +37,7 @@ public class AuthController {
     @GetMapping("/oauth/sign-in/{oauthType}")
     ResponseEntity<Token> signIn(@PathVariable String oauthType, @RequestParam String authCode) {
         OAuthMemberInfo memberInfo = oAuthInfoProvider.getMemberInfo(oauthType, authCode);
-        Token token = authService.signIn(memberInfo.name(), memberInfo.email(), memberInfo.oAuthId(), oauthType);
+        Token token = authService.signIn(new SignInDto(memberInfo.name(), memberInfo.email(), memberInfo.oAuthId(), oauthType));
         return ResponseEntity.ok().body(token);
     }
 

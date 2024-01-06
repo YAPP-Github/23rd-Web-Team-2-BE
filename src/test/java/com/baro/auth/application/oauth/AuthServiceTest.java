@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.baro.auth.application.AuthService;
 import com.baro.auth.application.TokenTranslator;
+import com.baro.auth.application.dto.SignInDto;
 import com.baro.auth.domain.Token;
 import com.baro.member.fake.FakeNicknameCreator;
 import com.baro.auth.fake.jwt.FakeTokenTranslator;
@@ -42,9 +43,10 @@ class AuthServiceTest {
         String email = "kakaoEmail@test.com";
         String oauthId = "kakaoId";
         String oauthType = "kakao";
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
 
         // when
-        authService.signIn(name, email, oauthId, oauthType);
+        authService.signIn(dto);
 
         // then
         List<Member> members = memberRepository.findAll();
@@ -58,9 +60,10 @@ class AuthServiceTest {
         String email = "googleEmail@test.com";
         String oauthId = "googleId";
         String oauthType = "google";
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
 
         // when
-        authService.signIn(name, email, oauthId, oauthType);
+        authService.signIn(dto);
 
         // then
         List<Member> members = memberRepository.findAll();
@@ -74,9 +77,10 @@ class AuthServiceTest {
         String email = "naverEmail@test.com";
         String oauthId = "naverId";
         String oauthType = "naver";
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
 
         // when
-        authService.signIn(name, email, oauthId, oauthType);
+        authService.signIn(dto);
 
         // then
         List<Member> members = memberRepository.findAll();
@@ -96,9 +100,10 @@ class AuthServiceTest {
         String email = "kakaoEmail@test.com";
         String oauthId = "kakaoId";
         String oauthType = "kakao";
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
 
         // when
-        authService.signIn(name, email, oauthId, oauthType);
+        authService.signIn(dto);
 
         // then
         List<Member> members = memberRepository.findAll();
@@ -119,8 +124,10 @@ class AuthServiceTest {
         String oauthId = "naverId";
         String oauthType = "naver";
 
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
+
         // when
-        authService.signIn(name, email, oauthId, oauthType);
+        authService.signIn(dto);
 
         // then
         List<Member> members = memberRepository.findAll();
@@ -141,8 +148,10 @@ class AuthServiceTest {
         String oauthId = "googleId";
         String oauthType = "google";
 
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
+
         // when
-        authService.signIn(name, email, oauthId, oauthType);
+        authService.signIn(dto);
 
         // then
         List<Member> members = memberRepository.findAll();
@@ -156,9 +165,10 @@ class AuthServiceTest {
         String email = "kakaoEmail@test.com";
         String oauthId = "kakaoId";
         String oauthType = "kakao";
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
 
         // when
-        Token token = authService.signIn(name, email, oauthId, oauthType);
+        Token token = authService.signIn(dto);
 
         // then
         assertEquals(token.accessToken(), "accessToken");
@@ -171,9 +181,10 @@ class AuthServiceTest {
         String email = "kakaoEmail@test.com";
         String oauthId = "kakaoId";
         String oauthType = "kakao";
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
 
         // when
-        Token token = authService.signIn(name, email, oauthId, oauthType);
+        Token token = authService.signIn(dto);
 
         // then
         assertEquals(token.refreshToken(), "refreshToken");

@@ -1,5 +1,6 @@
 package com.baro.auth.application;
 
+import com.baro.auth.application.dto.SignInDto;
 import com.baro.auth.domain.Token;
 import com.baro.member.application.MemberCreator;
 import com.baro.member.domain.Member;
@@ -17,9 +18,9 @@ public class AuthService {
     private final MemberCreator memberCreator;
     private final TokenTranslator tokenTranslator;
 
-    public Token signIn(String name, String email, String oauthId, String oauthType) {
-        Member member = memberRepository.findByOAuthIdAndOAuthServiceType(oauthId, oauthType)
-                .orElseGet(() -> memberCreator.create(name, email, oauthId, oauthType));
+    public Token signIn(SignInDto dto) {
+        Member member = memberRepository.findByOAuthIdAndOAuthServiceType(dto.oauthId(), dto.oauthType())
+                .orElseGet(() -> memberCreator.create(dto.name(), dto.email(), dto.oauthId(), dto.oauthType()));
 
         Token token = tokenTranslator.encode(member);
         // TODO refresh token 저장

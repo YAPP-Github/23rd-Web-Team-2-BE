@@ -33,10 +33,6 @@ class JwtTokenDecrypter {
 
     private String validateTokenType(String authHeader) {
         if(authHeader.startsWith(jwtProperty.bearerType())) {
-            /**
-             * TODO sout 제거
-             */
-            System.out.println(authHeader.substring(jwtProperty.bearerType().length()));
             return authHeader.substring(jwtProperty.bearerType().length());
         }
         throw new JwtTokenException(JwtTokenExceptionType.NOT_BEARER_TYPE);
