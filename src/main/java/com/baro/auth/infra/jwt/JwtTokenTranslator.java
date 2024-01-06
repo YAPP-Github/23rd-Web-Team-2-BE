@@ -2,9 +2,7 @@ package com.baro.auth.infra.jwt;
 
 import com.baro.auth.application.TokenTranslator;
 import com.baro.auth.domain.Token;
-import com.baro.auth.domain.AuthMember;
 import com.baro.common.time.TimeServer;
-import com.baro.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -17,12 +15,12 @@ public class JwtTokenTranslator implements TokenTranslator {
     private final JwtTokenDecrypter jwtTokenDecrypter;
 
     @Override
-    public Token encode(Member member) {
-        return jwtTokenCreator.createToken(member, timeServer.now());
+    public Token encode(Long id) {
+        return jwtTokenCreator.createToken(id, timeServer.now());
     }
 
     @Override
-    public AuthMember decode(String token) {
+    public Long decode(String token) {
         return jwtTokenDecrypter.decrypt(token);
     }
 }

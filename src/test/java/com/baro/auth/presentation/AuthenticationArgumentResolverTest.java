@@ -38,12 +38,12 @@ class AuthenticationArgumentResolverTest {
     }
 
     @Test
-    void 매개변수에_AuthMember가_존재하는경우_Argument_resolver를_거친다() throws Exception {
+    void 매개변수에_AuthMember가_존재하는경우_Argument_resolver를_거친다() {
 
         // given
         String testToken = "token";
         Long authMemberId = 1L;
-        when(tokenTranslator.decode(testToken)).thenReturn(new AuthMember(authMemberId));
+        when(tokenTranslator.decode(testToken)).thenReturn(authMemberId);
 
         // when
         Response response = RestAssured

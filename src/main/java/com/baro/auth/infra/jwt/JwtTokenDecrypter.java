@@ -2,7 +2,6 @@ package com.baro.auth.infra.jwt;
 
 import com.baro.auth.exception.jwt.JwtTokenException;
 import com.baro.auth.exception.jwt.JwtTokenExceptionType;
-import com.baro.auth.domain.AuthMember;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -18,7 +17,7 @@ class JwtTokenDecrypter {
 
     private final JwtProperty jwtProperty;
 
-    AuthMember decrypt(String authHeader) {
+    Long decrypt(String authHeader) {
         String token = validateTokenType(authHeader);
         SecretKey secretKey = Keys.hmacShaKeyFor(jwtProperty.secretKey().getBytes());
         try {
@@ -27,7 +26,7 @@ class JwtTokenDecrypter {
                     .parseSignedClaims(token)
                     .getPayload()
                     .get("id", Long.class);
-            return new AuthMember(id);
+            return id;
         } catch (ExpiredJwtException e) {
             throw new JwtTokenException(JwtTokenExceptionType.EXPIRED_JWT_TOKEN);
         } catch (JwtException e) {

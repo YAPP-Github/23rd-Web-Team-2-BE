@@ -1,9 +1,7 @@
 package com.baro.auth.infra.jwt;
 
 import com.baro.auth.domain.Token;
-import com.baro.member.domain.Member;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -18,13 +16,13 @@ class JwtTokenCreator {
 
     private final JwtProperty jwtProperty;
 
-    Token createToken(Member member, Instant now) {
+    Token createToken(Long id, Instant now) {
         SecretKey secretKey = Keys.hmacShaKeyFor(jwtProperty.secretKey().getBytes());
         Instant accessTokenExpiresIn = now.plusSeconds(jwtProperty.accessTokenExpireTime());
         Instant refreshTokenExpiresIn = now.plusSeconds(jwtProperty.refreshTokenExpireTime());
 
         String accessToken = Jwts.builder()
-                .claim("id", member.getId())
+                .claim("id", id)
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(accessTokenExpiresIn))
                 .signWith(secretKey)

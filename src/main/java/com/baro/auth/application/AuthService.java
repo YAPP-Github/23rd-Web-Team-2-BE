@@ -22,7 +22,7 @@ public class AuthService {
         Member member = memberRepository.findByOAuthIdAndOAuthServiceType(dto.oauthId(), dto.oauthType())
                 .orElseGet(() -> memberCreator.create(dto.name(), dto.email(), dto.oauthId(), dto.oauthType()));
 
-        Token token = tokenTranslator.encode(member);
+        Token token = tokenTranslator.encode(member.getId());
         // TODO refresh token 저장
         return token;
     }
