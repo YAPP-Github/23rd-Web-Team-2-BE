@@ -27,12 +27,13 @@ class AuthServiceTest {
 
     private AuthService authService;
     private MemberRepository memberRepository;
+    private MemberCreator memberCreator;
 
     @BeforeEach
     void setUpOAuthClientRequest() {
         memberRepository = new FakeMemberRepository();
-        MemberCreator memberCreator = new MemberCreator(memberRepository, new FakeNicknameCreator());
         TokenTranslator tokenTranslator = new FakeTokenTranslator();
+        memberCreator = new MemberCreator(memberRepository, new FakeNicknameCreator(List.of("nickname1", "nickname2")));
         authService = new AuthService(memberRepository, memberCreator, tokenTranslator);
     }
 
@@ -90,16 +91,16 @@ class AuthServiceTest {
     @Test
     void Kakao_로그인시_이미_존재_하는_회원인_경우_추가_절차_없이_로그인_처리_한다() {
         // given
-        memberRepository.save(Member.builder()
-                .name("kakaoName")
-                .email("kakaoEmail")
-                .oAuthId("kakaoId")
-                .oAuthServiceType("kakao")
-                .build());
         String name = "kakaoName";
         String email = "kakaoEmail@test.com";
         String oauthId = "kakaoId";
         String oauthType = "kakao";
+        memberRepository.save(Member.builder()
+                .name(name)
+                .email(email)
+                .oAuthId(oauthId)
+                .oAuthServiceType(oauthType)
+                .build());
         SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
 
         // when
@@ -113,16 +114,16 @@ class AuthServiceTest {
     @Test
     void Naver_로그인시_이미_존재_하는_회원인_경우_추가_절차_없이_로그인_처리_한다() {
         // given
-        memberRepository.save(Member.builder()
-                .name("naverName")
-                .email("naverEmail")
-                .oAuthId("naverId")
-                .oAuthServiceType("naver")
-                .build());
         String name = "naverName";
         String email = "naverEmail@test.com";
         String oauthId = "naverId";
         String oauthType = "naver";
+        memberRepository.save(Member.builder()
+                .name(name)
+                .email(email)
+                .oAuthId(oauthId)
+                .oAuthServiceType(oauthType)
+                .build());
 
         SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
 
@@ -137,16 +138,16 @@ class AuthServiceTest {
     @Test
     void Google_로그인시_이미_존재_하는_회원인_경우_추가_절차_없이_로그인_처리_한다() {
         // given
-        memberRepository.save(Member.builder()
-                .name("googleName")
-                .email("googleEmail")
-                .oAuthId("googleId")
-                .oAuthServiceType("google")
-                .build());
         String name = "googleName";
         String email = "googleEmail@test.com";
         String oauthId = "googleId";
         String oauthType = "google";
+        memberRepository.save(Member.builder()
+                .name(name)
+                .email(email)
+                .oAuthId(oauthId)
+                .oAuthServiceType(oauthType)
+                .build());
 
         SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
 

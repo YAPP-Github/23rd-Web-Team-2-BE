@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 public class JwtTokenTranslator implements TokenTranslator {
 
     private final TimeServer timeServer;
-    private final JwtTokenCreator jwtTokenCreator;
-    private final JwtTokenDecrypter jwtTokenDecrypter;
+    private final TokenCreator jwtTokenCreator;
+    private final TokenDecrypter jwtTokenDecrypter;
 
     @Override
     public Token encode(Long id) {
