@@ -16,7 +16,8 @@ class JwtPropertyTest {
     @Test
     void Jwt_프로퍼티_값_바인딩_테스트() {
         assertNotNull(jwtProperty.bearerType());
-        assertNotNull(jwtProperty.secretKey());
+        assertNotNull(jwtProperty.accessSecretKey());
+        assertNotNull(jwtProperty.refreshSecretKey());
         assertNotNull(jwtProperty.accessTokenExpireTime());
         assertNotNull(jwtProperty.refreshTokenExpireTime());
     }

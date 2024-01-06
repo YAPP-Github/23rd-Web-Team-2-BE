@@ -19,9 +19,9 @@ class JwtTokenDecrypter implements TokenDecrypter {
 
     public Long decrypt(String authHeader) {
         String token = validateTokenType(authHeader);
-        SecretKey secretKey = Keys.hmacShaKeyFor(jwtProperty.secretKey().getBytes());
+        SecretKey accessTokenSecretKey = Keys.hmacShaKeyFor(jwtProperty.accessSecretKey().getBytes());
         try {
-            Long id = Jwts.parser().verifyWith(secretKey)
+            Long id = Jwts.parser().verifyWith(accessTokenSecretKey)
                     .build()
                     .parseSignedClaims(token)
                     .getPayload()

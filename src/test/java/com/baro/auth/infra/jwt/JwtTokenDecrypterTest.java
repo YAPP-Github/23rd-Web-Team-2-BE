@@ -18,11 +18,12 @@ class JwtTokenDecrypterTest {
     TimeServer timeServer;
     JwtTokenDecrypter decrypter;
     JwtTokenCreator creator;
-    String secretKey = "testSecretKeytestSecretKeytestSecretKey";
+    String accessTokenSecretKey = "testAccessTokenSecretKeytestAccessTokenSecretKey";
+    String refreshTokenSecretKey = "testRefreshTokenSecrettestRefreshTokenSecret";
 
     @BeforeEach
     void setUp() {
-        jwtProperty = new JwtProperty("Bearer", secretKey, 86400000L, 86400000L);
+        jwtProperty = new JwtProperty("Bearer", accessTokenSecretKey, refreshTokenSecretKey, 86400000L, 86400000L);
         timeServer = new FakeTimeServer(Instant.parse("2024-01-01T13:00:00.00Z"));
         decrypter = new JwtTokenDecrypter(jwtProperty);
         creator = new JwtTokenCreator(jwtProperty);
@@ -55,7 +56,7 @@ class JwtTokenDecrypterTest {
     void 토큰이_만료된_경우_예외를_반환한다() {
 
         // given
-        jwtProperty = new JwtProperty("Bearer", secretKey, 1L, 1L);
+        jwtProperty = new JwtProperty("Bearer", accessTokenSecretKey, refreshTokenSecretKey, 1L, 1L);
         Token token = creator.createToken(1L, timeServer.now());
 
         // then
