@@ -18,6 +18,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+/**
+ * p5. 개인적이 취향인데 AllArgsConstructor는 id 값을 포함하고 있다보니 팩토리 메소드를 따로 만드는 것을 선호합니다. (id나 createdAt 같은걸 생성자에서 제외하기 위해)
+ */
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity

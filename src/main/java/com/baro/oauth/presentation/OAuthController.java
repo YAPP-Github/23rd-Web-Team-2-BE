@@ -19,6 +19,10 @@ public class OAuthController {
 
     private final OAuthService oAuthService;
 
+    /**
+     * p3. oauthService 파라미터를 Controller 때 부터 Enum으로 관리하는 건 어떨까요?
+     * Service에서 변환하고 있긴 하지만 더 빠른 시점에서 변환 하면 좋을 것 같아요.
+     */
     @GetMapping("/{oauthService}")
     ResponseEntity<Void> signInRequestUrl(@PathVariable String oauthService) {
         String signInUrl = oAuthService.getSignInUrl(oauthService);
