@@ -40,9 +40,4 @@ public class AuthController {
         Token token = authService.signIn(new SignInDto(memberInfo.name(), memberInfo.email(), memberInfo.oAuthId(), oauthType));
         return ResponseEntity.ok().body(token);
     }
-
-    @GetMapping("/sign-out")
-    ResponseEntity<Void> signOut() {
-        return ResponseEntity.ok().build(); //TODO: 로그아웃 처리 후 응답 변경
-    }
 }

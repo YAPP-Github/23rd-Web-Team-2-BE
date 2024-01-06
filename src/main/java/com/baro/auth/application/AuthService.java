@@ -26,8 +26,4 @@ public class AuthService {
         // TODO refresh token 저장
         return token;
     }
-
-    public void signOut(String token) {
-        // TODO
-    }
 }
