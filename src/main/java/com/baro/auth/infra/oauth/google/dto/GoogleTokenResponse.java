@@ -6,12 +6,12 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record GoogleTokenResponse(
-    String accessToken,
-    String idToken,
-    Integer expiresIn,
-    String tokenType,
-    String scope,
-    String refreshToken
+        String accessToken,
+        String idToken,
+        Integer expiresIn,
+        String tokenType,
+        String scope,
+        String refreshToken
 ) {
 
     public OAuthTokenInfo toOAuthTokenInfo() {

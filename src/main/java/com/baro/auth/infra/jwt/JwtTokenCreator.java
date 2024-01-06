@@ -12,7 +12,7 @@ import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
-class JwtTokenCreator implements TokenCreator{
+class JwtTokenCreator implements TokenCreator {
 
     private final JwtProperty jwtProperty;
 

@@ -35,7 +35,7 @@ class JwtTokenDecrypter implements TokenDecrypter {
     }
 
     private String validateTokenType(String authHeader) {
-        if(!authHeader.isBlank() && authHeader.startsWith(jwtProperty.bearerType())) {
+        if (!authHeader.isBlank() && authHeader.startsWith(jwtProperty.bearerType())) {
             return authHeader.substring(jwtProperty.bearerType().length() + 1);
         }
         throw new JwtTokenException(JwtTokenExceptionType.NOT_BEARER_TYPE);

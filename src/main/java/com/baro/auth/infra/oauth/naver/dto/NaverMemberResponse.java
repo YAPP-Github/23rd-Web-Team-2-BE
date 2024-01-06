@@ -23,6 +23,6 @@ public record NaverMemberResponse(
             String id,
             String name,
             String email
-    ){
+    ) {
     }
 }

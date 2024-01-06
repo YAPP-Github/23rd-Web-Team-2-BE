@@ -19,7 +19,7 @@ public class MemberCreator {
     public Member create(String name, String email, String oauthId, String oauthType) {
         while (true) {
             String randomNickname = nicknameCreator.create();
-            if(!memberRepository.existByNickname(randomNickname)) {
+            if (!memberRepository.existByNickname(randomNickname)) {
                 Member member = Member.builder()
                         .name(name)
                         .email(email)
