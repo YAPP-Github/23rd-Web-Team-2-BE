@@ -2,6 +2,8 @@ package com.baro.auth.application;
 
 import com.baro.auth.application.dto.SignInDto;
 import com.baro.auth.domain.Token;
+import com.baro.auth.exception.AuthException;
+import com.baro.auth.exception.AuthExceptionType;
 import com.baro.member.application.MemberCreator;
 import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
@@ -29,18 +31,29 @@ public class AuthService {
         return token;
     }
 
-    public Token reissue(Token token, String requestIpAddress) {
-        Long memberId = tokenTranslator.decodeAccessToken(token.accessToken());
-        String ipAddress = tokenTranslator.decodeRefreshToken(token.refreshToken());
+    public Token reissue(Long memberId, String refreshToken, String requestIpAddress) {
+        String ipAddress = tokenTranslator.decodeRefreshToken(refreshToken);
 
-        if (!tokenStorage.findRefreshToken(String.valueOf(memberId)).equals(token.refreshToken())
-                || !ipAddress.equals(requestIpAddress)) {
-            throw new IllegalArgumentException("cannot perform reissue. authentication info is not matching."); // TODO
-        }
+        validateRefreshToken(memberId, refreshToken);
+        validateIpAddress(ipAddress, requestIpAddress);
 
         Token newToken = tokenTranslator.encode(memberId, requestIpAddress);
 
         tokenStorage.saveRefreshToken(String.valueOf(memberId), newToken.refreshToken());
-        return token;
+        return newToken;
+    }
+
+    private void validateRefreshToken(Long memberId, String refreshToken) {
+        String storedRefreshToken = tokenStorage.findRefreshToken(String.valueOf(memberId));
+        if(refreshToken == null)
+            throw new AuthException(AuthExceptionType.REFRESH_TOKEN_DOES_NOT_EXIST);
+
+        if (!storedRefreshToken.equals(refreshToken))
+            throw new AuthException(AuthExceptionType.CLIENT_AND_TOKEN_IS_NOT_MATCH);
+    }
+
+    private void validateIpAddress(String ipAddress, String requestIpAddress) {
+        if (!ipAddress.equals(requestIpAddress))
+            throw new AuthException(AuthExceptionType.CLIENT_AND_TOKEN_IS_NOT_MATCH);
     }
 }

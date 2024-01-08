@@ -1,24 +1,33 @@
 package com.baro.auth.presentation;
 
+import com.baro.auth.exception.AuthException;
+import com.baro.auth.exception.AuthExceptionType;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+@Slf4j
 @Component
 public class RequestResolver {
 
     public String extractIp() {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if(requestAttributes == null) throw new IllegalArgumentException("비정상적인 요청입니다."); // TODO
+        if(requestAttributes == null) throw new AuthException(AuthExceptionType.IP_ADDRESS_DOES_NOT_EXIST);
 
         HttpServletRequest request = requestAttributes.getRequest();
         for (IpHeaderCandidates ipHeaderCandidate : IpHeaderCandidates.values()) {
-            String ip = request.getHeader(ipHeaderCandidate.name());
-            if (ip != null && !ip.isEmpty() && !"unknown".equalsIgnoreCase(ip)) return ip.split(",")[0];
+            String ip = request.getHeader(ipHeaderCandidate.getName());
+            if (ip != null && !ip.isEmpty() && !"unknown".equalsIgnoreCase(ip)) {
+                String s = ip.split(",")[0];
+                log.info("RequestResolver::extractIp -> {}", s);
+                return s;
+            }
         }
+        log.info("RequestResolver::extractIp -> {}", request.getRemoteAddr());
         return request.getRemoteAddr();
     }
 

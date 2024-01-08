@@ -44,7 +44,7 @@ class JwtTokenDecrypter implements TokenDecrypter {
                     .build()
                     .parseSignedClaims(refreshToken)
                     .getPayload()
-                    .get("ipAddress", String.class);
+                    .get("ip", String.class);
             return ipAddress;
         } catch (ExpiredJwtException e) {
             throw new JwtTokenException(JwtTokenExceptionType.EXPIRED_JWT_TOKEN);

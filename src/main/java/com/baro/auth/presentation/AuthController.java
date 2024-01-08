@@ -7,6 +7,7 @@ import com.baro.auth.application.oauth.OAuthInfoProvider;
 import java.net.URI;
 
 import com.baro.auth.application.oauth.dto.OAuthMemberInfo;
+import com.baro.auth.domain.AuthMember;
 import com.baro.auth.domain.Token;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -45,9 +46,9 @@ public class AuthController {
     }
 
     @GetMapping("/reissue")
-    ResponseEntity<Token> reissue(@RequestParam String accessToken, @RequestParam String refreshToken) {
+    ResponseEntity<Token> reissue(@RequestParam String refreshToken, AuthMember authMember) {
         String requestIpAddress = requestResolver.extractIp();
-        Token token = authService.reissue(new Token(accessToken, refreshToken), requestIpAddress);
+        Token token = authService.reissue(authMember.id(), refreshToken, requestIpAddress);
         return ResponseEntity.ok().body(token);
     }
 }
