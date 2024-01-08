@@ -25,12 +25,12 @@ public record KakaoMemberResponse(
     ) {
     }
 
-    record KakaoAccount(
+    public record KakaoAccount(
             Boolean profileNicknameNeedsAgreement,
             Profile profile,
             String email
     ) {
-        record Profile(
+        public record Profile(
                 String nickname
         ) {
         }

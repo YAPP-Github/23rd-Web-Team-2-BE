@@ -3,25 +3,27 @@ package com.baro.auth.presentation.oauth;
 import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.document;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.anyMap;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
-
-import com.baro.common.RestApiDocumentationTest;
-
-import java.nio.charset.StandardCharsets;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 
 import com.baro.auth.infra.oauth.kakao.KakaoOAuthClient;
 import com.baro.auth.infra.oauth.kakao.KakaoRequestApi;
 import com.baro.auth.infra.oauth.kakao.dto.KakaoMemberResponse;
+import com.baro.auth.infra.oauth.kakao.dto.KakaoMemberResponse.KakaoAccount;
 import com.baro.auth.infra.oauth.kakao.dto.KakaoTokenResponse;
+import com.baro.common.RestApiDocumentationTest;
+import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-
-import static org.mockito.Mockito.*;
 
 class OAuthApiDocumentTest extends RestApiDocumentationTest {
 
@@ -66,7 +68,9 @@ class OAuthApiDocumentTest extends RestApiDocumentationTest {
                         1000, "refreshToken", 1000, "scope"));
         when(kakaoRequestApi.requestMemberInfo(anyString()))
                 .thenReturn(new KakaoMemberResponse(1L, "nickname",
-                        new KakaoMemberResponse.Properties("nickname"), null));
+                        new KakaoMemberResponse.Properties("nickname"),
+                        new KakaoAccount(false, new KakaoAccount.Profile("nickname"), "email")
+                ));
 
         // when
         var response = given(requestSpec).log().all()
