@@ -29,6 +29,7 @@ public class FakeMemberRepository implements MemberRepository {
                     id.getAndIncrement(),
                     member.getName(),
                     member.getEmail(),
+                    member.getNickname(),
                     member.getOAuthId(),
                     member.getOAuthServiceType()
             );
@@ -42,5 +43,11 @@ public class FakeMemberRepository implements MemberRepository {
     @Override
     public List<Member> findAll() {
         return List.copyOf(members.values());
+    }
+
+    @Override
+    public boolean existByNickname(String nickname) {
+        return members.values().stream()
+                .anyMatch(member -> member.getNickname().equals(nickname));
     }
 }
