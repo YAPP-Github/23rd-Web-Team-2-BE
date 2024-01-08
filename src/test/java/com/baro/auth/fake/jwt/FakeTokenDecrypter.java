@@ -1,6 +1,6 @@
 package com.baro.auth.fake.jwt;
 
-import com.baro.auth.infra.jwt.TokenDecrypter;
+import com.baro.auth.application.TokenDecrypter;
 
 public class FakeTokenDecrypter implements TokenDecrypter {
 

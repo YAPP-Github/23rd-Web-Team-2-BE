@@ -1,5 +1,7 @@
 package com.baro.auth.infra.jwt;
 
+import com.baro.auth.application.TokenCreator;
+import com.baro.auth.application.TokenDecrypter;
 import com.baro.auth.domain.Token;
 import com.baro.auth.fake.jwt.FakeTokenCreator;
 import com.baro.auth.fake.jwt.FakeTokenDecrypter;

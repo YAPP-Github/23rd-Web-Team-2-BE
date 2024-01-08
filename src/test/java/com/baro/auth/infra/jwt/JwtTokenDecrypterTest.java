@@ -31,7 +31,6 @@ class JwtTokenDecrypterTest {
 
     @Test
     void 정상적인_액세스토큰에_대해_복호화한다() {
-
         // given
         Token token = creator.createToken(1L, timeServer.now());
 
@@ -44,7 +43,6 @@ class JwtTokenDecrypterTest {
 
     @Test
     void 토큰타입이_올바르지_않은경우_예외를_반환한다() {
-
         // given
         Token token = creator.createToken(1L, timeServer.now());
 
@@ -54,7 +52,6 @@ class JwtTokenDecrypterTest {
 
     @Test
     void 토큰이_만료된_경우_예외를_반환한다() {
-
         // given
         jwtProperty = new JwtProperty("Bearer", accessTokenSecretKey, refreshTokenSecretKey, 1L, 1L);
         Token token = creator.createToken(1L, timeServer.now());
@@ -65,11 +62,22 @@ class JwtTokenDecrypterTest {
 
     @Test
     void 올바르지않은_토큰의_경우_예외를_반환한다() {
-
         // given
         Token token = new Token("invalidAccessToken", "invalidRefreshToken");
 
         // then
         assertThrows(JwtTokenException.class, () -> decrypter.decrypt("BearBear " + token.accessToken()));
+    }
+
+    @Test
+    void Authorization_헤더가_없는_경우_예외를_반환한다() {
+        // then
+        assertThrows(JwtTokenException.class, () -> decrypter.decrypt(null));
+    }
+
+    @Test
+    void Authorization_헤더가_비어있는_경우_예외를_반환한다() {
+        // then
+        assertThrows(JwtTokenException.class, () -> decrypter.decrypt(" "));
     }
 }

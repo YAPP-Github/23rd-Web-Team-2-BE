@@ -1,7 +1,7 @@
 package com.baro.auth.fake.jwt;
 
 import com.baro.auth.domain.Token;
-import com.baro.auth.infra.jwt.TokenCreator;
+import com.baro.auth.application.TokenCreator;
 
 import java.time.Instant;
 

@@ -1,4 +1,4 @@
-package com.baro.auth.infra.jwt;
+package com.baro.auth.application;
 
 import com.baro.auth.domain.Token;
 

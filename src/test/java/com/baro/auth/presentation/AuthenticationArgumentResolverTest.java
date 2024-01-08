@@ -39,7 +39,6 @@ class AuthenticationArgumentResolverTest {
 
     @Test
     void 매개변수에_AuthMember가_존재하는경우_Argument_resolver를_거친다() {
-
         // given
         String testToken = "token";
         Long authMemberId = 1L;

@@ -1,4 +1,4 @@
-package com.baro.auth.infra.jwt;
+package com.baro.auth.application;
 
 public interface TokenDecrypter {
 

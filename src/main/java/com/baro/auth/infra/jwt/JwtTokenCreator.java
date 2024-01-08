@@ -1,5 +1,6 @@
 package com.baro.auth.infra.jwt;
 
+import com.baro.auth.application.TokenCreator;
 import com.baro.auth.domain.Token;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

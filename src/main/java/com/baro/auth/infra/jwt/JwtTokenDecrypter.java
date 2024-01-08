@@ -1,5 +1,6 @@
 package com.baro.auth.infra.jwt;
 
+import com.baro.auth.application.TokenDecrypter;
 import com.baro.auth.exception.jwt.JwtTokenException;
 import com.baro.auth.exception.jwt.JwtTokenExceptionType;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -17,8 +18,8 @@ class JwtTokenDecrypter implements TokenDecrypter {
 
     private final JwtProperty jwtProperty;
 
-    public Long decrypt(String authHeader) {
-        String token = validateTokenType(authHeader);
+    public Long decrypt(String authorization) {
+        String token = validateTokenType(authorization);
         SecretKey accessTokenSecretKey = Keys.hmacShaKeyFor(jwtProperty.accessSecretKey().getBytes());
         try {
             Long id = Jwts.parser().verifyWith(accessTokenSecretKey)
@@ -34,9 +35,9 @@ class JwtTokenDecrypter implements TokenDecrypter {
         }
     }
 
-    private String validateTokenType(String authHeader) {
-        if (!authHeader.isBlank() && authHeader.startsWith(jwtProperty.bearerType())) {
-            return authHeader.substring(jwtProperty.bearerType().length() + 1);
+    private String validateTokenType(String authorization) {
+        if (authorization != null && authorization.startsWith(jwtProperty.bearerType())) {
+            return authorization.substring(jwtProperty.bearerType().length() + 1);
         }
         throw new JwtTokenException(JwtTokenExceptionType.NOT_BEARER_TYPE);
     }
