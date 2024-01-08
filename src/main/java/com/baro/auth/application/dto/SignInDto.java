@@ -4,6 +4,7 @@ public record SignInDto(
         String name,
         String email,
         String oauthId,
-        String oauthType
+        String oauthType,
+        String ipAddress
 ) {
 }

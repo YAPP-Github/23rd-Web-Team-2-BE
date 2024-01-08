@@ -15,7 +15,7 @@ public class FakeTokenCreator implements TokenCreator {
     }
 
     @Override
-    public Token createToken(Long id, Instant now) {
+    public Token createToken(Long id, String ipAddress, Instant now) {
         return new Token(accessToken, refreshToken);
     }
 }

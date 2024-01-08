@@ -1,12 +1,11 @@
-package com.baro.auth.application.oauth;
+package com.baro.auth.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.baro.auth.application.AuthService;
-import com.baro.auth.application.TokenTranslator;
 import com.baro.auth.application.dto.SignInDto;
 import com.baro.auth.domain.Token;
+import com.baro.auth.fake.jwt.FakeTokenStorage;
 import com.baro.auth.fake.jwt.FakeTokenTranslator;
 import com.baro.member.application.MemberCreator;
 import com.baro.member.domain.Member;
@@ -32,7 +31,8 @@ class AuthServiceTest {
         TokenTranslator tokenTranslator = new FakeTokenTranslator();
         FakeNicknameCreator fakeNicknameCreator = new FakeNicknameCreator(List.of("nickname1", "nickname2"));
         MemberCreator memberCreator = new MemberCreator(memberRepository, fakeNicknameCreator);
-        authService = new AuthService(memberRepository, memberCreator, tokenTranslator);
+        TokenStorage tokenStorage = new FakeTokenStorage();
+        authService = new AuthService(memberRepository, memberCreator, tokenTranslator, tokenStorage);
     }
 
     @Test
@@ -42,7 +42,8 @@ class AuthServiceTest {
         String email = "kakaoEmail@test.com";
         String oauthId = "kakaoId";
         String oauthType = "kakao";
-        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
+        String ipAddress = "127.0.0.1";
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType, ipAddress);
 
         // when
         authService.signIn(dto);
@@ -59,7 +60,8 @@ class AuthServiceTest {
         String email = "googleEmail@test.com";
         String oauthId = "googleId";
         String oauthType = "google";
-        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
+        String ipAddress = "127.0.0.1";
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType, ipAddress);
 
         // when
         authService.signIn(dto);
@@ -76,7 +78,8 @@ class AuthServiceTest {
         String email = "naverEmail@test.com";
         String oauthId = "naverId";
         String oauthType = "naver";
-        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
+        String ipAddress = "127.0.0.1";
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType, ipAddress);
 
         // when
         authService.signIn(dto);
@@ -93,13 +96,14 @@ class AuthServiceTest {
         String email = "kakaoEmail@test.com";
         String oauthId = "kakaoId";
         String oauthType = "kakao";
+        String ipAddress = "127.0.0.1";
         memberRepository.save(Member.builder()
                 .name(name)
                 .email(email)
                 .oAuthId(oauthId)
                 .oAuthServiceType(oauthType)
                 .build());
-        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType, ipAddress);
 
         // when
         authService.signIn(dto);
@@ -116,14 +120,14 @@ class AuthServiceTest {
         String email = "naverEmail@test.com";
         String oauthId = "naverId";
         String oauthType = "naver";
+        String ipAddress = "127.0.0.1";
         memberRepository.save(Member.builder()
                 .name(name)
                 .email(email)
                 .oAuthId(oauthId)
                 .oAuthServiceType(oauthType)
                 .build());
-
-        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType, ipAddress);
 
         // when
         authService.signIn(dto);
@@ -140,14 +144,14 @@ class AuthServiceTest {
         String email = "googleEmail@test.com";
         String oauthId = "googleId";
         String oauthType = "google";
+        String ipAddress = "127.0.0.1";
         memberRepository.save(Member.builder()
                 .name(name)
                 .email(email)
                 .oAuthId(oauthId)
                 .oAuthServiceType(oauthType)
                 .build());
-
-        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType, ipAddress);
 
         // when
         authService.signIn(dto);
@@ -164,7 +168,8 @@ class AuthServiceTest {
         String email = "kakaoEmail@test.com";
         String oauthId = "kakaoId";
         String oauthType = "kakao";
-        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
+        String ipAddress = "127.0.0.1";
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType, ipAddress);
 
         // when
         Token token = authService.signIn(dto);
@@ -180,7 +185,8 @@ class AuthServiceTest {
         String email = "kakaoEmail@test.com";
         String oauthId = "kakaoId";
         String oauthType = "kakao";
-        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
+        String ipAddress = "127.0.0.1";
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType, ipAddress);
 
         // when
         Token token = authService.signIn(dto);

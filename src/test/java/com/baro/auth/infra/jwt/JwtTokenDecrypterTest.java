@@ -32,10 +32,10 @@ class JwtTokenDecrypterTest {
     @Test
     void 정상적인_액세스토큰에_대해_복호화한다() {
         // given
-        Token token = creator.createToken(1L, timeServer.now());
+        Token token = creator.createToken(1L, "ipAddress", timeServer.now());
 
         // when
-        Long result = decrypter.decrypt("Bearer " + token.accessToken());
+        Long result = decrypter.decryptAccessToken("Bearer " + token.accessToken());
 
         // then
         assertThat(result).isEqualTo(1L);
@@ -44,20 +44,20 @@ class JwtTokenDecrypterTest {
     @Test
     void 토큰타입이_올바르지_않은경우_예외를_반환한다() {
         // given
-        Token token = creator.createToken(1L, timeServer.now());
+        Token token = creator.createToken(1L, "ipAddress", timeServer.now());
 
         // then
-        assertThrows(JwtTokenException.class, () -> decrypter.decrypt("BearBear " + token.accessToken()));
+        assertThrows(JwtTokenException.class, () -> decrypter.decryptAccessToken("BearBear " + token.accessToken()));
     }
 
     @Test
     void 토큰이_만료된_경우_예외를_반환한다() {
         // given
         jwtProperty = new JwtProperty("Bearer", accessTokenSecretKey, refreshTokenSecretKey, 1L, 1L);
-        Token token = creator.createToken(1L, timeServer.now());
+        Token token = creator.createToken(1L, "ipAddress", timeServer.now());
 
         // then
-        assertThrows(JwtTokenException.class, () -> decrypter.decrypt("BearBear " + token.accessToken()));
+        assertThrows(JwtTokenException.class, () -> decrypter.decryptAccessToken("BearBear " + token.accessToken()));
     }
 
     @Test
@@ -66,18 +66,18 @@ class JwtTokenDecrypterTest {
         Token token = new Token("invalidAccessToken", "invalidRefreshToken");
 
         // then
-        assertThrows(JwtTokenException.class, () -> decrypter.decrypt("BearBear " + token.accessToken()));
+        assertThrows(JwtTokenException.class, () -> decrypter.decryptAccessToken("BearBear " + token.accessToken()));
     }
 
     @Test
     void Authorization_헤더가_없는_경우_예외를_반환한다() {
         // then
-        assertThrows(JwtTokenException.class, () -> decrypter.decrypt(null));
+        assertThrows(JwtTokenException.class, () -> decrypter.decryptAccessToken(null));
     }
 
     @Test
     void Authorization_헤더가_비어있는_경우_예외를_반환한다() {
         // then
-        assertThrows(JwtTokenException.class, () -> decrypter.decrypt(" "));
+        assertThrows(JwtTokenException.class, () -> decrypter.decryptAccessToken(" "));
     }
 }

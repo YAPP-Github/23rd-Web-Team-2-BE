@@ -17,7 +17,7 @@ class JwtTokenCreator implements TokenCreator {
 
     private final JwtProperty jwtProperty;
 
-    public Token createToken(Long id, Instant now) {
+    public Token createToken(Long id, String ipAddress, Instant now) {
         SecretKey accessTokenSecretKey = Keys.hmacShaKeyFor(jwtProperty.accessSecretKey().getBytes());
         SecretKey refreshTokenSecretKey = Keys.hmacShaKeyFor(jwtProperty.refreshSecretKey().getBytes());
         Instant accessTokenExpiresIn = now.plusSeconds(jwtProperty.accessTokenExpireTime());
@@ -30,6 +30,7 @@ class JwtTokenCreator implements TokenCreator {
                 .signWith(accessTokenSecretKey)
                 .compact();
         String refreshToken = Jwts.builder()
+                .claim("ip", ipAddress)
                 .expiration(Date.from(refreshTokenExpiresIn))
                 .signWith(refreshTokenSecretKey)
                 .compact();

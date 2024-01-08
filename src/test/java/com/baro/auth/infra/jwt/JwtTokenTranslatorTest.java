@@ -17,22 +17,22 @@ class JwtTokenTranslatorTest {
 
     TimeServer timeServer = new FakeTimeServer(Instant.parse("2024-01-01T13:00:00.00Z"));
     TokenCreator tokenCreator = new FakeTokenCreator("accessToken", "refreshToken");
-    TokenDecrypter tokenDecrypter = new FakeTokenDecrypter(1L);
+    TokenDecrypter tokenDecrypter = new FakeTokenDecrypter(1L, "127.0.0.1");
     JwtTokenTranslator translator = new JwtTokenTranslator(timeServer, tokenCreator, tokenDecrypter);
 
     @Test
     void id가_주어지면_해당하는_토큰을_반환한다() {
         // when
-        Token token = translator.encode(1L);
+        Token token = translator.encode(1L, "127.0.0.1");
 
         // then
         assertEquals("accessToken", token.accessToken());
     }
 
     @Test
-    void 토큰이_주어지면_복호화한다() {
+    void 액세스_토큰이_주어지면_복호화한다() {
         // when
-        Long id = translator.decode("token");
+        Long id = translator.decodeAccessToken("token");
 
         // then
         assertEquals(1L, id);

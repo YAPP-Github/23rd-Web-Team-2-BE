@@ -4,14 +4,21 @@ import com.baro.auth.application.TokenDecrypter;
 
 public class FakeTokenDecrypter implements TokenDecrypter {
 
-    private final Long decryptedResult;
+    private final Long decryptedId;
+    private final String decryptedIpAddress;
 
-    public FakeTokenDecrypter(Long decryptedResult) {
-        this.decryptedResult = decryptedResult;
+    public FakeTokenDecrypter(Long decryptedId, String decryptedIpAddress) {
+        this.decryptedId = decryptedId;
+        this.decryptedIpAddress = decryptedIpAddress;
     }
 
     @Override
-    public Long decrypt(String authHeader) {
-        return decryptedResult;
+    public Long decryptAccessToken(String authorization) {
+        return decryptedId;
+    }
+
+    @Override
+    public String decryptRefreshToken(String authorization) {
+        return decryptedIpAddress;
     }
 }

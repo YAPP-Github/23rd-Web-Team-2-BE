@@ -27,6 +27,6 @@ public class AuthenticationArgumentResolver implements HandlerMethodArgumentReso
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String authHeader = webRequest.getHeader("Authorization");
-        return new AuthMember(translator.decode(authHeader));
+        return new AuthMember(translator.decodeAccessToken(authHeader));
     }
 }

@@ -2,5 +2,6 @@ package com.baro.auth.application;
 
 public interface TokenDecrypter {
 
-    Long decrypt(String authHeader);
+    Long decryptAccessToken(String accessToken);
+    String decryptRefreshToken(String refreshToken);
 }

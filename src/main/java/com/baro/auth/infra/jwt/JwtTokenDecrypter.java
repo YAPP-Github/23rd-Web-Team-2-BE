@@ -18,7 +18,8 @@ class JwtTokenDecrypter implements TokenDecrypter {
 
     private final JwtProperty jwtProperty;
 
-    public Long decrypt(String authorization) {
+    @Override
+    public Long decryptAccessToken(String authorization) {
         String token = validateTokenType(authorization);
         SecretKey accessTokenSecretKey = Keys.hmacShaKeyFor(jwtProperty.accessSecretKey().getBytes());
         try {
@@ -28,6 +29,23 @@ class JwtTokenDecrypter implements TokenDecrypter {
                     .getPayload()
                     .get("id", Long.class);
             return id;
+        } catch (ExpiredJwtException e) {
+            throw new JwtTokenException(JwtTokenExceptionType.EXPIRED_JWT_TOKEN);
+        } catch (JwtException e) {
+            throw new JwtTokenException(JwtTokenExceptionType.INVALID_JWT_TOKEN);
+        }
+    }
+
+    @Override
+    public String decryptRefreshToken(String refreshToken) {
+        SecretKey refreshTokenSecretKey = Keys.hmacShaKeyFor(jwtProperty.refreshSecretKey().getBytes());
+        try {
+            String ipAddress = Jwts.parser().verifyWith(refreshTokenSecretKey)
+                    .build()
+                    .parseSignedClaims(refreshToken)
+                    .getPayload()
+                    .get("ipAddress", String.class);
+            return ipAddress;
         } catch (ExpiredJwtException e) {
             throw new JwtTokenException(JwtTokenExceptionType.EXPIRED_JWT_TOKEN);
         } catch (JwtException e) {
