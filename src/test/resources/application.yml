@@ -18,3 +18,15 @@ spring:
 
     hibernate:
       ddl-auto: create
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+aws:
+  s3:
+    access_key: test-key
+    secret_key: test-secret-key
+    bucket: "bucket"
+    key: "test/directory/"

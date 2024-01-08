@@ -21,6 +21,12 @@ jobs:
           java-version: '17'
           cache: 'gradle'
 
+      - name: Install redis
+        run: sudo apt-get install -y redis-tools redis-server
+
+      - name: Verify that redis is up
+        run: redis-cli ping
+
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 

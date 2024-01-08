@@ -67,6 +67,12 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:' + jwtVersion
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:' + jwtVersion
 
+    // aws
+    implementation platform('software.amazon.awssdk:bom:2.15.0')
+    implementation 'software.amazon.awssdk:s3control'
+
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 tasks.named('test') {

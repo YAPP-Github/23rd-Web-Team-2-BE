@@ -7,6 +7,8 @@ services:
       - green
     ports:
       - "8080:8080"
+    volumes:
+      - access-log:/logs
     env_file:
       - .env
   baro-blue:
@@ -16,5 +18,15 @@ services:
       - blue
     ports:
       - "8081:8080"
+    volumes:
+      - access-log:/logs
     env_file:
       - .env
+
+volumes:
+  access-log:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./access-log
+      o: bind
