@@ -12,6 +12,9 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 
+import com.baro.auth.application.AuthService;
+import com.baro.auth.application.dto.SignInDto;
+import com.baro.auth.domain.Token;
 import com.baro.auth.infra.oauth.kakao.KakaoOAuthClient;
 import com.baro.auth.infra.oauth.kakao.KakaoRequestApi;
 import com.baro.auth.infra.oauth.kakao.dto.KakaoMemberResponse;
@@ -32,6 +35,9 @@ class OAuthApiDocumentTest extends RestApiDocumentationTest {
 
     @Autowired
     KakaoOAuthClient oAuthClient;
+
+    @Autowired
+    AuthService authService;
 
     @Test
     void oauth_sign_in_url() {
@@ -84,6 +90,38 @@ class OAuthApiDocumentTest extends RestApiDocumentationTest {
                 ))
                 .queryParam("authCode", "authCode")
                 .when().get(url, "kakao")
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @Test
+    void reissue() {
+        // given
+        var url = "/auth/reissue";
+        when(kakaoRequestApi.requestToken(anyMap()))
+                .thenReturn(new KakaoTokenResponse("Bearer", "accessToken", "idToken",
+                        1000, "refreshToken", 1000, "scope"));
+        when(kakaoRequestApi.requestMemberInfo(anyString()))
+                .thenReturn(new KakaoMemberResponse(1L, "nickname",
+                        new KakaoMemberResponse.Properties("nickname"),
+                        new KakaoAccount(false, new KakaoAccount.Profile("nickname"), "email")
+                ));
+        SignInDto dto = new SignInDto("name", "email", "1", "kakao", "127.0.0.1");
+        Token token = authService.signIn(dto);
+
+        // when
+        var response = given(requestSpec).log().all()
+                .filter(document(DEFAULT_REST_DOCS_PATH,
+                        queryParameters(
+                                parameterWithName("refreshToken").description("refreshToken")
+                        )
+                ))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.accessToken())
+                .queryParam("refreshToken", token.refreshToken())
+                .when().get(url)
                 .then().log().all()
                 .extract();
 

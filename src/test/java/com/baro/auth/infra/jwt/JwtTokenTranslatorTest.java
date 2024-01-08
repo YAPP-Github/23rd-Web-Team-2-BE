@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class JwtTokenTranslatorTest {
 
@@ -26,7 +26,7 @@ class JwtTokenTranslatorTest {
         Token token = translator.encode(1L, "127.0.0.1");
 
         // then
-        assertEquals("accessToken", token.accessToken());
+        assertThat(token.accessToken()).isEqualTo("accessToken");
     }
 
     @Test
@@ -35,6 +35,15 @@ class JwtTokenTranslatorTest {
         Long id = translator.decodeAccessToken("token");
 
         // then
-        assertEquals(1L, id);
+        assertThat(id).isEqualTo(1L);
+    }
+
+    @Test
+    void 리프레시_토큰이_주어지면_복호화한다() {
+        // when
+        String ip = translator.decodeRefreshToken("token");
+
+        // then
+        assertThat(ip).isEqualTo("127.0.0.1");
     }
 }

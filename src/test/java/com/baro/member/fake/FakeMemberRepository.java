@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class FakeMemberRepository implements MemberRepository {
 
-    private final AtomicLong id = new AtomicLong(0);
+    private final AtomicLong id = new AtomicLong(1);
     private final Map<Long, Member> members = new ConcurrentHashMap<>();
 
     @Override

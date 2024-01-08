@@ -2,9 +2,12 @@ package com.baro.auth.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.baro.auth.application.dto.SignInDto;
 import com.baro.auth.domain.Token;
+import com.baro.auth.exception.AuthException;
+import com.baro.auth.exception.jwt.JwtTokenException;
 import com.baro.auth.fake.jwt.FakeTokenStorage;
 import com.baro.auth.fake.jwt.FakeTokenTranslator;
 import com.baro.member.application.MemberCreator;
@@ -13,6 +16,7 @@ import com.baro.member.domain.MemberRepository;
 import com.baro.member.fake.FakeMemberRepository;
 import com.baro.member.fake.FakeNicknameCreator;
 import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -24,14 +28,17 @@ class AuthServiceTest {
 
     private AuthService authService;
     private MemberRepository memberRepository;
+    private TokenStorage tokenStorage;
+    private TokenTranslator tokenTranslator;
+    private MemberCreator memberCreator;
 
     @BeforeEach
-    void setUpOAuthClientRequest() {
+    void setUp() {
         memberRepository = new FakeMemberRepository();
-        TokenTranslator tokenTranslator = new FakeTokenTranslator();
+        tokenTranslator = new FakeTokenTranslator();
         FakeNicknameCreator fakeNicknameCreator = new FakeNicknameCreator(List.of("nickname1", "nickname2"));
-        MemberCreator memberCreator = new MemberCreator(memberRepository, fakeNicknameCreator);
-        TokenStorage tokenStorage = new FakeTokenStorage();
+        memberCreator = new MemberCreator(memberRepository, fakeNicknameCreator);
+        tokenStorage = new FakeTokenStorage(1000 * 60 * 60 * 24);
         authService = new AuthService(memberRepository, memberCreator, tokenTranslator, tokenStorage);
     }
 
@@ -193,5 +200,80 @@ class AuthServiceTest {
 
         // then
         assertEquals(token.refreshToken(), "refreshToken");
+    }
+
+    @Test
+    void 로그인시_리프레쉬_토큰을_저장한다() {
+        // given
+        String name = "kakaoName";
+        String email = "kakaoEmail@test.com";
+        String oauthId = "kakaoId";
+        String oauthType = "kakao";
+        String ipAddress = "127.0.0.1";
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType, ipAddress);
+
+        // when
+        Token token = authService.signIn(dto);
+
+        // then
+        assertEquals(tokenStorage.findRefreshToken(String.valueOf(1)), token.refreshToken());
+    }
+
+    @Test
+    void 정상적인_토큰의_재발급_요청() {
+        // given
+        String name = "kakaoName";
+        String email = "kakaoEmail@test.com";
+        String oauthId = "kakaoId";
+        String oauthType = "kakao";
+        String ipAddress = "127.0.0.1";
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType, ipAddress);
+        Token token = authService.signIn(dto);
+
+        // when
+        Token reissuedToken = authService.reissue(1L, token.refreshToken(), ipAddress);
+
+        // then
+        assertEquals("refreshToken", reissuedToken.refreshToken());
+    }
+
+    @Test
+    void 다른_ip주소에서_재발급_요청시_예외_발생() {
+        // given
+        String name = "kakaoName";
+        String email = "kakaoEmail@test.com";
+        String oauthId = "kakaoId";
+        String oauthType = "kakao";
+        String ipAddress = "127.0.0.1";
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType, ipAddress);
+        Token token = authService.signIn(dto);
+
+        // then
+        String anotherIpAddress = "192.168.1.1";
+        assertThrows(AuthException.class, () -> authService.reissue(1L, token.refreshToken(), anotherIpAddress));
+    }
+
+    @Test
+    void Refresh_Token_만료시_예외_발생() {
+        // given
+        String name = "kakaoName";
+        String email = "kakaoEmail@test.com";
+        String oauthId = "kakaoId";
+        String oauthType = "kakao";
+        String ipAddress = "127.0.0.1";
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType, ipAddress);
+        AuthService service = new AuthService(memberRepository, memberCreator, tokenTranslator, new FakeTokenStorage(0));
+        Token token = service.signIn(dto);
+
+        // then
+        assertThrows(AuthException.class, () -> authService.reissue(1L, token.refreshToken(), ipAddress));
+    }
+
+    @Test
+    void 클라이언트가_가지고있던_Refresh_Token이_서버에_존재하지_않을경우_예외_발생() {
+        Token token = new Token("accessToken", "refreshToken");
+        String ipAddress = "127.0.0.1";
+
+        assertThrows(AuthException.class, () -> authService.reissue(1L, token.refreshToken(), ipAddress));
     }
 }
