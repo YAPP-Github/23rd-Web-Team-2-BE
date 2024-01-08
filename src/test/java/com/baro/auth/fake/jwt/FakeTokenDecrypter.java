@@ -4,7 +4,7 @@ import com.baro.auth.application.TokenDecrypter;
 
 public class FakeTokenDecrypter implements TokenDecrypter {
 
-    private Long decryptedResult;
+    private final Long decryptedResult;
 
     public FakeTokenDecrypter(Long decryptedResult) {
         this.decryptedResult = decryptedResult;

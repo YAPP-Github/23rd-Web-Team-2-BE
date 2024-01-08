@@ -8,7 +8,7 @@ public record NaverOAuthProperty(
         String clientSecret,
         String signInAuthorizeUrl,
         String responseType,
-        String redirectUrl,
+        String redirectUri,
         String state,
         String grantType
 ) {

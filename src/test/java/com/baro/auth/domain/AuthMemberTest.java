@@ -1,15 +1,16 @@
 package com.baro.auth.domain;
 
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("NonAsciiCharacters")
 class AuthMemberTest {
 
     @Test
     void AuthMember_동일성_테스트() {
-        assertThat(new AuthMember(1000L)).isEqualTo(new AuthMember(1000L));
+        AuthMember actual = new AuthMember(1000L);
+        AuthMember expected = new AuthMember(1000L);
+        assertThat(actual).isEqualTo(expected);
     }
 }

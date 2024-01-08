@@ -1,21 +1,24 @@
 package com.baro.auth.infra.oauth.naver.config;
 
-import com.baro.auth.infra.oauth.naver.config.NaverOAuthProperty;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
 @SuppressWarnings("NonAsciiCharacters")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(webEnvironment = WebEnvironment.NONE)
 class NaverOAuthPropertyTest {
 
     @Autowired
-    private NaverOAuthProperty property;
+    private NaverOAuthProperty naverOAuthProperty;
 
     @Test
     void Naver_프로퍼티값_바인딩_테스트() {
-        assertNotNull(property.clientId());
+        assertThat(naverOAuthProperty)
+                .usingRecursiveAssertion()
+                .allFieldsSatisfy(Objects::nonNull);
     }
 }

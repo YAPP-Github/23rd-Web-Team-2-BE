@@ -1,15 +1,16 @@
 package com.baro.auth.domain;
 
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("NonAsciiCharacters")
 class TokenTest {
 
     @Test
     void token_동일성_테스트() {
-        assertThat(new Token("accessToken", "refreshToken"))
-                .isEqualTo(new Token("accessToken", "refreshToken"));
+        Token actual = new Token("accessToken", "refreshToken");
+        Token expected = new Token("accessToken", "refreshToken");
+        assertThat(actual).isEqualTo(expected);
     }
 }

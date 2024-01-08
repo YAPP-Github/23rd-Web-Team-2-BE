@@ -16,7 +16,7 @@ public record KakaoMemberResponse(
         return new OAuthMemberInfo(
                 String.valueOf(id),
                 properties.nickname,
-                "email" //TODO: 비즈앱 전환후 email 추가
+                kakaoAccount.email
         );
     }
 
@@ -25,11 +25,12 @@ public record KakaoMemberResponse(
     ) {
     }
 
-    record KakaoAccount(
+    public record KakaoAccount(
             Boolean profileNicknameNeedsAgreement,
-            Profile profile
+            Profile profile,
+            String email
     ) {
-        record Profile(
+        public record Profile(
                 String nickname
         ) {
         }
