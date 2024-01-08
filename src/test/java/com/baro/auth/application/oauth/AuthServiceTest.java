@@ -7,15 +7,13 @@ import com.baro.auth.application.AuthService;
 import com.baro.auth.application.TokenTranslator;
 import com.baro.auth.application.dto.SignInDto;
 import com.baro.auth.domain.Token;
-import com.baro.member.fake.FakeNicknameCreator;
 import com.baro.auth.fake.jwt.FakeTokenTranslator;
 import com.baro.member.application.MemberCreator;
 import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
 import com.baro.member.fake.FakeMemberRepository;
-
+import com.baro.member.fake.FakeNicknameCreator;
 import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -27,13 +25,13 @@ class AuthServiceTest {
 
     private AuthService authService;
     private MemberRepository memberRepository;
-    private MemberCreator memberCreator;
 
     @BeforeEach
     void setUpOAuthClientRequest() {
         memberRepository = new FakeMemberRepository();
         TokenTranslator tokenTranslator = new FakeTokenTranslator();
-        memberCreator = new MemberCreator(memberRepository, new FakeNicknameCreator(List.of("nickname1", "nickname2")));
+        FakeNicknameCreator fakeNicknameCreator = new FakeNicknameCreator(List.of("nickname1", "nickname2"));
+        MemberCreator memberCreator = new MemberCreator(memberRepository, fakeNicknameCreator);
         authService = new AuthService(memberRepository, memberCreator, tokenTranslator);
     }
 

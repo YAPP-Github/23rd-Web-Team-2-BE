@@ -8,22 +8,22 @@ import com.baro.auth.domain.oauth.OAuthServiceType;
 import com.baro.auth.fake.oauth.FakeGoogleOAuthClient;
 import com.baro.auth.fake.oauth.FakeKakaoOAuthClient;
 import com.baro.auth.fake.oauth.FakeNaverOAuthClient;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.Set;
 
 @SuppressWarnings("NonAsciiCharacters")
 class OAuthInfoProviderTest {
 
     private OAuthInfoProvider oAuthInfoProvider;
-    OAuthClient fakeKakaoOAuthClient = new FakeKakaoOAuthClient();
-    OAuthClient fakeNaverOAuthClient = new FakeNaverOAuthClient();
-    OAuthClient fakeGoogleOAuthClient = new FakeGoogleOAuthClient();
+    final OAuthClient fakeKakaoOAuthClient = new FakeKakaoOAuthClient();
+    final OAuthClient fakeNaverOAuthClient = new FakeNaverOAuthClient();
+    final OAuthClient fakeGoogleOAuthClient = new FakeGoogleOAuthClient();
 
     @BeforeEach
     void setUp() {
-        oAuthInfoProvider = new OAuthInfoProvider(Set.of(fakeKakaoOAuthClient, fakeNaverOAuthClient, fakeGoogleOAuthClient));
+        oAuthInfoProvider =
+                new OAuthInfoProvider(Set.of(fakeKakaoOAuthClient, fakeNaverOAuthClient, fakeGoogleOAuthClient));
     }
 
     @Test
