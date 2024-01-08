@@ -1,18 +1,17 @@
 package com.baro.auth.infra.oauth.naver;
 
-import com.baro.auth.infra.oauth.naver.config.NaverOAuthProperty;
-import com.baro.auth.infra.oauth.naver.dto.NaverMemberResponse;
-import com.baro.auth.infra.oauth.naver.dto.NaverTokenResponse;
 import com.baro.auth.application.oauth.OAuthClient;
 import com.baro.auth.application.oauth.dto.OAuthMemberInfo;
 import com.baro.auth.application.oauth.dto.OAuthTokenInfo;
 import com.baro.auth.domain.oauth.OAuthServiceType;
+import com.baro.auth.infra.oauth.naver.config.NaverOAuthProperty;
+import com.baro.auth.infra.oauth.naver.dto.NaverMemberResponse;
+import com.baro.auth.infra.oauth.naver.dto.NaverTokenResponse;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @Component
@@ -27,7 +26,7 @@ public class NaverOAuthClient implements OAuthClient {
                 .fromUriString(naverOAuthProperty.signInAuthorizeUrl())
                 .queryParam("response_type", naverOAuthProperty.responseType())
                 .queryParam("client_id", naverOAuthProperty.clientId())
-                .queryParam("redirect_uri", naverOAuthProperty.redirectUrl())
+                .queryParam("redirect_uri", naverOAuthProperty.redirectUri())
                 .queryParam("state", naverOAuthProperty.state())
                 .toUriString();
     }
@@ -51,7 +50,8 @@ public class NaverOAuthClient implements OAuthClient {
 
     @Override
     public OAuthMemberInfo requestMemberInfo(OAuthTokenInfo oAuthTokenInfo) {
-        NaverMemberResponse naverMemberResponse = naverRequestApi.requestMemberInfo("Bearer " + oAuthTokenInfo.accessToken());
+        NaverMemberResponse naverMemberResponse = naverRequestApi.requestMemberInfo(
+                "Bearer " + oAuthTokenInfo.accessToken());
         return naverMemberResponse.toOAuthMemberInfo();
     }
 }

@@ -8,7 +8,6 @@ public record GoogleOAuthProperty(
         String clientSecret,
         String signInAuthorizeUrl,
         String responseType,
-        String tokenUri,
         String redirectUri,
         String[] scope
 ) {
