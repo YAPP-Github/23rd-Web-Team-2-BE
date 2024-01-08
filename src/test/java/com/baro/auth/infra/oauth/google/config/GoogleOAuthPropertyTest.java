@@ -1,12 +1,12 @@
 package com.baro.auth.infra.oauth.google.config;
 
-import com.baro.auth.infra.oauth.google.config.GoogleOAuthProperty;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SuppressWarnings("NonAsciiCharacters")
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
@@ -17,6 +17,8 @@ class GoogleOAuthPropertyTest {
 
     @Test
     void Google_프로퍼티_값_바인딩_테스트() {
-        assertNotNull(googleOAuthProperty.clientId());
+        assertThat(googleOAuthProperty)
+                .usingRecursiveAssertion()
+                .allFieldsSatisfy(Objects::nonNull);
     }
 }
