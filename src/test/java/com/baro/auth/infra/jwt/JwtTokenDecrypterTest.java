@@ -23,10 +23,11 @@ class JwtTokenDecrypterTest {
     JwtTokenCreator creator;
     String accessTokenSecretKey = "testAccessTokenSecretKeytestAccessTokenSecretKey";
     String refreshTokenSecretKey = "testRefreshTokenSecrettestRefreshTokenSecret";
+    String ipSecretKey = "testIpScretKeytestIpScretKeytest";
 
     @BeforeEach
     void setUp() {
-        jwtProperty = new JwtProperty("Bearer", accessTokenSecretKey, refreshTokenSecretKey,
+        jwtProperty = new JwtProperty("Bearer", accessTokenSecretKey, refreshTokenSecretKey, ipSecretKey,
                 86400000L, 86400000L);
         timeServer = new FakeTimeServer(Instant.parse("2024-01-01T13:00:00.00Z"));
         decrypter = new JwtTokenDecrypter(jwtProperty);
@@ -62,7 +63,8 @@ class JwtTokenDecrypterTest {
         void 액세스_토큰이_만료된_경우_예외를_반환한다() {
             // given
             String ipAddress = "127.0.0.1";
-            jwtProperty = new JwtProperty("Bearer", accessTokenSecretKey, refreshTokenSecretKey, 1L, 1L);
+            jwtProperty = new JwtProperty("Bearer", accessTokenSecretKey, refreshTokenSecretKey, ipSecretKey,
+                    1L, 1L);
             TokenDecrypter tokenDecrypter = new JwtTokenDecrypter(jwtProperty);
             TokenCreator tokenCreator = new JwtTokenCreator(jwtProperty);
             Token token = tokenCreator.createToken(1L, ipAddress, timeServer.now());
@@ -112,7 +114,8 @@ class JwtTokenDecrypterTest {
         void 리프레시_토큰이_만료된_경우_예외를_반환한다() {
             // given
             String ipAddress = "127.0.0.1";
-            jwtProperty = new JwtProperty("Bearer", accessTokenSecretKey, refreshTokenSecretKey, 1L, 1L);
+            jwtProperty = new JwtProperty("Bearer", accessTokenSecretKey, refreshTokenSecretKey, ipSecretKey,
+                    1L, 1L);
             TokenDecrypter tokenDecrypter = new JwtTokenDecrypter(jwtProperty);
             TokenCreator tokenCreator = new JwtTokenCreator(jwtProperty);
             Token token = tokenCreator.createToken(1L, ipAddress, timeServer.now());

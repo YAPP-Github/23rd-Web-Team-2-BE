@@ -15,10 +15,12 @@ public class JwtTokenTranslator implements TokenTranslator {
     private final TimeServer timeServer;
     private final TokenCreator tokenCreator;
     private final TokenDecrypter tokenDecrypter;
+    private final IdentifierTranslator identifierTranslator;
 
     @Override
     public Token encode(Long id, String ipAddress) {
-        return tokenCreator.createToken(id, ipAddress, timeServer.now());
+        String encodedIpAddress = identifierTranslator.encode(ipAddress);
+        return tokenCreator.createToken(id, encodedIpAddress, timeServer.now());
     }
 
     @Override
@@ -28,6 +30,7 @@ public class JwtTokenTranslator implements TokenTranslator {
 
     @Override
     public String decodeRefreshToken(String token) {
-        return tokenDecrypter.decryptRefreshToken(token);
+        String decodedToken = tokenDecrypter.decryptRefreshToken(token);
+        return identifierTranslator.decode(decodedToken);
     }
 }
