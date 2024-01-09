@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.baro.auth.application.dto.SignInDto;
 import com.baro.auth.domain.Token;
 import com.baro.auth.exception.AuthException;
-import com.baro.auth.exception.jwt.JwtTokenException;
 import com.baro.auth.fake.jwt.FakeTokenStorage;
 import com.baro.auth.fake.jwt.FakeTokenTranslator;
 import com.baro.member.application.MemberCreator;
@@ -271,9 +270,11 @@ class AuthServiceTest {
 
     @Test
     void 클라이언트가_가지고있던_Refresh_Token이_서버에_존재하지_않을경우_예외_발생() {
+        // given
         Token token = new Token("accessToken", "refreshToken");
         String ipAddress = "127.0.0.1";
 
+        // then
         assertThrows(AuthException.class, () -> authService.reissue(1L, token.refreshToken(), ipAddress));
     }
 }

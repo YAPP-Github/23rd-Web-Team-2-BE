@@ -16,8 +16,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class FakeTokenStorage implements TokenStorage {
 
     private final Map<String, TokenInfo> tokens = new ConcurrentHashMap<>();
-    private TimeServer timeServer = new FakeTimeServer(Instant.now());
     private final long ttl;
+    private TimeServer timeServer = new FakeTimeServer(Instant.now());
 
     public FakeTokenStorage(long ttl) {
         this.ttl = ttl;
@@ -30,14 +30,15 @@ public class FakeTokenStorage implements TokenStorage {
 
     @Override
     public String findRefreshToken(String key) {
-        if(!tokens.containsKey("RT:" + key))
+        if (!tokens.containsKey("RT:" + key))
             throw new AuthException(AuthExceptionType.REFRESH_TOKEN_DOES_NOT_EXIST);
 
-        if(tokens.get("RT:" + key).expireTime().isAfter(timeServer.now()))
+        if (tokens.get("RT:" + key).expireTime().isAfter(timeServer.now()))
             return tokens.get("RT:" + key).token();
 
         else throw new JwtTokenException(JwtTokenExceptionType.EXPIRED_JWT_TOKEN);
     }
 
-    record TokenInfo(String token, Instant expireTime) {}
+    record TokenInfo(String token, Instant expireTime) {
+    }
 }

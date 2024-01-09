@@ -14,7 +14,7 @@ public class RequestResolver {
 
     public String extractIp() {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if(requestAttributes == null) throw new AuthException(AuthExceptionType.IP_ADDRESS_DOES_NOT_EXIST);
+        if (requestAttributes == null) throw new AuthException(AuthExceptionType.IP_ADDRESS_DOES_NOT_EXIST);
 
         HttpServletRequest request = requestAttributes.getRequest();
         String ip = request.getHeader("X-Forwarded-For");
