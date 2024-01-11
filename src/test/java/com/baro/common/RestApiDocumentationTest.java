@@ -3,11 +3,15 @@ package com.baro.common;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
 
+import com.baro.member.domain.MemberRepository;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
+import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -27,11 +31,15 @@ public abstract class RestApiDocumentationTest {
 
     protected RequestSpecification requestSpec;
 
+    @Autowired
+    protected MemberRepository memberRepository;
+
     @BeforeEach
     void setUp(final RestDocumentationContextProvider contextProvider) {
         RestAssured.port = port;
         requestSpec = new RequestSpecBuilder()
                 .setPort(port)
+                .setContentType(ContentType.JSON.withCharset(StandardCharsets.UTF_8))
                 .addFilter(documentationConfiguration(contextProvider)
                         .operationPreprocessors()
                         .withRequestDefaults(prettyPrint())
