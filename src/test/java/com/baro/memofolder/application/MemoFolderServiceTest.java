@@ -4,11 +4,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.baro.member.domain.MemberRepository;
+import com.baro.member.exception.MemberException;
+import com.baro.member.exception.MemberExceptionType;
 import com.baro.member.fake.FakeMemberRepository;
 import com.baro.member.fixture.MemberFixture;
 import com.baro.memofolder.application.dto.SaveMemoFolderCommand;
 import com.baro.memofolder.domain.MemoFolder;
 import com.baro.memofolder.domain.MemoFolderRepository;
+import com.baro.memofolder.exception.MemoFolderException;
+import com.baro.memofolder.exception.MemoFolderExceptionType;
 import com.baro.memofolder.fake.FakeMemoFolderRepository;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,8 +61,9 @@ class MemoFolderServiceTest {
 
         // when & then
         assertThatThrownBy(() -> memoFolderService.saveMemoFolder(command))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("존재하지 않는 회원입니다.");
+                .isInstanceOf(MemberException.class)
+                .extracting("exceptionType")
+                .isEqualTo(MemberExceptionType.NOT_EXIST_MEMBER);
     }
 
     @Test
@@ -71,7 +76,8 @@ class MemoFolderServiceTest {
 
         // when & then
         assertThatThrownBy(() -> memoFolderService.saveMemoFolder(command))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("이미 존재하는 폴더명입니다.");
+                .isInstanceOf(MemoFolderException.class)
+                .extracting("exceptionType")
+                .isEqualTo(MemoFolderExceptionType.NAME_DUPLICATION);
     }
 }
