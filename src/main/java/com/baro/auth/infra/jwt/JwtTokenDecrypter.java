@@ -52,10 +52,10 @@ class JwtTokenDecrypter implements TokenDecrypter {
     }
 
     private String validateTokenType(String authorization) {
-        if (authorization == null) throw new JwtTokenException(JwtTokenExceptionType.AUTHORIZATION_NULL);
-        if (authorization.startsWith(jwtProperty.bearerType())) {
+        if (authorization == null)
+            throw new JwtTokenException(JwtTokenExceptionType.AUTHORIZATION_NULL);
+        if (authorization.startsWith(jwtProperty.bearerType()))
             return authorization.substring(jwtProperty.bearerType().length() + 1);
-        }
         throw new JwtTokenException(JwtTokenExceptionType.NOT_BEARER_SCHEME);
     }
 }

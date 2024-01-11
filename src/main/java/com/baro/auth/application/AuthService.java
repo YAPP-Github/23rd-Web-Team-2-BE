@@ -32,9 +32,8 @@ public class AuthService {
     }
 
     public Token reissue(Long memberId, String refreshToken) {
-        tokenTranslator.decodeRefreshToken(refreshToken);
-
         validateRefreshToken(memberId, refreshToken);
+        tokenTranslator.decodeRefreshToken(refreshToken);
 
         Token newToken = tokenTranslator.encode(memberId);
 

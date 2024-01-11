@@ -1,8 +1,7 @@
 package com.baro.auth.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.baro.auth.application.dto.SignInDto;
 import com.baro.auth.domain.Token;
@@ -174,7 +173,7 @@ class AuthServiceTest {
         Token token = authService.signIn(dto);
 
         // then
-        assertEquals(token.accessToken(), "accessToken");
+        assertThat(token.accessToken()).isEqualTo("accessToken");
     }
 
     @Test
@@ -190,7 +189,7 @@ class AuthServiceTest {
         Token token = authService.signIn(dto);
 
         // then
-        assertEquals(token.refreshToken(), "refreshToken");
+        assertThat(token.refreshToken()).isEqualTo("refreshToken");
     }
 
     @Test
@@ -206,7 +205,7 @@ class AuthServiceTest {
         Token token = authService.signIn(dto);
 
         // then
-        assertEquals(tokenStorage.findRefreshToken(String.valueOf(1)), token.refreshToken());
+        assertThat(tokenStorage.findRefreshToken(String.valueOf(1))).isEqualTo(token.refreshToken());
     }
 
     @Test
@@ -223,7 +222,7 @@ class AuthServiceTest {
         Token reissuedToken = authService.reissue(1L, token.refreshToken());
 
         // then
-        assertEquals("refreshToken", reissuedToken.refreshToken());
+        assertThat("refreshToken").isEqualTo(reissuedToken.refreshToken());
     }
 
     @Test
@@ -238,7 +237,8 @@ class AuthServiceTest {
         Token token = service.signIn(dto);
 
         // then
-        assertThrows(AuthException.class, () -> authService.reissue(1L, token.refreshToken()));
+        assertThatThrownBy(() -> authService.reissue(1L, token.refreshToken()))
+                .isInstanceOf(AuthException.class);
     }
 
     @Test
@@ -247,6 +247,7 @@ class AuthServiceTest {
         Token token = new Token("accessToken", "refreshToken");
 
         // then
-        assertThrows(AuthException.class, () -> authService.reissue(1L, token.refreshToken()));
+        assertThatThrownBy(() -> authService.reissue(1L, token.refreshToken()))
+                .isInstanceOf(AuthException.class);
     }
 }
