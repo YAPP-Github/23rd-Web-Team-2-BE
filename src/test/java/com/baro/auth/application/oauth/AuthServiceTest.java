@@ -1,7 +1,6 @@
 package com.baro.auth.application.oauth;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.baro.auth.application.AuthService;
 import com.baro.auth.application.TokenTranslator;
@@ -13,6 +12,9 @@ import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
 import com.baro.member.fake.FakeMemberRepository;
 import com.baro.member.fake.FakeNicknameCreator;
+import com.baro.memofolder.domain.MemoFolder;
+import com.baro.memofolder.domain.MemoFolderRepository;
+import com.baro.memofolder.fake.FakeMemoFolderRepository;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -25,14 +27,17 @@ class AuthServiceTest {
 
     private AuthService authService;
     private MemberRepository memberRepository;
+    private MemoFolderRepository memoFolderRepository;
 
     @BeforeEach
     void setUpOAuthClientRequest() {
         memberRepository = new FakeMemberRepository();
         TokenTranslator tokenTranslator = new FakeTokenTranslator();
         FakeNicknameCreator fakeNicknameCreator = new FakeNicknameCreator(List.of("nickname1", "nickname2"));
+        memoFolderRepository = new FakeMemoFolderRepository();
         MemberCreator memberCreator = new MemberCreator(memberRepository, fakeNicknameCreator);
-        authService = new AuthService(memberRepository, memberCreator, tokenTranslator);
+
+        authService = new AuthService(memberRepository, memberCreator, tokenTranslator, memoFolderRepository);
     }
 
     @Test
@@ -170,7 +175,7 @@ class AuthServiceTest {
         Token token = authService.signIn(dto);
 
         // then
-        assertEquals(token.accessToken(), "accessToken");
+        assertThat(token.accessToken()).isEqualTo("accessToken");
     }
 
     @Test
@@ -186,6 +191,24 @@ class AuthServiceTest {
         Token token = authService.signIn(dto);
 
         // then
-        assertEquals(token.refreshToken(), "refreshToken");
+        assertThat(token.refreshToken()).isEqualTo("refreshToken");
+    }
+
+    @Test
+    void 최초_로그인시_기본_폴더를_생성한다() {
+        // given
+        String name = "kakaoName";
+        String email = "kakaoEmail@test.com";
+        String oauthId = "kakaoId";
+        String oauthType = "kakao";
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
+
+        // when
+        authService.signIn(dto);
+
+        // then
+        List<MemoFolder> all = memoFolderRepository.findAll();
+        assertThat(all).hasSize(1);
+        assertThat(all.get(0).getMember().getOAuthId()).isEqualTo(oauthId);
     }
 }
