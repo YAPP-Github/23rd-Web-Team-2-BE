@@ -44,4 +44,8 @@ public class MemoFolder extends BaseEntity {
     public static MemoFolder defaultFolder(Member member) {
         return new MemoFolder(member, DEFAULT_FOLDER_NAME);
     }
+
+    public static MemoFolder of(Member member, String name) {
+        return new MemoFolder(member, name);
+    }
 }
