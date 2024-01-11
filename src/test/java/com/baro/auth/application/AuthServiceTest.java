@@ -48,8 +48,7 @@ class AuthServiceTest {
         String email = "kakaoEmail@test.com";
         String oauthId = "kakaoId";
         String oauthType = "kakao";
-        String ipAddress = "127.0.0.1";
-        SignInDto dto = new SignInDto(name, email, oauthId, oauthType, ipAddress);
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
 
         // when
         authService.signIn(dto);
@@ -66,8 +65,7 @@ class AuthServiceTest {
         String email = "googleEmail@test.com";
         String oauthId = "googleId";
         String oauthType = "google";
-        String ipAddress = "127.0.0.1";
-        SignInDto dto = new SignInDto(name, email, oauthId, oauthType, ipAddress);
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
 
         // when
         authService.signIn(dto);
@@ -84,8 +82,7 @@ class AuthServiceTest {
         String email = "naverEmail@test.com";
         String oauthId = "naverId";
         String oauthType = "naver";
-        String ipAddress = "127.0.0.1";
-        SignInDto dto = new SignInDto(name, email, oauthId, oauthType, ipAddress);
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
 
         // when
         authService.signIn(dto);
@@ -102,14 +99,13 @@ class AuthServiceTest {
         String email = "kakaoEmail@test.com";
         String oauthId = "kakaoId";
         String oauthType = "kakao";
-        String ipAddress = "127.0.0.1";
         memberRepository.save(Member.builder()
                 .name(name)
                 .email(email)
                 .oAuthId(oauthId)
                 .oAuthServiceType(oauthType)
                 .build());
-        SignInDto dto = new SignInDto(name, email, oauthId, oauthType, ipAddress);
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
 
         // when
         authService.signIn(dto);
@@ -126,14 +122,13 @@ class AuthServiceTest {
         String email = "naverEmail@test.com";
         String oauthId = "naverId";
         String oauthType = "naver";
-        String ipAddress = "127.0.0.1";
         memberRepository.save(Member.builder()
                 .name(name)
                 .email(email)
                 .oAuthId(oauthId)
                 .oAuthServiceType(oauthType)
                 .build());
-        SignInDto dto = new SignInDto(name, email, oauthId, oauthType, ipAddress);
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
 
         // when
         authService.signIn(dto);
@@ -150,14 +145,13 @@ class AuthServiceTest {
         String email = "googleEmail@test.com";
         String oauthId = "googleId";
         String oauthType = "google";
-        String ipAddress = "127.0.0.1";
         memberRepository.save(Member.builder()
                 .name(name)
                 .email(email)
                 .oAuthId(oauthId)
                 .oAuthServiceType(oauthType)
                 .build());
-        SignInDto dto = new SignInDto(name, email, oauthId, oauthType, ipAddress);
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
 
         // when
         authService.signIn(dto);
@@ -174,8 +168,7 @@ class AuthServiceTest {
         String email = "kakaoEmail@test.com";
         String oauthId = "kakaoId";
         String oauthType = "kakao";
-        String ipAddress = "127.0.0.1";
-        SignInDto dto = new SignInDto(name, email, oauthId, oauthType, ipAddress);
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
 
         // when
         Token token = authService.signIn(dto);
@@ -191,8 +184,7 @@ class AuthServiceTest {
         String email = "kakaoEmail@test.com";
         String oauthId = "kakaoId";
         String oauthType = "kakao";
-        String ipAddress = "127.0.0.1";
-        SignInDto dto = new SignInDto(name, email, oauthId, oauthType, ipAddress);
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
 
         // when
         Token token = authService.signIn(dto);
@@ -208,8 +200,7 @@ class AuthServiceTest {
         String email = "kakaoEmail@test.com";
         String oauthId = "kakaoId";
         String oauthType = "kakao";
-        String ipAddress = "127.0.0.1";
-        SignInDto dto = new SignInDto(name, email, oauthId, oauthType, ipAddress);
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
 
         // when
         Token token = authService.signIn(dto);
@@ -225,31 +216,14 @@ class AuthServiceTest {
         String email = "kakaoEmail@test.com";
         String oauthId = "kakaoId";
         String oauthType = "kakao";
-        String ipAddress = "127.0.0.1";
-        SignInDto dto = new SignInDto(name, email, oauthId, oauthType, ipAddress);
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
         Token token = authService.signIn(dto);
 
         // when
-        Token reissuedToken = authService.reissue(1L, token.refreshToken(), ipAddress);
+        Token reissuedToken = authService.reissue(1L, token.refreshToken());
 
         // then
         assertEquals("refreshToken", reissuedToken.refreshToken());
-    }
-
-    @Test
-    void 다른_ip주소에서_재발급_요청시_예외_발생() {
-        // given
-        String name = "kakaoName";
-        String email = "kakaoEmail@test.com";
-        String oauthId = "kakaoId";
-        String oauthType = "kakao";
-        String ipAddress = "127.0.0.1";
-        SignInDto dto = new SignInDto(name, email, oauthId, oauthType, ipAddress);
-        Token token = authService.signIn(dto);
-
-        // then
-        String anotherIpAddress = "192.168.1.1";
-        assertThrows(AuthException.class, () -> authService.reissue(1L, token.refreshToken(), anotherIpAddress));
     }
 
     @Test
@@ -259,22 +233,20 @@ class AuthServiceTest {
         String email = "kakaoEmail@test.com";
         String oauthId = "kakaoId";
         String oauthType = "kakao";
-        String ipAddress = "127.0.0.1";
-        SignInDto dto = new SignInDto(name, email, oauthId, oauthType, ipAddress);
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
         AuthService service = new AuthService(memberRepository, memberCreator, tokenTranslator, new FakeTokenStorage(0));
         Token token = service.signIn(dto);
 
         // then
-        assertThrows(AuthException.class, () -> authService.reissue(1L, token.refreshToken(), ipAddress));
+        assertThrows(AuthException.class, () -> authService.reissue(1L, token.refreshToken()));
     }
 
     @Test
     void 클라이언트가_가지고있던_Refresh_Token이_서버에_존재하지_않을경우_예외_발생() {
         // given
         Token token = new Token("accessToken", "refreshToken");
-        String ipAddress = "127.0.0.1";
 
         // then
-        assertThrows(AuthException.class, () -> authService.reissue(1L, token.refreshToken(), ipAddress));
+        assertThrows(AuthException.class, () -> authService.reissue(1L, token.refreshToken()));
     }
 }

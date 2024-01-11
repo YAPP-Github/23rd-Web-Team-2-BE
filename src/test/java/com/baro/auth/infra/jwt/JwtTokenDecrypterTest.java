@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.time.Instant;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class JwtTokenDecrypterTest {
@@ -39,8 +40,7 @@ class JwtTokenDecrypterTest {
         @Test
         void 정상적인_액세스토큰에_대해_복호화한다() {
             // given
-            String ipAddress = "127.0.0.1";
-            Token token = creator.createToken(1L, ipAddress, timeServer.now());
+            Token token = creator.createToken(1L, timeServer.now());
 
             // when
             Long result = decrypter.decryptAccessToken("Bearer " + token.accessToken());
@@ -52,8 +52,7 @@ class JwtTokenDecrypterTest {
         @Test
         void 액세스_토큰_타입이_올바르지_않은경우_예외를_반환한다() {
             // given
-            String ipAddress = "127.0.0.1";
-            Token token = creator.createToken(1L, ipAddress, timeServer.now());
+            Token token = creator.createToken(1L, timeServer.now());
 
             // then
             assertThrows(JwtTokenException.class, () -> decrypter.decryptAccessToken("BearBear " + token.accessToken()));
@@ -62,12 +61,11 @@ class JwtTokenDecrypterTest {
         @Test
         void 액세스_토큰이_만료된_경우_예외를_반환한다() {
             // given
-            String ipAddress = "127.0.0.1";
             jwtProperty = new JwtProperty("Bearer", accessTokenSecretKey, refreshTokenSecretKey, ipSecretKey,
                     1L, 1L);
             TokenDecrypter tokenDecrypter = new JwtTokenDecrypter(jwtProperty);
             TokenCreator tokenCreator = new JwtTokenCreator(jwtProperty);
-            Token token = tokenCreator.createToken(1L, ipAddress, timeServer.now());
+            Token token = tokenCreator.createToken(1L, timeServer.now());
 
             // then
             assertThrows(JwtTokenException.class, () -> tokenDecrypter.decryptAccessToken("Bearer " + token.accessToken()));
@@ -100,25 +98,21 @@ class JwtTokenDecrypterTest {
         @Test
         void 정상적인_리프레시토큰에_대해_복호화한다() {
             // given
-            String ipAddress = "127.0.0.1";
-            Token token = creator.createToken(1L, ipAddress, timeServer.now());
+            Token token = creator.createToken(1L, timeServer.now());
 
             // when
-            String result = decrypter.decryptRefreshToken(token.refreshToken());
-
-            // then
-            assertThat(result).isEqualTo(ipAddress);
+            assertThatCode(() -> decrypter.decryptRefreshToken(token.refreshToken()))
+                    .doesNotThrowAnyException();
         }
 
         @Test
         void 리프레시_토큰이_만료된_경우_예외를_반환한다() {
             // given
-            String ipAddress = "127.0.0.1";
             jwtProperty = new JwtProperty("Bearer", accessTokenSecretKey, refreshTokenSecretKey, ipSecretKey,
                     1L, 1L);
             TokenDecrypter tokenDecrypter = new JwtTokenDecrypter(jwtProperty);
             TokenCreator tokenCreator = new JwtTokenCreator(jwtProperty);
-            Token token = tokenCreator.createToken(1L, ipAddress, timeServer.now());
+            Token token = tokenCreator.createToken(1L, timeServer.now());
 
             // then
             assertThrows(JwtTokenException.class, () -> tokenDecrypter.decryptRefreshToken(token.refreshToken()));

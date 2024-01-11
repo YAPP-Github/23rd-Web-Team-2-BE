@@ -6,7 +6,7 @@ import com.baro.auth.domain.Token;
 public class FakeTokenTranslator implements TokenTranslator {
 
     @Override
-    public Token encode(Long id, String ipAddress) {
+    public Token encode(Long id) {
         return new Token("accessToken", "refreshToken");
     }
 
@@ -16,7 +16,6 @@ public class FakeTokenTranslator implements TokenTranslator {
     }
 
     @Override
-    public String decodeRefreshToken(String token) {
-        return "127.0.0.1";
+    public void decodeRefreshToken(String token) {
     }
 }

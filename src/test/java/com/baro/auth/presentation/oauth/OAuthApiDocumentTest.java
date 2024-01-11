@@ -109,7 +109,7 @@ class OAuthApiDocumentTest extends RestApiDocumentationTest {
                         new KakaoMemberResponse.Properties("nickname"),
                         new KakaoAccount(false, new KakaoAccount.Profile("nickname"), "email")
                 ));
-        SignInDto dto = new SignInDto("name", "email", "1", "kakao", "127.0.0.1");
+        SignInDto dto = new SignInDto("name", "email", "1", "kakao");
         Token token = authService.signIn(dto);
 
         // when
