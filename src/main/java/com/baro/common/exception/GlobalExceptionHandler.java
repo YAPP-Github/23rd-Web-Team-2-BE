@@ -14,8 +14,8 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(value = {RequestException.class})
     ResponseEntity<RequestExceptionResponse> handleBadRequestException(RequestException e) {
-        log.warn("[handleRequestException throw RequestException : {}", e.getMessage());
         RequestExceptionType exceptionType = e.exceptionType();
+        log.warn("RequestException: [{}] - {}", exceptionType.errorCode(), exceptionType.errorMessage());
         return ResponseEntity.status(exceptionType.httpStatus())
                 .body(RequestExceptionResponse.from(exceptionType));
     }
