@@ -25,19 +25,18 @@ public class AuthService {
         Member member = memberRepository.findByOAuthIdAndOAuthServiceType(dto.oauthId(), dto.oauthType())
                 .orElseGet(() -> memberCreator.create(dto.name(), dto.email(), dto.oauthId(), dto.oauthType()));
 
-        Token token = tokenTranslator.encode(member.getId(), dto.ipAddress());
+        Token token = tokenTranslator.encode(member.getId());
 
         tokenStorage.saveRefreshToken(String.valueOf(member.getId()), token.refreshToken());
         return token;
     }
 
-    public Token reissue(Long memberId, String refreshToken, String requestIpAddress) {
-        String ipAddress = tokenTranslator.decodeRefreshToken(refreshToken);
+    public Token reissue(Long memberId, String refreshToken) {
+        tokenTranslator.decodeRefreshToken(refreshToken);
 
         validateRefreshToken(memberId, refreshToken);
-        validateIpAddress(ipAddress, requestIpAddress);
 
-        Token newToken = tokenTranslator.encode(memberId, requestIpAddress);
+        Token newToken = tokenTranslator.encode(memberId);
 
         tokenStorage.saveRefreshToken(String.valueOf(memberId), newToken.refreshToken());
         return newToken;
@@ -49,11 +48,6 @@ public class AuthService {
             throw new AuthException(AuthExceptionType.REFRESH_TOKEN_DOES_NOT_EXIST);
 
         if (!storedRefreshToken.equals(refreshToken))
-            throw new AuthException(AuthExceptionType.CLIENT_AND_TOKEN_IS_NOT_MATCH);
-    }
-
-    private void validateIpAddress(String ipAddress, String requestIpAddress) {
-        if (!ipAddress.equals(requestIpAddress))
             throw new AuthException(AuthExceptionType.CLIENT_AND_TOKEN_IS_NOT_MATCH);
     }
 }

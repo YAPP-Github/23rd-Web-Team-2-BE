@@ -6,5 +6,5 @@ import java.time.Instant;
 
 public interface TokenCreator {
 
-    Token createToken(Long id, String ipAddress, Instant now);
+    Token createToken(Long id, Instant now);
 }

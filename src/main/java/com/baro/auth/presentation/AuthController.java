@@ -26,7 +26,6 @@ public class AuthController {
 
     private final AuthService authService;
     private final OAuthInfoProvider oAuthInfoProvider;
-    private final RequestResolver requestResolver;
 
     @GetMapping("/oauth/{oauthType}")
     ResponseEntity<Void> signInRequestUrl(@PathVariable String oauthType) {
@@ -39,16 +38,14 @@ public class AuthController {
     @GetMapping("/oauth/sign-in/{oauthType}")
     ResponseEntity<Token> signIn(@PathVariable String oauthType, @RequestParam String authCode) {
         OAuthMemberInfo memberInfo = oAuthInfoProvider.getMemberInfo(oauthType, authCode);
-        String requestIpAddress = requestResolver.extractIp();
         Token token = authService.signIn(
-                new SignInDto(memberInfo.name(), memberInfo.email(), memberInfo.oAuthId(), oauthType, requestIpAddress));
+                new SignInDto(memberInfo.name(), memberInfo.email(), memberInfo.oAuthId(), oauthType));
         return ResponseEntity.ok().body(token);
     }
 
     @GetMapping("/reissue")
     ResponseEntity<Token> reissue(@RequestParam String refreshToken, AuthMember authMember) {
-        String requestIpAddress = requestResolver.extractIp();
-        Token token = authService.reissue(authMember.id(), refreshToken, requestIpAddress);
+        Token token = authService.reissue(authMember.id(), refreshToken);
         return ResponseEntity.ok().body(token);
     }
 }

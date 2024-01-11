@@ -4,7 +4,7 @@ import com.baro.auth.domain.Token;
 
 public interface TokenTranslator {
 
-    Token encode(Long id, String ipAddress);
+    Token encode(Long id);
     Long decodeAccessToken(String token);
-    String decodeRefreshToken(String token);
+    void decodeRefreshToken(String token);
 }

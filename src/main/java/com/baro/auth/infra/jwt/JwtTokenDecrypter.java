@@ -37,15 +37,13 @@ class JwtTokenDecrypter implements TokenDecrypter {
     }
 
     @Override
-    public String decryptRefreshToken(String refreshToken) {
-        SecretKey refreshTokenSecretKey = Keys.hmacShaKeyFor(jwtProperty.refreshSecretKey().getBytes());
+    public void decryptRefreshToken(String token) {
+        SecretKey accessTokenSecretKey = Keys.hmacShaKeyFor(jwtProperty.refreshSecretKey().getBytes());
         try {
-            String ipAddress = Jwts.parser().verifyWith(refreshTokenSecretKey)
+            Jwts.parser().verifyWith(accessTokenSecretKey)
                     .build()
-                    .parseSignedClaims(refreshToken)
-                    .getPayload()
-                    .get("identifier", String.class);
-            return ipAddress;
+                    .parseSignedClaims(token)
+                    .getPayload();
         } catch (ExpiredJwtException e) {
             throw new JwtTokenException(JwtTokenExceptionType.EXPIRED_JWT_TOKEN);
         } catch (JwtException e) {
