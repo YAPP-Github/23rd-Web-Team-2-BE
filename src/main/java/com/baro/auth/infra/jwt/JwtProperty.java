@@ -7,7 +7,6 @@ public record JwtProperty(
         String bearerType,
         String accessSecretKey,
         String refreshSecretKey,
-        String ipSecretKey,
         Long accessTokenExpireTime,
         Long refreshTokenExpireTime
 ) {
