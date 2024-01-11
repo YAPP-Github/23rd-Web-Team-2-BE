@@ -32,8 +32,8 @@ public class AuthService {
     }
 
     public Token reissue(Long memberId, String refreshToken) {
-        validateRefreshToken(memberId, refreshToken);
-        tokenTranslator.decodeRefreshToken(refreshToken);
+        validateRefreshTokenOwner(memberId, refreshToken);
+        tokenTranslator.validateRefreshToken(refreshToken);
 
         Token newToken = tokenTranslator.encode(memberId);
 
@@ -41,12 +41,13 @@ public class AuthService {
         return newToken;
     }
 
-    private void validateRefreshToken(Long memberId, String refreshToken) {
+    private void validateRefreshTokenOwner(Long memberId, String refreshToken) {
         String storedRefreshToken = tokenStorage.findRefreshToken(String.valueOf(memberId));
-        if (refreshToken == null)
+        if (refreshToken == null) {
             throw new AuthException(AuthExceptionType.REFRESH_TOKEN_DOES_NOT_EXIST);
-
-        if (!storedRefreshToken.equals(refreshToken))
+        }
+        if (!storedRefreshToken.equals(refreshToken)) {
             throw new AuthException(AuthExceptionType.CLIENT_AND_TOKEN_IS_NOT_MATCH);
+        }
     }
 }
