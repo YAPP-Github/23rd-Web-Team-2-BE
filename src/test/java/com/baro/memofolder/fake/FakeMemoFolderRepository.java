@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class FakeMemoFolderRepository implements MemoFolderRepository {
 
-    private final AtomicLong id = new AtomicLong(0);
+    private final AtomicLong id = new AtomicLong(1);
     private final Map<Long, MemoFolder> memoFolders = new ConcurrentHashMap<>();
 
     @Override
