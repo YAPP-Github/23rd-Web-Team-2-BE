@@ -110,6 +110,8 @@ swaggerSources {
 
 openapi3 {
     servers = [
+            { url = "https://dev.api.ba-ro.co.kr" },
+            { url = "https://api.ba-ro.co.kr" },
             { url = "http://localhost:8080" }
     ]
     title = "Baro API"
