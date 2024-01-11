@@ -16,6 +16,6 @@ public class FakeTokenTranslator implements TokenTranslator {
     }
 
     @Override
-    public void validateRefreshToken(String token) {
+    public void decodeRefreshToken(String token) {
     }
 }

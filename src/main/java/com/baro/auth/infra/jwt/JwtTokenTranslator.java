@@ -27,7 +27,7 @@ public class JwtTokenTranslator implements TokenTranslator {
     }
 
     @Override
-    public void validateRefreshToken(String token) {
+    public void decodeRefreshToken(String token) {
         tokenDecrypter.decryptRefreshToken(token);
     }
 }

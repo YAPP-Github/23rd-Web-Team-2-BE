@@ -6,5 +6,5 @@ public interface TokenTranslator {
 
     Token encode(Long id);
     Long decodeAccessToken(String token);
-    void validateRefreshToken(String token);
+    void decodeRefreshToken(String token);
 }

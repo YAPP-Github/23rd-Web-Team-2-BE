@@ -40,8 +40,8 @@ class JwtTokenTranslatorTest {
     }
 
     @Test
-    void 리프레시_토큰이_주어지면_복호화한다() {
-        assertThatCode(() -> translator.validateRefreshToken("token"))
+    void 정상적인_리프레시_토큰_복호화중_토큰만료_등의_예외가_발생하지_않는다() {
+        assertThatCode(() -> translator.decodeRefreshToken("token"))
                 .doesNotThrowAnyException();
     }
 }
