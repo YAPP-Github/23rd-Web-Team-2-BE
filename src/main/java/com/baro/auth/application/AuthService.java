@@ -24,14 +24,14 @@ public class AuthService {
 
     public Token signIn(SignInDto dto) {
         Member member = memberRepository.findByOAuthIdAndOAuthServiceType(dto.oauthId(), dto.oauthType())
-                .orElseGet(saveNemMember(dto));
+                .orElseGet(saveNewMember(dto));
 
         Token token = tokenTranslator.encode(member.getId());
         // TODO refresh token 저장
         return token;
     }
 
-    private Supplier<Member> saveNemMember(final SignInDto dto) {
+    private Supplier<Member> saveNewMember(final SignInDto dto) {
         return () -> {
             Member member = memberCreator.create(dto.name(), dto.email(), dto.oauthId(), dto.oauthType());
             memoFolderRepository.save(MemoFolder.defaultFolder(member));
