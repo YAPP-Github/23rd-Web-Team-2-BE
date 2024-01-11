@@ -32,7 +32,7 @@ public class AuthService {
     }
 
     public Token reissue(Long memberId, String refreshToken) {
-        tokenTranslator.decodeRefreshToken(refreshToken);
+        tokenTranslator.validateRefreshToken(refreshToken);
 
         validateRefreshToken(memberId, refreshToken);
 

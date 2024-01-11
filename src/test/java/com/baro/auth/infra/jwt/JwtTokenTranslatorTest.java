@@ -41,7 +41,7 @@ class JwtTokenTranslatorTest {
 
     @Test
     void 리프레시_토큰이_주어지면_복호화한다() {
-        assertThatCode(() -> translator.decodeRefreshToken("token"))
+        assertThatCode(() -> translator.validateRefreshToken("token"))
                 .doesNotThrowAnyException();
     }
 }
