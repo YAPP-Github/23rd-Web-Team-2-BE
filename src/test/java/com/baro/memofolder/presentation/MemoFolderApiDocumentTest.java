@@ -9,13 +9,16 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.requestHe
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 
 import com.baro.auth.application.TokenTranslator;
 import com.baro.common.RestApiDocumentationTest;
 import com.baro.member.domain.Member;
 import com.baro.member.fixture.MemberFixture;
+import com.baro.memofolder.domain.MemoFolder;
 import com.baro.memofolder.presentation.dto.SaveMemoFolderRequest;
 import java.nio.charset.StandardCharsets;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
@@ -27,6 +30,11 @@ class MemoFolderApiDocumentTest extends RestApiDocumentationTest {
 
     @MockBean
     TokenTranslator tokenTranslator;
+
+    @BeforeEach
+    void cleanUp() {
+        dataCleaner.cleanUp();
+    }
 
     @Test
     void create_memo_folder() {
@@ -59,7 +67,72 @@ class MemoFolderApiDocumentTest extends RestApiDocumentationTest {
         assertThat(location).isNotNull();
     }
 
+    @Test
+    void create_memo_folder_duplication() {
+        // given
+        var url = "/memo-folders";
+        String duplicationName = "회사생활👔";
+        var request = new SaveMemoFolderRequest(duplicationName);
+        Member savedMember = memberRepository.save(MemberFixture.memberWithNickname("바로"));
+        setTokenDecrypt(savedMember);
+        memoFolderRepository.save(MemoFolder.of(savedMember, duplicationName));
+
+        // when
+        var response = given(requestSpec).log().all()
+                .filter(document(DEFAULT_REST_DOCS_PATH,
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("folderName").description("폴더 이름")
+                        ),
+                        responseFields(
+                                fieldWithPath("errorCode").description("에러 코드"),
+                                fieldWithPath("errorMessage").description("에러 메시지")
+                        ))
+                ).header(HttpHeaders.AUTHORIZATION, SET_UP_ACCESS_TOKEN).body(request)
+                .when().post(url)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void create_memo_folder_not_exist_member() {
+        // given
+        var url = "/memo-folders";
+        var request = new SaveMemoFolderRequest("회사생활👔");
+        setTokenDecryptAsNotExistMember();
+
+        // when
+        var response = given(requestSpec).log().all()
+                .filter(document(DEFAULT_REST_DOCS_PATH,
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("folderName").description("폴더 이름")
+                        ),
+                        responseFields(
+                                fieldWithPath("errorCode").description("에러 코드"),
+                                fieldWithPath("errorMessage").description("에러 메시지")
+                        ))
+                ).header(HttpHeaders.AUTHORIZATION, SET_UP_ACCESS_TOKEN).body(request)
+                .when().post(url)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     void setTokenDecrypt(Member savedMember) {
         given(tokenTranslator.decode(SET_UP_ACCESS_TOKEN)).willReturn(savedMember.getId());
+    }
+
+    void setTokenDecryptAsNotExistMember() {
+        given(tokenTranslator.decode(SET_UP_ACCESS_TOKEN)).willReturn(9999L);
     }
 }

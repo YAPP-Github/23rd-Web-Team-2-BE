@@ -3,7 +3,9 @@ package com.baro.common;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
 
+import com.baro.common.data.JpaDataCleaner;
 import com.baro.member.domain.MemberRepository;
+import com.baro.memofolder.domain.MemoFolderRepository;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
@@ -32,7 +34,11 @@ public abstract class RestApiDocumentationTest {
     protected RequestSpecification requestSpec;
 
     @Autowired
+    protected JpaDataCleaner dataCleaner;
+    @Autowired
     protected MemberRepository memberRepository;
+    @Autowired
+    protected MemoFolderRepository memoFolderRepository;
 
     @BeforeEach
     void setUp(final RestDocumentationContextProvider contextProvider) {
