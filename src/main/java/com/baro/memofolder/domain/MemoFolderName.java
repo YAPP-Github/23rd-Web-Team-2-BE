@@ -1,5 +1,6 @@
 package com.baro.memofolder.domain;
 
+import com.baro.common.utils.EmojiUtils;
 import com.baro.memofolder.exception.MemoFolderException;
 import com.baro.memofolder.exception.MemoFolderExceptionType;
 import jakarta.persistence.Column;
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class MemoFolderName {
 
     private static final String DEFAULT_FOLDER_NAME = "기본";
-    private static final int MAX_FOLDER_SIZE = 20;
+    private static final int MAX_FOLDER_SIZE = 10;
 
     @Column(nullable = false)
     private String name;
@@ -27,7 +28,7 @@ public class MemoFolderName {
     }
 
     private void validate(String name) {
-        if (name.length() > MAX_FOLDER_SIZE) {
+        if (EmojiUtils.calculateLengthWithEmojis(name) > MAX_FOLDER_SIZE) {
             throw new MemoFolderException(MemoFolderExceptionType.OVER_MAX_SIZE_NAME);
         }
     }
