@@ -11,6 +11,7 @@ public enum JwtTokenExceptionType implements RequestExceptionType {
     INVALID_JWT_TOKEN("유효하지 않은 토큰 입니다.", HttpStatus.BAD_REQUEST),
     NOT_BEARER_SCHEME("Bearer 타입이 아닙니다.", HttpStatus.BAD_REQUEST),
     AUTHORIZATION_NULL("Authorization 헤더가 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
+    REFRESH_TOKEN_NULL("Refresh Token이 존재하지 않습니다.", HttpStatus.BAD_REQUEST)
     ;
 
     private final String errorMessage;

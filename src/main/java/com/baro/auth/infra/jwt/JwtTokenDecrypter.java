@@ -38,11 +38,12 @@ class JwtTokenDecrypter implements TokenDecrypter {
 
     @Override
     public void decryptRefreshToken(String token) {
-        SecretKey accessTokenSecretKey = Keys.hmacShaKeyFor(jwtProperty.refreshSecretKey().getBytes());
+        String refreshToken = validateTokenType(token);
+        SecretKey refreshTokenSecretKey = Keys.hmacShaKeyFor(jwtProperty.refreshSecretKey().getBytes());
         try {
-            Jwts.parser().verifyWith(accessTokenSecretKey)
+            Jwts.parser().verifyWith(refreshTokenSecretKey)
                     .build()
-                    .parseSignedClaims(token)
+                    .parseSignedClaims(refreshToken)
                     .getPayload();
         } catch (ExpiredJwtException e) {
             throw new JwtTokenException(JwtTokenExceptionType.EXPIRED_JWT_TOKEN);
@@ -52,10 +53,12 @@ class JwtTokenDecrypter implements TokenDecrypter {
     }
 
     private String validateTokenType(String authorization) {
-        if (authorization == null)
+        if (authorization == null) {
             throw new JwtTokenException(JwtTokenExceptionType.AUTHORIZATION_NULL);
-        if (authorization.startsWith(jwtProperty.bearerType()))
+        }
+        if (authorization.startsWith(jwtProperty.bearerType())) {
             return authorization.substring(jwtProperty.bearerType().length() + 1);
+        }
         throw new JwtTokenException(JwtTokenExceptionType.NOT_BEARER_SCHEME);
     }
 }

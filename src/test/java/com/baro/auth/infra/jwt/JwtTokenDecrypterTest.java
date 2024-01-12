@@ -92,13 +92,14 @@ class JwtTokenDecrypterTest {
 
     @Nested
     class RefreshToken {
+
         @Test
         void 정상적인_리프레시토큰에_대해_복호화한다() {
             // given
             Token token = creator.createToken(1L, timeServer.now());
 
-            // when
-            assertThatCode(() -> decrypter.decryptRefreshToken(token.refreshToken()))
+            // then
+            assertThatCode(() -> decrypter.decryptRefreshToken("Bearer " + token.refreshToken()))
                     .doesNotThrowAnyException();
         }
 
@@ -121,6 +122,15 @@ class JwtTokenDecrypterTest {
 
             // then
             assertThrows(JwtTokenException.class, () -> decrypter.decryptRefreshToken(token.refreshToken()));
+        }
+
+        @Test
+        void 리프레시_토큰이_Bearer_타입이_아닌경우_예외를_반환한다() {
+            // given
+            Token token = creator.createToken(1L, timeServer.now());
+
+            // then
+            assertThrows(JwtTokenException.class, () -> decrypter.decryptAccessToken("Basic " + token.accessToken()));
         }
     }
 }

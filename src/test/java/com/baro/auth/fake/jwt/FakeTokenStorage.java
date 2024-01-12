@@ -30,11 +30,11 @@ public class FakeTokenStorage implements TokenStorage {
 
     @Override
     public String findRefreshToken(String key) {
-        if (tokens.get("RT:" + key).expireTime().isAfter(timeServer.now())){
-            return tokens.get("RT:" + key).token();
-        }
         if (!tokens.containsKey("RT:" + key)) {
             throw new AuthException(AuthExceptionType.REFRESH_TOKEN_DOES_NOT_EXIST);
+        }
+        if (tokens.get("RT:" + key).expireTime().isAfter(timeServer.now())){
+            return tokens.get("RT:" + key).token();
         }
         throw new JwtTokenException(JwtTokenExceptionType.EXPIRED_JWT_TOKEN);
     }

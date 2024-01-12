@@ -43,7 +43,7 @@ public class AuthService {
 
     private void validateRefreshTokenOwner(Long memberId, String refreshToken) {
         String storedRefreshToken = tokenStorage.findRefreshToken(String.valueOf(memberId));
-        if (refreshToken == null) {
+        if (storedRefreshToken == null) {
             throw new AuthException(AuthExceptionType.REFRESH_TOKEN_DOES_NOT_EXIST);
         }
         if (!storedRefreshToken.equals(refreshToken)) {
