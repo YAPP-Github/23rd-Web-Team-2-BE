@@ -7,10 +7,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthException extends RequestException {
 
-    private final AuthExceptionType authExceptionType;
+    private final AuthExceptionType exceptionType;
 
     @Override
     public RequestExceptionType exceptionType() {
-        return authExceptionType;
+        return exceptionType;
     }
 }

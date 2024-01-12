@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.baro.auth.application.dto.SignInDto;
 import com.baro.auth.domain.Token;
 import com.baro.auth.exception.AuthException;
+import com.baro.auth.exception.AuthExceptionType;
 import com.baro.auth.fake.jwt.FakeTokenStorage;
 import com.baro.auth.fake.jwt.FakeTokenTranslator;
 import com.baro.member.application.MemberCreator;
@@ -13,6 +14,9 @@ import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
 import com.baro.member.fake.FakeMemberRepository;
 import com.baro.member.fake.FakeNicknameCreator;
+import com.baro.memofolder.domain.MemoFolder;
+import com.baro.memofolder.domain.MemoFolderRepository;
+import com.baro.memofolder.fake.FakeMemoFolderRepository;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +33,7 @@ class AuthServiceTest {
     private TokenStorage tokenStorage;
     private TokenTranslator tokenTranslator;
     private MemberCreator memberCreator;
+    private MemoFolderRepository memoFolderRepository;
 
     @BeforeEach
     void setUp() {
@@ -37,7 +42,8 @@ class AuthServiceTest {
         FakeNicknameCreator fakeNicknameCreator = new FakeNicknameCreator(List.of("nickname1", "nickname2"));
         memberCreator = new MemberCreator(memberRepository, fakeNicknameCreator);
         tokenStorage = new FakeTokenStorage(1000 * 60 * 60 * 24);
-        authService = new AuthService(memberRepository, memberCreator, tokenTranslator, tokenStorage);
+        memoFolderRepository = new FakeMemoFolderRepository();
+        authService = new AuthService(memberRepository, memberCreator, tokenTranslator, tokenStorage, memoFolderRepository);
     }
 
     @Test
@@ -233,12 +239,15 @@ class AuthServiceTest {
         String oauthId = "kakaoId";
         String oauthType = "kakao";
         SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
-        AuthService service = new AuthService(memberRepository, memberCreator, tokenTranslator, new FakeTokenStorage(0));
+        AuthService service = new AuthService(memberRepository, memberCreator, tokenTranslator,
+                new FakeTokenStorage(0), memoFolderRepository);
         Token token = service.signIn(dto);
 
         // then
         assertThatThrownBy(() -> authService.reissue(1L, token.refreshToken()))
-                .isInstanceOf(AuthException.class);
+                .isInstanceOf(AuthException.class)
+                .extracting("exceptionType")
+                .isEqualTo(AuthExceptionType.REFRESH_TOKEN_DOES_NOT_EXIST);
     }
 
     @Test
@@ -248,6 +257,26 @@ class AuthServiceTest {
 
         // then
         assertThatThrownBy(() -> authService.reissue(1L, token.refreshToken()))
-                .isInstanceOf(AuthException.class);
+                .isInstanceOf(AuthException.class)
+                .extracting("exceptionType")
+                .isEqualTo(AuthExceptionType.REFRESH_TOKEN_DOES_NOT_EXIST);
+    }
+
+    @Test
+    void 최초_로그인시_기본_폴더를_생성한다() {
+        // given
+        String name = "kakaoName";
+        String email = "kakaoEmail@test.com";
+        String oauthId = "kakaoId";
+        String oauthType = "kakao";
+        SignInDto dto = new SignInDto(name, email, oauthId, oauthType);
+
+        // when
+        authService.signIn(dto);
+
+        // then
+        List<MemoFolder> all = memoFolderRepository.findAll();
+        assertThat(all).hasSize(1);
+        assertThat(all.get(0).getMember().getOAuthId()).isEqualTo(oauthId);
     }
 }

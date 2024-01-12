@@ -7,6 +7,9 @@ import com.baro.auth.exception.AuthExceptionType;
 import com.baro.member.application.MemberCreator;
 import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
+import com.baro.memofolder.domain.MemoFolder;
+import com.baro.memofolder.domain.MemoFolderRepository;
+import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,10 +23,11 @@ public class AuthService {
     private final MemberCreator memberCreator;
     private final TokenTranslator tokenTranslator;
     private final TokenStorage tokenStorage;
+    private final MemoFolderRepository memoFolderRepository;
 
     public Token signIn(SignInDto dto) {
         Member member = memberRepository.findByOAuthIdAndOAuthServiceType(dto.oauthId(), dto.oauthType())
-                .orElseGet(() -> memberCreator.create(dto.name(), dto.email(), dto.oauthId(), dto.oauthType()));
+                .orElseGet(saveNewMember(dto));
 
         Token token = tokenTranslator.encode(member.getId());
 
@@ -39,6 +43,14 @@ public class AuthService {
 
         tokenStorage.saveRefreshToken(String.valueOf(memberId), newToken.refreshToken());
         return newToken;
+    }
+
+    private Supplier<Member> saveNewMember(final SignInDto dto) {
+        return () -> {
+            Member member = memberCreator.create(dto.name(), dto.email(), dto.oauthId(), dto.oauthType());
+            memoFolderRepository.save(MemoFolder.defaultFolder(member));
+            return memberRepository.save(member);
+        };
     }
 
     private void validateRefreshTokenOwner(Long memberId, String refreshToken) {

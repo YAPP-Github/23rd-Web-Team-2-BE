@@ -7,10 +7,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtTokenException extends RequestException {
 
-    private final JwtTokenExceptionType jwtTokenExceptionType;
+    private final JwtTokenExceptionType exceptionType;
 
     @Override
     public RequestExceptionType exceptionType() {
-        return jwtTokenExceptionType;
+        return exceptionType;
     }
 }

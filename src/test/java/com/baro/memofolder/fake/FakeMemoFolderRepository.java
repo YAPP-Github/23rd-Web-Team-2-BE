@@ -1,0 +1,35 @@
+package com.baro.memofolder.fake;
+
+import com.baro.memofolder.domain.MemoFolder;
+import com.baro.memofolder.domain.MemoFolderRepository;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+
+public class FakeMemoFolderRepository implements MemoFolderRepository {
+
+    private final AtomicLong id = new AtomicLong(1);
+    private final Map<Long, MemoFolder> memoFolders = new ConcurrentHashMap<>();
+
+    @Override
+    public MemoFolder save(MemoFolder memoFolder) {
+        if (Objects.isNull(memoFolder.getId())) {
+            MemoFolder newMemoFolder = new MemoFolder(
+                    id.getAndIncrement(),
+                    memoFolder.getMember(),
+                    memoFolder.getName()
+            );
+            memoFolders.put(newMemoFolder.getId(), newMemoFolder);
+            return newMemoFolder;
+        }
+        memoFolders.put(memoFolder.getId(), memoFolder);
+        return memoFolder;
+    }
+
+    @Override
+    public List<MemoFolder> findAll() {
+        return List.copyOf(memoFolders.values());
+    }
+}
