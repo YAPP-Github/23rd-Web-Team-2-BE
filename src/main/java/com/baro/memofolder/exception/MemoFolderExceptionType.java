@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 public enum MemoFolderExceptionType implements RequestExceptionType {
 
     NAME_DUPLICATION("MF01", "중복된 이름의 폴더가 존재합니다.", HttpStatus.BAD_REQUEST),
+    OVER_MAX_SIZE("MF02", "폴더의 최대 개수를 초과하였습니다.", HttpStatus.BAD_REQUEST),
     ;
 
     private final String errorCode;
