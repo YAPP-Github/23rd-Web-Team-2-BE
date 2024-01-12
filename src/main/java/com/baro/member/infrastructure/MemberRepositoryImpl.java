@@ -2,6 +2,8 @@ package com.baro.member.infrastructure;
 
 import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
+import com.baro.member.exception.MemberException;
+import com.baro.member.exception.MemberExceptionType;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -36,5 +38,11 @@ public class MemberRepositoryImpl implements MemberRepository {
     @Override
     public Optional<Member> findById(Long memberId) {
         return memberJpaRepository.findById(memberId);
+    }
+
+    @Override
+    public Member getById(Long memberId) {
+        return this.findById(memberId)
+                .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_EXIST_MEMBER));
     }
 }

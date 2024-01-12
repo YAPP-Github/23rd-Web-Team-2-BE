@@ -2,8 +2,6 @@ package com.baro.memofolder.application;
 
 import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
-import com.baro.member.exception.MemberException;
-import com.baro.member.exception.MemberExceptionType;
 import com.baro.memofolder.application.dto.GetMemoFolderResult;
 import com.baro.memofolder.application.dto.SaveMemoFolderCommand;
 import com.baro.memofolder.application.dto.SaveMemoFolderResult;
@@ -27,8 +25,7 @@ public class MemoFolderService {
     public SaveMemoFolderResult saveMemoFolder(SaveMemoFolderCommand command) {
         Long memberId = command.memberId();
         String folderName = command.name();
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_EXIST_MEMBER));
+        Member member = memberRepository.getById(memberId);
         validateDuplicatedFolderName(member, folderName);
 
         MemoFolder savedMemoFolder = memoFolderRepository.save(MemoFolder.of(member, folderName));
@@ -42,8 +39,7 @@ public class MemoFolderService {
     }
 
     public List<GetMemoFolderResult> getMemoFolder(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_EXIST_MEMBER));
+        Member member = memberRepository.getById(memberId);
         List<MemoFolder> memoFolders = memoFolderRepository.findAllByMember(member);
         return memoFolders.stream()
                 .map(GetMemoFolderResult::from)
