@@ -15,7 +15,7 @@ public class RedisTokenStorage implements TokenStorage {
     private final JwtProperty jwtProperty;
 
     public void saveRefreshToken(String key, String value) {
-        redisTemplate.opsForValue().set("RT:" + key, jwtProperty.bearerType() + " " + value,
+        redisTemplate.opsForValue().set("RT:" + key, jwtProperty.scheme() + " " + value,
                 jwtProperty.refreshTokenExpireTime(), TimeUnit.MILLISECONDS);
     }
 

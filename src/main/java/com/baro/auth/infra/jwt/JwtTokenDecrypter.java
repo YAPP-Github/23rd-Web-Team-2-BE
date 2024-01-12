@@ -56,8 +56,8 @@ class JwtTokenDecrypter implements TokenDecrypter {
         if (authorization == null) {
             throw new JwtTokenException(JwtTokenExceptionType.AUTHORIZATION_NULL);
         }
-        if (authorization.startsWith(jwtProperty.bearerType())) {
-            return authorization.substring(jwtProperty.bearerType().length() + 1);
+        if (authorization.startsWith(jwtProperty.scheme())) {
+            return authorization.substring(jwtProperty.scheme().length() + 1);
         }
         throw new JwtTokenException(JwtTokenExceptionType.NOT_BEARER_SCHEME);
     }
