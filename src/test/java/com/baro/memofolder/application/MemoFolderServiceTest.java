@@ -10,6 +10,7 @@ import com.baro.member.fake.FakeMemberRepository;
 import com.baro.member.fixture.MemberFixture;
 import com.baro.memofolder.application.dto.SaveMemoFolderCommand;
 import com.baro.memofolder.domain.MemoFolder;
+import com.baro.memofolder.domain.MemoFolderName;
 import com.baro.memofolder.domain.MemoFolderRepository;
 import com.baro.memofolder.exception.MemoFolderException;
 import com.baro.memofolder.exception.MemoFolderExceptionType;
@@ -48,7 +49,7 @@ class MemoFolderServiceTest {
         // then
         List<MemoFolder> all = memoFolderRepository.findAll();
         assertThat(all).hasSize(1);
-        assertThat(all.get(0).getName()).isEqualTo(folderName);
+        assertThat(all.get(0).getName()).isEqualTo(MemoFolderName.from(folderName));
     }
 
 

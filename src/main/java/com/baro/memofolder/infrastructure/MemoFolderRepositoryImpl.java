@@ -2,6 +2,7 @@ package com.baro.memofolder.infrastructure;
 
 import com.baro.member.domain.Member;
 import com.baro.memofolder.domain.MemoFolder;
+import com.baro.memofolder.domain.MemoFolderName;
 import com.baro.memofolder.domain.MemoFolderRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,6 @@ public class MemoFolderRepositoryImpl implements MemoFolderRepository {
 
     @Override
     public boolean existByMemberAndName(Member member, String name) {
-        return memoFolderJpaRepository.existsByMemberAndName(member, name);
+        return memoFolderJpaRepository.existsByMemberAndName(member, MemoFolderName.from(name));
     }
 }
