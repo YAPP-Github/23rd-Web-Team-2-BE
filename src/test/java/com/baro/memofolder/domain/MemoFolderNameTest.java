@@ -18,6 +18,6 @@ class MemoFolderNameTest {
         assertThatThrownBy(() -> MemoFolderName.from(overSizeName))
                 .isInstanceOf(MemoFolderException.class)
                 .extracting("exceptionType")
-                .isEqualTo(MemoFolderExceptionType.OVER_MAX_SIZE);
+                .isEqualTo(MemoFolderExceptionType.OVER_MAX_SIZE_NAME);
     }
 }

@@ -28,7 +28,7 @@ public class MemoFolderName {
 
     private void validate(String name) {
         if (name.length() > MAX_FOLDER_SIZE) {
-            throw new MemoFolderException(MemoFolderExceptionType.OVER_MAX_SIZE);
+            throw new MemoFolderException(MemoFolderExceptionType.OVER_MAX_SIZE_NAME);
         }
     }
 
