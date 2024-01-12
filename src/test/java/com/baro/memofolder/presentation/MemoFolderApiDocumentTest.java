@@ -18,7 +18,6 @@ import com.baro.member.fixture.MemberFixture;
 import com.baro.memofolder.domain.MemoFolder;
 import com.baro.memofolder.presentation.dto.SaveMemoFolderRequest;
 import java.nio.charset.StandardCharsets;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
@@ -30,11 +29,6 @@ class MemoFolderApiDocumentTest extends RestApiDocumentationTest {
 
     @MockBean
     TokenTranslator tokenTranslator;
-
-    @BeforeEach
-    void cleanUp() {
-        dataCleaner.cleanUp();
-    }
 
     @Test
     void create_memo_folder() {

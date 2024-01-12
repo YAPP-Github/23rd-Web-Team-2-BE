@@ -11,6 +11,7 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import java.nio.charset.StandardCharsets;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,5 +52,10 @@ public abstract class RestApiDocumentationTest {
                         .withRequestDefaults(prettyPrint())
                         .withResponseDefaults(prettyPrint())
                 ).build();
+    }
+
+    @AfterEach
+    void cleanUp() {
+        dataCleaner.cleanUp();
     }
 }
