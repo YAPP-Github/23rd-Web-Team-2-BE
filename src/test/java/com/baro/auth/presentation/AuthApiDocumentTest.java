@@ -17,6 +17,8 @@ import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.do
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 
@@ -40,8 +42,12 @@ public class AuthApiDocumentTest extends RestApiDocumentationTest {
                 .filter(document(DEFAULT_REST_DOCS_PATH,
                         queryParameters(
                                 parameterWithName("refreshToken").description("refreshToken")
-                        )
-                ))
+                        ),
+                        responseFields(
+                                fieldWithPath("accessToken").description("액세스 토큰"),
+                                fieldWithPath("refreshToken").description("리프레시 토큰")
+                        ))
+                )
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.accessToken())
                 .queryParam("refreshToken", "Bearer " + token.refreshToken())
                 .when().get(url)
@@ -64,8 +70,12 @@ public class AuthApiDocumentTest extends RestApiDocumentationTest {
                 .filter(document(DEFAULT_REST_DOCS_PATH,
                         queryParameters(
                                 parameterWithName("refreshToken").description("refreshToken")
-                        )
-                ))
+                        ),
+                        responseFields(
+                                fieldWithPath("errorCode").description("에러 코드"),
+                                fieldWithPath("errorMessage").description("에러 메시지")
+                        ))
+                )
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.accessToken())
                 .queryParam("refreshToken")
                 .when().get(url)
@@ -90,8 +100,12 @@ public class AuthApiDocumentTest extends RestApiDocumentationTest {
                 .filter(document(DEFAULT_REST_DOCS_PATH,
                         queryParameters(
                                 parameterWithName("refreshToken").description("refreshToken")
-                        )
-                ))
+                        ),
+                        responseFields(
+                                fieldWithPath("errorCode").description("에러 코드"),
+                                fieldWithPath("errorMessage").description("에러 메시지")
+                        ))
+                )
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.accessToken())
                 .queryParam("refreshToken", token.refreshToken())
                 .when().get(url)
@@ -116,8 +130,12 @@ public class AuthApiDocumentTest extends RestApiDocumentationTest {
                 .filter(document(DEFAULT_REST_DOCS_PATH,
                         queryParameters(
                                 parameterWithName("refreshToken").description("refreshToken")
-                        )
-                ))
+                        ),
+                        responseFields(
+                                fieldWithPath("errorCode").description("에러 코드"),
+                                fieldWithPath("errorMessage").description("에러 메시지")
+                        ))
+                )
                 .header(HttpHeaders.AUTHORIZATION, accessToken)
                 .queryParam("refreshToken", refreshToken)
                 .when().get(url)
@@ -142,8 +160,12 @@ public class AuthApiDocumentTest extends RestApiDocumentationTest {
                 .filter(document(DEFAULT_REST_DOCS_PATH,
                         queryParameters(
                                 parameterWithName("refreshToken").description("refreshToken")
-                        )
-                ))
+                        ),
+                        responseFields(
+                                fieldWithPath("errorCode").description("에러 코드"),
+                                fieldWithPath("errorMessage").description("에러 메시지")
+                        ))
+                )
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenA.accessToken())
                 .queryParam("refreshToken", tokenB.refreshToken())
                 .when().get(url)
@@ -166,8 +188,12 @@ public class AuthApiDocumentTest extends RestApiDocumentationTest {
                 .filter(document(DEFAULT_REST_DOCS_PATH,
                         queryParameters(
                                 parameterWithName("refreshToken").description("refreshToken")
-                        )
-                ))
+                        ),
+                        responseFields(
+                                fieldWithPath("errorCode").description("에러 코드"),
+                                fieldWithPath("errorMessage").description("에러 메시지")
+                        ))
+                )
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.accessToken())
                 .queryParam("refreshToken", "invalidRefreshToken")
                 .when().get(url)
@@ -190,8 +216,12 @@ public class AuthApiDocumentTest extends RestApiDocumentationTest {
                 .filter(document(DEFAULT_REST_DOCS_PATH,
                         queryParameters(
                                 parameterWithName("refreshToken").description("refreshToken")
-                        )
-                ))
+                        ),
+                        responseFields(
+                                fieldWithPath("errorCode").description("에러 코드"),
+                                fieldWithPath("errorMessage").description("에러 메시지")
+                        ))
+                )
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.accessToken())
                 .queryParam("refreshToken", token.refreshToken())
                 .when().get(url)

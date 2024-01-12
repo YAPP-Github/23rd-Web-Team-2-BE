@@ -4,6 +4,7 @@ import com.baro.auth.application.TokenCreator;
 import com.baro.auth.application.TokenDecrypter;
 import com.baro.auth.domain.Token;
 import com.baro.auth.exception.jwt.JwtTokenException;
+import com.baro.auth.exception.jwt.JwtTokenExceptionType;
 import com.baro.common.time.TimeServer;
 import com.baro.common.time.fake.FakeTimeServer;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +15,6 @@ import java.time.Instant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class JwtTokenDecrypterTest {
 
@@ -53,7 +53,10 @@ class JwtTokenDecrypterTest {
             Token token = creator.createToken(1L, timeServer.now());
 
             // then
-            assertThrows(JwtTokenException.class, () -> decrypter.decryptAccessToken("BearBear " + token.accessToken()));
+            assertThatCode(() -> decrypter.decryptAccessToken("BearBear " + token.accessToken()))
+                    .isInstanceOf(JwtTokenException.class)
+                    .extracting("exceptionType")
+                    .isEqualTo(JwtTokenExceptionType.NOT_BEARER_SCHEME);
         }
 
         @Test
@@ -65,7 +68,10 @@ class JwtTokenDecrypterTest {
             Token token = tokenCreator.createToken(1L, timeServer.now());
 
             // then
-            assertThrows(JwtTokenException.class, () -> tokenDecrypter.decryptAccessToken("Bearer " + token.accessToken()));
+            assertThatCode(() -> tokenDecrypter.decryptAccessToken("Bearer " + token.accessToken()))
+                    .isInstanceOf(JwtTokenException.class)
+                    .extracting("exceptionType")
+                    .isEqualTo(JwtTokenExceptionType.EXPIRED_JWT_TOKEN);
         }
 
         @Test
@@ -74,19 +80,28 @@ class JwtTokenDecrypterTest {
             Token token = new Token("invalidAccessToken", "invalidRefreshToken");
 
             // then
-            assertThrows(JwtTokenException.class, () -> decrypter.decryptAccessToken("Bearer " + token.accessToken()));
+            assertThatCode(() -> decrypter.decryptAccessToken("Bearer " + token.accessToken()))
+                    .isInstanceOf(JwtTokenException.class)
+                    .extracting("exceptionType")
+                    .isEqualTo(JwtTokenExceptionType.INVALID_JWT_TOKEN);
         }
 
         @Test
         void Authorization_헤더가_없는_경우_예외를_반환한다() {
             // then
-            assertThrows(JwtTokenException.class, () -> decrypter.decryptAccessToken(null));
+            assertThatCode(() -> decrypter.decryptAccessToken(null))
+                    .isInstanceOf(JwtTokenException.class)
+                    .extracting("exceptionType")
+                    .isEqualTo(JwtTokenExceptionType.AUTHORIZATION_NULL);
         }
 
         @Test
         void Authorization_헤더가_비어있는_경우_예외를_반환한다() {
             // then
-            assertThrows(JwtTokenException.class, () -> decrypter.decryptAccessToken(" "));
+            assertThatCode(() -> decrypter.decryptAccessToken(" "))
+                    .isInstanceOf(JwtTokenException.class)
+                    .extracting("exceptionType")
+                    .isEqualTo(JwtTokenExceptionType.NOT_BEARER_SCHEME);
         }
     }
 
@@ -112,7 +127,10 @@ class JwtTokenDecrypterTest {
             Token token = tokenCreator.createToken(1L, timeServer.now());
 
             // then
-            assertThrows(JwtTokenException.class, () -> tokenDecrypter.decryptRefreshToken(token.refreshToken()));
+            assertThatCode(() -> tokenDecrypter.decryptRefreshToken("Bearer " + token.refreshToken()))
+                    .isInstanceOf(JwtTokenException.class)
+                    .extracting("exceptionType")
+                    .isEqualTo(JwtTokenExceptionType.EXPIRED_JWT_TOKEN);
         }
 
         @Test
@@ -121,7 +139,10 @@ class JwtTokenDecrypterTest {
             Token token = new Token("invalidAccessToken", "invalidRefreshToken");
 
             // then
-            assertThrows(JwtTokenException.class, () -> decrypter.decryptRefreshToken(token.refreshToken()));
+            assertThatCode(() -> decrypter.decryptRefreshToken("Bearer " + token.refreshToken()))
+                    .isInstanceOf(JwtTokenException.class)
+                    .extracting("exceptionType")
+                    .isEqualTo(JwtTokenExceptionType.INVALID_JWT_TOKEN);
         }
 
         @Test
@@ -130,7 +151,10 @@ class JwtTokenDecrypterTest {
             Token token = creator.createToken(1L, timeServer.now());
 
             // then
-            assertThrows(JwtTokenException.class, () -> decrypter.decryptAccessToken("Basic " + token.accessToken()));
+            assertThatCode(() -> decrypter.decryptRefreshToken(token.refreshToken()))
+                    .isInstanceOf(JwtTokenException.class)
+                    .extracting("exceptionType")
+                    .isEqualTo(JwtTokenExceptionType.NOT_BEARER_SCHEME);
         }
     }
 }
