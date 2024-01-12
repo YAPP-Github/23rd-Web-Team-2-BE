@@ -4,12 +4,14 @@ import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
 import com.baro.member.exception.MemberException;
 import com.baro.member.exception.MemberExceptionType;
+import com.baro.memofolder.application.dto.GetMemoFolderResult;
 import com.baro.memofolder.application.dto.SaveMemoFolderCommand;
 import com.baro.memofolder.application.dto.SaveMemoFolderResult;
 import com.baro.memofolder.domain.MemoFolder;
 import com.baro.memofolder.domain.MemoFolderRepository;
 import com.baro.memofolder.exception.MemoFolderException;
 import com.baro.memofolder.exception.MemoFolderExceptionType;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,5 +39,14 @@ public class MemoFolderService {
         if (memoFolderRepository.existByMemberAndName(member, folderName)) {
             throw new MemoFolderException(MemoFolderExceptionType.NAME_DUPLICATION);
         }
+    }
+
+    public List<GetMemoFolderResult> getMemoFolder(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_EXIST_MEMBER));
+        List<MemoFolder> memoFolders = memoFolderRepository.findAllByMember(member);
+        return memoFolders.stream()
+                .map(GetMemoFolderResult::from)
+                .toList();
     }
 }

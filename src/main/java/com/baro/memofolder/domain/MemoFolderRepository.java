@@ -10,4 +10,6 @@ public interface MemoFolderRepository {
     List<MemoFolder> findAll();
 
     boolean existByMemberAndName(Member member, String name);
+
+    List<MemoFolder> findAllByMember(Member member);
 }
