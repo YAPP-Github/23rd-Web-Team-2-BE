@@ -34,7 +34,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public Optional<Member> findById(final Long memberId) {
+    public Optional<Member> findById(Long memberId) {
         return memberJpaRepository.findById(memberId);
     }
 }
