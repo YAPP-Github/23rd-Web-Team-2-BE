@@ -2,12 +2,15 @@ package com.baro.memofolder.presentation;
 
 import com.baro.auth.domain.AuthMember;
 import com.baro.memofolder.application.MemoFolderService;
+import com.baro.memofolder.application.dto.GetMemoFolderResult;
 import com.baro.memofolder.application.dto.SaveMemoFolderCommand;
 import com.baro.memofolder.application.dto.SaveMemoFolderResult;
 import com.baro.memofolder.presentation.dto.SaveMemoFolderRequest;
 import java.net.URI;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,5 +34,11 @@ public class MemoFolderController {
                 .buildAndExpand(result.id())
                 .toUri();
         return ResponseEntity.created(location).build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<GetMemoFolderResult>> getMemoFolder(AuthMember authMember) {
+        List<GetMemoFolderResult> result = memoFolderService.getMemoFolder(authMember.id());
+        return ResponseEntity.ok(result);
     }
 }
