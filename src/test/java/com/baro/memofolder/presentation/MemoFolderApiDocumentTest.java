@@ -122,6 +122,36 @@ class MemoFolderApiDocumentTest extends RestApiDocumentationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    @Test
+    void create_memo_folder_over_max_size_name() {
+        // given
+        var url = "/memo-folders";
+        var request = new SaveMemoFolderRequest("회사생활은재미없겠지만해야겠지👔👔👔");
+        Member savedMember = memberRepository.save(MemberFixture.memberWithNickname("바로"));
+        setTokenDecrypt(savedMember);
+
+        // when
+        var response = given(requestSpec).log().all()
+                .filter(document(DEFAULT_REST_DOCS_PATH,
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("folderName").description("폴더 이름")
+                        ),
+                        responseFields(
+                                fieldWithPath("errorCode").description("에러 코드"),
+                                fieldWithPath("errorMessage").description("에러 메시지")
+                        ))
+                ).header(HttpHeaders.AUTHORIZATION, SET_UP_ACCESS_TOKEN).body(request)
+                .when().post(url)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     void setTokenDecrypt(Member savedMember) {
         given(tokenTranslator.decode(SET_UP_ACCESS_TOKEN)).willReturn(savedMember.getId());
     }
