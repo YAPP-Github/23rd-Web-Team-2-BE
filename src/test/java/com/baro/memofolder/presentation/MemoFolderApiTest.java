@@ -8,7 +8,7 @@ import static com.baro.common.acceptance.AcceptanceSteps.잘못된_요청;
 import static com.baro.common.acceptance.memofolder.MemoFolderAcceptanceSteps.메모_폴더_불러오기_요청;
 import static com.baro.common.acceptance.memofolder.MemoFolderAcceptanceSteps.메모_폴더_생성_요청;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.BDDMockito.willThrow;
 
 import com.baro.auth.domain.Token;
 import com.baro.auth.fixture.OAuthMemberInfoFixture;
@@ -99,6 +99,6 @@ class MemoFolderApiTest extends RestApiTest {
     }
 
     void 멤버가_존재하지_않는다() {
-        doThrow(new MemberException(MemberExceptionType.NOT_EXIST_MEMBER)).when(memberRepository).getById(anyLong());
+        willThrow(new MemberException(MemberExceptionType.NOT_EXIST_MEMBER)).given(memberRepository).getById(anyLong());
     }
 }
