@@ -2,6 +2,8 @@ package com.baro.member.fake;
 
 import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
+import com.baro.member.exception.MemberException;
+import com.baro.member.exception.MemberExceptionType;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -52,9 +54,15 @@ public class FakeMemberRepository implements MemberRepository {
     }
 
     @Override
-    public Optional<Member> findById(final Long memberId) {
+    public Optional<Member> findById(Long memberId) {
         return members.values().stream()
                 .filter(member -> member.getId().equals(memberId))
                 .findAny();
+    }
+
+    @Override
+    public Member getById(Long memberId) {
+        return this.findById(memberId)
+                .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_EXIST_MEMBER));
     }
 }

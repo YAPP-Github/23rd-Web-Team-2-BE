@@ -45,7 +45,7 @@ public class AuthService {
         return newToken;
     }
 
-    private Supplier<Member> saveNewMember(final SignInDto dto) {
+    private Supplier<Member> saveNewMember(SignInDto dto) {
         return () -> {
             Member member = memberCreator.create(dto.name(), dto.email(), dto.oauthId(), dto.oauthType());
             memoFolderRepository.save(MemoFolder.defaultFolder(member));

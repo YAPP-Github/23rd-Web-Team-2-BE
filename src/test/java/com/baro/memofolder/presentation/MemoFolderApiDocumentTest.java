@@ -152,6 +152,34 @@ class MemoFolderApiDocumentTest extends RestApiDocumentationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    @Test
+    void get_memo_folders() {
+        // given
+        var url = "/memo-folders";
+        Member savedMember = memberRepository.save(MemberFixture.memberWithNickname("바로"));
+        setTokenDecrypt(savedMember);
+        memoFolderRepository.save(MemoFolder.defaultFolder(savedMember));
+        memoFolderRepository.save(MemoFolder.of(savedMember, "회사생활👔"));
+
+        // when
+        var response = given(requestSpec).log().all()
+                .filter(document(DEFAULT_REST_DOCS_PATH,
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
+                        ),
+                        responseFields(
+                                fieldWithPath("[].id").description("폴더 id"),
+                                fieldWithPath("[].name").description("폴더 이름")
+                        ))
+                ).header(HttpHeaders.AUTHORIZATION, SET_UP_ACCESS_TOKEN)
+                .when().get(url)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
     void setTokenDecrypt(Member savedMember) {
         given(tokenTranslator.decodeAccessToken(SET_UP_ACCESS_TOKEN)).willReturn(savedMember.getId());
     }

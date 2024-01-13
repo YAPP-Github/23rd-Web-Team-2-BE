@@ -28,4 +28,9 @@ public class MemoFolderRepositoryImpl implements MemoFolderRepository {
     public boolean existByMemberAndName(Member member, String name) {
         return memoFolderJpaRepository.existsByMemberAndName(member, MemoFolderName.from(name));
     }
+
+    @Override
+    public List<MemoFolder> findAllByMember(Member member) {
+        return memoFolderJpaRepository.findAllByMember(member);
+    }
 }

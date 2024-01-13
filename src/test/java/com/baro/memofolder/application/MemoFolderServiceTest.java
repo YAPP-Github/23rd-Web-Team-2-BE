@@ -3,11 +3,13 @@ package com.baro.memofolder.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
 import com.baro.member.exception.MemberException;
 import com.baro.member.exception.MemberExceptionType;
 import com.baro.member.fake.FakeMemberRepository;
 import com.baro.member.fixture.MemberFixture;
+import com.baro.memofolder.application.dto.GetMemoFolderResult;
 import com.baro.memofolder.application.dto.SaveMemoFolderCommand;
 import com.baro.memofolder.domain.MemoFolder;
 import com.baro.memofolder.domain.MemoFolderName;
@@ -80,5 +82,23 @@ class MemoFolderServiceTest {
                 .isInstanceOf(MemoFolderException.class)
                 .extracting("exceptionType")
                 .isEqualTo(MemoFolderExceptionType.NAME_DUPLICATION);
+    }
+
+    @Test
+    void 회원의_모든_메모_폴더를_조회한다() {
+        // given
+        Member memberA = memberRepository.save(MemberFixture.memberWithNickname("nickname1"));
+        Member memberB = memberRepository.save(MemberFixture.memberWithNickname("nickname2"));
+        memoFolderRepository.save(MemoFolder.defaultFolder(memberA));
+        memoFolderRepository.save(MemoFolder.of(memberA, "폴더이름"));
+        memoFolderRepository.save(MemoFolder.defaultFolder(memberB));
+
+        // when
+        List<GetMemoFolderResult> memoFolders = memoFolderService.getMemoFolder(memberA.getId());
+
+        // then
+        assertThat(memoFolders).hasSize(2);
+        assertThat(memoFolders).extracting("name")
+                .containsExactlyInAnyOrder("기본", "폴더이름");
     }
 }

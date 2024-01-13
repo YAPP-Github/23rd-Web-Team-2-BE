@@ -41,4 +41,11 @@ public class FakeMemoFolderRepository implements MemoFolderRepository {
                 .anyMatch(memoFolder -> memoFolder.getMember().getId().equals(member.getId())
                         && memoFolder.getName().equals(MemoFolderName.from(name)));
     }
+
+    @Override
+    public List<MemoFolder> findAllByMember(Member member) {
+        return memoFolders.values().stream()
+                .filter(memoFolder -> memoFolder.getMember().getId().equals(member.getId()))
+                .toList();
+    }
 }

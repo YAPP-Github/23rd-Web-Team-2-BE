@@ -9,7 +9,7 @@ public class MemberFixture {
                 .name("name")
                 .email("email")
                 .nickname(nickname)
-                .oAuthId("oAuthId")
+                .oAuthId("oAuthId" + nickname)
                 .oAuthServiceType("oAuthServiceType")
                 .build();
     }
