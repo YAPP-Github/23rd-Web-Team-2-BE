@@ -7,7 +7,6 @@ import com.baro.auth.exception.jwt.JwtTokenException;
 import com.baro.auth.exception.jwt.JwtTokenExceptionType;
 import com.baro.common.time.TimeServer;
 import com.baro.common.time.fake.FakeTimeServer;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
@@ -17,7 +16,7 @@ public class FakeTokenStorage implements TokenStorage {
 
     private final Map<String, TokenInfo> tokens = new ConcurrentHashMap<>();
     private final long ttl;
-    private TimeServer timeServer = new FakeTimeServer(Instant.now());
+    private final TimeServer timeServer = new FakeTimeServer(Instant.now());
 
     public FakeTokenStorage(long ttl) {
         this.ttl = ttl;
@@ -33,7 +32,7 @@ public class FakeTokenStorage implements TokenStorage {
         if (!tokens.containsKey("RT:" + key)) {
             throw new AuthException(AuthExceptionType.REFRESH_TOKEN_DOES_NOT_EXIST);
         }
-        if (tokens.get("RT:" + key).expireTime().isAfter(timeServer.now())){
+        if (tokens.get("RT:" + key).expireTime().isAfter(timeServer.now())) {
             return tokens.get("RT:" + key).token();
         }
         throw new JwtTokenException(JwtTokenExceptionType.EXPIRED_JWT_TOKEN);

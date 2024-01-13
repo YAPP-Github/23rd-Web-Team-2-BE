@@ -18,7 +18,6 @@ import com.baro.memofolder.domain.MemoFolder;
 import com.baro.memofolder.domain.MemoFolderRepository;
 import com.baro.memofolder.fake.FakeMemoFolderRepository;
 import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -43,7 +42,8 @@ class AuthServiceTest {
         memberCreator = new MemberCreator(memberRepository, fakeNicknameCreator);
         tokenStorage = new FakeTokenStorage(1000 * 60 * 60 * 24);
         memoFolderRepository = new FakeMemoFolderRepository();
-        authService = new AuthService(memberRepository, memberCreator, tokenTranslator, tokenStorage, memoFolderRepository);
+        authService = new AuthService(memberRepository, memberCreator, tokenTranslator, tokenStorage,
+                memoFolderRepository);
     }
 
     @Test

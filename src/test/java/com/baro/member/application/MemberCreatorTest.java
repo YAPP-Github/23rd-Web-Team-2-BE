@@ -1,17 +1,20 @@
 package com.baro.member.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
 import com.baro.member.fake.FakeMemberRepository;
 import com.baro.member.fake.FakeNicknameCreator;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+@DisplayNameGeneration(ReplaceUnderscores.class)
+@SuppressWarnings("NonAsciiCharacters")
 class MemberCreatorTest {
 
     NicknameCreator uniqueNicknameCreator;

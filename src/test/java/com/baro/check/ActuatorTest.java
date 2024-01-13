@@ -1,37 +1,25 @@
 package com.baro.check;
 
-import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.document;
-import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static com.baro.common.acceptance.AcceptanceSteps.성공;
+import static com.baro.common.acceptance.AcceptanceSteps.응답값을_검증한다;
+import static com.baro.common.acceptance.AcceptanceSteps.응답의_특정_필드값을_검증한다;
+import static com.baro.common.acceptance.check.ActuatorAcceptanceSteps.액추에이터_헬스체크_요청;
 
-import com.baro.common.RestApiDocumentationTest;
+import com.baro.common.RestApiTest;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-public class ActuatorTest extends RestApiDocumentationTest {
+@DisplayNameGeneration(ReplaceUnderscores.class)
+@SuppressWarnings("NonAsciiCharacters")
+public class ActuatorTest extends RestApiTest {
 
     @Test
-    void health_check() {
-        // given
-        var url = "/actuator/health";
-
-        // when
-        var response = given(requestSpec).log().all()
-                .filter(document(DEFAULT_REST_DOCS_PATH, responseFields(
-                        fieldWithPath("status").description("상태")
-                        )))
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .header("Content-type", "application/json")
-                .when().get(url)
-                .then().log().all()
-                .extract();
+    void 헬스_체크() {
+        var 응답 = 액추에이터_헬스체크_요청();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        var message = response.body().jsonPath().getString("status");
-        assertThat(message).isEqualTo("UP");
+        응답값을_검증한다(응답, 성공);
+        응답의_특정_필드값을_검증한다(응답, "status", "UP");
     }
 }

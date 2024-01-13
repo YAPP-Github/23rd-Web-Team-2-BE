@@ -3,11 +3,13 @@ package com.baro.auth.domain.oauth;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.baro.auth.domain.oauth.OAuthServiceType;
 import com.baro.auth.exception.oauth.OAuthException;
 import com.baro.auth.exception.oauth.OAuthExceptionType;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 
+@DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 class OAuthServiceTypeTest {
 
