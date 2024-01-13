@@ -153,10 +153,10 @@ class MemoFolderApiDocumentTest extends RestApiDocumentationTest {
     }
 
     void setTokenDecrypt(Member savedMember) {
-        given(tokenTranslator.decode(SET_UP_ACCESS_TOKEN)).willReturn(savedMember.getId());
+        given(tokenTranslator.decodeAccessToken(SET_UP_ACCESS_TOKEN)).willReturn(savedMember.getId());
     }
 
     void setTokenDecryptAsNotExistMember() {
-        given(tokenTranslator.decode(SET_UP_ACCESS_TOKEN)).willReturn(9999L);
+        given(tokenTranslator.decodeAccessToken(SET_UP_ACCESS_TOKEN)).willReturn(9999L);
     }
 }
