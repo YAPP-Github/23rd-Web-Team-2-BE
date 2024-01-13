@@ -25,7 +25,7 @@ import org.springframework.restdocs.RestDocumentationExtension;
 @AutoConfigureRestDocs
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public abstract class RestApiDocumentationTest {
+public abstract class RestApiTest {
 
     protected static final String DEFAULT_REST_DOCS_PATH = "{class_name}/{method_name}";
     protected RequestSpecification requestSpec;

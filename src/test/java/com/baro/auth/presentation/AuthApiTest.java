@@ -14,7 +14,7 @@ import com.baro.auth.application.AuthService;
 import com.baro.auth.application.TokenDecrypter;
 import com.baro.auth.application.dto.SignInDto;
 import com.baro.auth.domain.Token;
-import com.baro.common.RestApiDocumentationTest;
+import com.baro.common.RestApiTest;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ import org.springframework.http.HttpStatus;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
-public class AuthApiDocumentTest extends RestApiDocumentationTest {
+public class AuthApiTest extends RestApiTest {
 
     @SpyBean
     TokenDecrypter tokenDecrypter;

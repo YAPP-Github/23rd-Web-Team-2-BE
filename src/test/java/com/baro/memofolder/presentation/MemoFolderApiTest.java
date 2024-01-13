@@ -12,7 +12,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 
 import com.baro.auth.application.TokenTranslator;
-import com.baro.common.RestApiDocumentationTest;
+import com.baro.common.RestApiTest;
 import com.baro.member.domain.Member;
 import com.baro.member.fixture.MemberFixture;
 import com.baro.memofolder.domain.MemoFolder;
@@ -27,7 +27,7 @@ import org.springframework.http.HttpStatus;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
-class MemoFolderApiDocumentTest extends RestApiDocumentationTest {
+class MemoFolderApiTest extends RestApiTest {
 
     private static final String SET_UP_ACCESS_TOKEN = "accessToken";
 

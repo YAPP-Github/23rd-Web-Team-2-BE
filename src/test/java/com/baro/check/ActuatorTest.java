@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 
-import com.baro.common.RestApiDocumentationTest;
+import com.baro.common.RestApiTest;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
-public class ActuatorTest extends RestApiDocumentationTest {
+public class ActuatorTest extends RestApiTest {
 
     @Test
     void health_check() {
