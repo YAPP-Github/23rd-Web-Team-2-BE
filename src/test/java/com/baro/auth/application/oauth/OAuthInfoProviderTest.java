@@ -18,10 +18,10 @@ import org.junit.jupiter.api.Test;
 @SuppressWarnings("NonAsciiCharacters")
 class OAuthInfoProviderTest {
 
-    private OAuthInfoProvider oAuthInfoProvider;
     final OAuthClient fakeKakaoOAuthClient = new FakeKakaoOAuthClient();
     final OAuthClient fakeNaverOAuthClient = new FakeNaverOAuthClient();
     final OAuthClient fakeGoogleOAuthClient = new FakeGoogleOAuthClient();
+    private OAuthInfoProvider oAuthInfoProvider;
 
     @BeforeEach
     void setUp() {

@@ -28,18 +28,15 @@ import org.springframework.restdocs.RestDocumentationExtension;
 public abstract class RestApiDocumentationTest {
 
     protected static final String DEFAULT_REST_DOCS_PATH = "{class_name}/{method_name}";
-
-    @LocalServerPort
-    private int port;
-
     protected RequestSpecification requestSpec;
-
     @Autowired
     protected JpaDataCleaner dataCleaner;
     @Autowired
     protected MemberRepository memberRepository;
     @Autowired
     protected MemoFolderRepository memoFolderRepository;
+    @LocalServerPort
+    private int port;
 
     @BeforeEach
     void setUp(final RestDocumentationContextProvider contextProvider) {
