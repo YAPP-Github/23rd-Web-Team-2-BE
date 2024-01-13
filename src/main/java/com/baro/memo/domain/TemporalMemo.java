@@ -39,4 +39,20 @@ public class TemporalMemo extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "memo_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Memo memo;
+
+    public TemporalMemo(Long id, Member member, String content, String correctionContent, Memo memo) {
+        this.id = id;
+        this.member = member;
+        this.content = content;
+        this.correctionContent = correctionContent;
+        this.memo = memo;
+    }
+
+    public TemporalMemo(Member member, String content, String correctionContent, Memo memo) {
+        this(null, member, content, correctionContent, memo);
+    }
+
+    public static TemporalMemo of(Member member, String content) {
+        return new TemporalMemo(member, content, null, null);
+    }
 }
