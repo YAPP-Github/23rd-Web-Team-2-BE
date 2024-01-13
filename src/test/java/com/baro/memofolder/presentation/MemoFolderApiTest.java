@@ -12,6 +12,7 @@ import static com.baro.common.acceptance.AcceptanceSteps.응답의_Location_헤�
 import static com.baro.common.acceptance.AcceptanceSteps.잘못된_요청;
 import static com.baro.common.acceptance.memofolder.MemoFolderAcceptanceSteps.메모_폴더_불러오기_요청;
 import static com.baro.common.acceptance.memofolder.MemoFolderAcceptanceSteps.메모_폴더_생성_요청;
+import static com.baro.common.acceptance.memofolder.MemoFolderAcceptanceSteps.잘못된_메모_폴더_생성_요청;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.willThrow;
 
@@ -57,7 +58,7 @@ class MemoFolderApiTest extends RestApiTest {
         메모_폴더_생성_요청(토큰, 요청_바디);
 
         // when
-        var 응답 = 메모_폴더_생성_요청(토큰, 요청_바디);
+        var 응답 = 잘못된_메모_폴더_생성_요청(토큰, 요청_바디);
 
         // then
         응답값을_검증한다(응답, 잘못된_요청);
@@ -71,7 +72,7 @@ class MemoFolderApiTest extends RestApiTest {
         멤버가_존재하지_않는다();
 
         // when
-        var 응답 = 메모_폴더_생성_요청(토큰, 요청_바디);
+        var 응답 = 잘못된_메모_폴더_생성_요청(토큰, 요청_바디);
 
         // then
         응답값을_검증한다(응답, 잘못된_요청);
@@ -84,7 +85,7 @@ class MemoFolderApiTest extends RestApiTest {
         var 토큰 = 로그인(은지());
 
         // when
-        var 응답 = 메모_폴더_생성_요청(토큰, 요청_바디);
+        var 응답 = 잘못된_메모_폴더_생성_요청(토큰, 요청_바디);
 
         // then
         응답값을_검증한다(응답, 잘못된_요청);

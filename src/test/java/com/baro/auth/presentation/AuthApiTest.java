@@ -7,6 +7,7 @@ import static com.baro.common.acceptance.AcceptanceSteps.성공;
 import static com.baro.common.acceptance.AcceptanceSteps.응답값을_검증한다;
 import static com.baro.common.acceptance.AcceptanceSteps.잘못된_요청;
 import static com.baro.common.acceptance.auth.AuthAcceptanceSteps.Bearer_타입이_아닌_토큰_재발급_요청;
+import static com.baro.common.acceptance.auth.AuthAcceptanceSteps.잘못된_토큰_재발급_요청;
 import static com.baro.common.acceptance.auth.AuthAcceptanceSteps.토큰_재발급_요청;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -51,7 +52,7 @@ public class AuthApiTest extends RestApiTest {
         var 리프레시_토큰이_없는_토큰 = new Token(토큰.accessToken(), null);
 
         // when
-        var 응답 = 토큰_재발급_요청(리프레시_토큰이_없는_토큰);
+        var 응답 = 잘못된_토큰_재발급_요청(리프레시_토큰이_없는_토큰);
 
         // then
         응답값을_검증한다(응답, 잘못된_요청);
@@ -64,7 +65,7 @@ public class AuthApiTest extends RestApiTest {
         리프레시_토큰_만료();
 
         // when
-        var 응답 = 토큰_재발급_요청(토큰);
+        var 응답 = 잘못된_토큰_재발급_요청(토큰);
 
         // then
         응답값을_검증한다(응답, 잘못된_요청);
@@ -77,7 +78,7 @@ public class AuthApiTest extends RestApiTest {
         리프레시_토큰이_서버에_존재하지_않는다();
 
         // when
-        var 응답 = 토큰_재발급_요청(토큰);
+        var 응답 = 잘못된_토큰_재발급_요청(토큰);
 
         // then
         응답값을_검증한다(응답, 잘못된_요청);
@@ -90,7 +91,7 @@ public class AuthApiTest extends RestApiTest {
         var 뒤섞인_토큰 = new Token(토큰.accessToken(), 토큰.refreshToken() + "a");
 
         // when
-        var 응답 = 토큰_재발급_요청(뒤섞인_토큰);
+        var 응답 = 잘못된_토큰_재발급_요청(뒤섞인_토큰);
 
         // then
         응답값을_검증한다(응답, 잘못된_요청);
@@ -103,7 +104,7 @@ public class AuthApiTest extends RestApiTest {
         var 올바르지_않은_리프레시_토큰이_담긴_토큰 = new Token(토큰.accessToken(), "올바르지 않은 리프레시 토큰");
 
         // when
-        var 응답 = 토큰_재발급_요청(올바르지_않은_리프레시_토큰이_담긴_토큰);
+        var 응답 = 잘못된_토큰_재발급_요청(올바르지_않은_리프레시_토큰이_담긴_토큰);
 
         // then
         응답값을_검증한다(응답, 잘못된_요청);
