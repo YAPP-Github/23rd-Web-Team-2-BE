@@ -7,10 +7,13 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 
 import com.baro.common.RestApiDocumentationTest;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+@DisplayNameGeneration(ReplaceUnderscores.class)
 public class ActuatorTest extends RestApiDocumentationTest {
 
     @Test
@@ -22,7 +25,7 @@ public class ActuatorTest extends RestApiDocumentationTest {
         var response = given(requestSpec).log().all()
                 .filter(document(DEFAULT_REST_DOCS_PATH, responseFields(
                         fieldWithPath("status").description("상태")
-                        )))
+                )))
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .header("Content-type", "application/json")
                 .when().get(url)

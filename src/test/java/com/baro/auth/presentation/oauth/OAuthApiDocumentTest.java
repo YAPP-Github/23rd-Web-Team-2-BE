@@ -20,12 +20,16 @@ import com.baro.auth.infra.oauth.kakao.dto.KakaoMemberResponse.KakaoAccount;
 import com.baro.auth.infra.oauth.kakao.dto.KakaoTokenResponse;
 import com.baro.common.RestApiDocumentationTest;
 import java.nio.charset.StandardCharsets;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
+@DisplayNameGeneration(ReplaceUnderscores.class)
+@SuppressWarnings("NonAsciiCharacters")
 class OAuthApiDocumentTest extends RestApiDocumentationTest {
 
     @MockBean

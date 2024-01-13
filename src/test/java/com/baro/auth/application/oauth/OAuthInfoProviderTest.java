@@ -10,8 +10,11 @@ import com.baro.auth.fake.oauth.FakeKakaoOAuthClient;
 import com.baro.auth.fake.oauth.FakeNaverOAuthClient;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 
+@DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 class OAuthInfoProviderTest {
 

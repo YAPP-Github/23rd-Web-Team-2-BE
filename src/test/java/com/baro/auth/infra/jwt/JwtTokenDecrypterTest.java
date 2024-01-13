@@ -1,5 +1,8 @@
 package com.baro.auth.infra.jwt;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+
 import com.baro.auth.application.TokenCreator;
 import com.baro.auth.application.TokenDecrypter;
 import com.baro.auth.domain.Token;
@@ -7,15 +10,15 @@ import com.baro.auth.exception.jwt.JwtTokenException;
 import com.baro.auth.exception.jwt.JwtTokenExceptionType;
 import com.baro.common.time.TimeServer;
 import com.baro.common.time.fake.FakeTimeServer;
+import java.time.Instant;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.time.Instant;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-
+@DisplayNameGeneration(ReplaceUnderscores.class)
+@SuppressWarnings("NonAsciiCharacters")
 class JwtTokenDecrypterTest {
 
     JwtProperty jwtProperty;

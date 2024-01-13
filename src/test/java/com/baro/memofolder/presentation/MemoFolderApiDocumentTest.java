@@ -18,11 +18,15 @@ import com.baro.member.fixture.MemberFixture;
 import com.baro.memofolder.domain.MemoFolder;
 import com.baro.memofolder.presentation.dto.SaveMemoFolderRequest;
 import java.nio.charset.StandardCharsets;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
+@DisplayNameGeneration(ReplaceUnderscores.class)
+@SuppressWarnings("NonAsciiCharacters")
 class MemoFolderApiDocumentTest extends RestApiDocumentationTest {
 
     private static final String SET_UP_ACCESS_TOKEN = "accessToken";
