@@ -54,7 +54,7 @@ public class FakeMemberRepository implements MemberRepository {
     }
 
     @Override
-    public Optional<Member> findById(final Long memberId) {
+    public Optional<Member> findById(Long memberId) {
         return members.values().stream()
                 .filter(member -> member.getId().equals(memberId))
                 .findAny();

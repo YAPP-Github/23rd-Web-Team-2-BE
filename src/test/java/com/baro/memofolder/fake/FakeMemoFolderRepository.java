@@ -43,7 +43,7 @@ public class FakeMemoFolderRepository implements MemoFolderRepository {
     }
 
     @Override
-    public List<MemoFolder> findAllByMember(final Member member) {
+    public List<MemoFolder> findAllByMember(Member member) {
         return memoFolders.values().stream()
                 .filter(memoFolder -> memoFolder.getMember().getId().equals(member.getId()))
                 .toList();

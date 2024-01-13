@@ -18,12 +18,12 @@ public class FakeKakaoOAuthClient implements OAuthClient {
     }
 
     @Override
-    public OAuthTokenInfo requestAccessToken(final String code) {
+    public OAuthTokenInfo requestAccessToken(String code) {
         return new OAuthTokenInfo("accessToken", "refreshToken", 1000);
     }
 
     @Override
-    public OAuthMemberInfo requestMemberInfo(final OAuthTokenInfo oAuthTokenInfo) {
+    public OAuthMemberInfo requestMemberInfo(OAuthTokenInfo oAuthTokenInfo) {
         return new OAuthMemberInfo("kakaoId", "kakaoName", "kakaoEmail");
     }
 }
