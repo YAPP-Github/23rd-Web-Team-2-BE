@@ -11,13 +11,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class TemporalMemo extends BaseEntity {
@@ -33,4 +32,11 @@ public class TemporalMemo extends BaseEntity {
 
     @Column(length = 512, nullable = false)
     private String content;
+
+    @Column(length = 512)
+    private String correctionContent;
+
+    @OneToOne
+    @JoinColumn(name = "memo_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private Memo memo;
 }
