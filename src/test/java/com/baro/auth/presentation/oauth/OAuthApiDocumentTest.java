@@ -3,9 +3,9 @@ package com.baro.auth.presentation.oauth;
 import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.document;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.anyMap;
 import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -42,7 +42,7 @@ class OAuthApiDocumentTest extends RestApiDocumentationTest {
     AuthService authService;
 
     @Test
-    void oauth_sign_in_url() {
+    void OAuth_로그인시_필요한_url을_반환한다() {
         // given
         var url = "/auth/oauth/{oauthType}";
 
@@ -67,18 +67,12 @@ class OAuthApiDocumentTest extends RestApiDocumentationTest {
     }
 
     @Test
-    void oauth_sign_in() {
+    void OAuth로_로그인한다() {
         // given
         var url = "/auth/oauth/sign-in/{oauthType}";
 
-        when(kakaoRequestApi.requestToken(anyMap()))
-                .thenReturn(new KakaoTokenResponse("Bearer", "accessToken", "idToken",
-                        1000, "refreshToken", 1000, "scope"));
-        when(kakaoRequestApi.requestMemberInfo(anyString()))
-                .thenReturn(new KakaoMemberResponse(1L, "nickname",
-                        new KakaoMemberResponse.Properties("nickname"),
-                        new KakaoAccount(false, new KakaoAccount.Profile("nickname"), "email")
-                ));
+        setOAuthTokenRequest();
+        setOAuthMemberInfoRequest();
 
         // when
         var response = given(requestSpec).log().all()
@@ -97,5 +91,19 @@ class OAuthApiDocumentTest extends RestApiDocumentationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private void setOAuthTokenRequest() {
+        given(kakaoRequestApi.requestToken(anyMap()))
+                .willReturn(new KakaoTokenResponse("Bearer", "accessToken", "idToken",
+                        1000, "refreshToken", 1000, "scope"));
+    }
+
+    private void setOAuthMemberInfoRequest() {
+        given(kakaoRequestApi.requestMemberInfo(anyString()))
+                .willReturn(new KakaoMemberResponse(1L, "nickname",
+                        new KakaoMemberResponse.Properties("nickname"),
+                        new KakaoAccount(false, new KakaoAccount.Profile("nickname"), "email")
+                ));
     }
 }

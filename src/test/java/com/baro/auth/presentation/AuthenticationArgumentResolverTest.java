@@ -1,7 +1,7 @@
 package com.baro.auth.presentation;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 
 import com.baro.auth.application.TokenTranslator;
 import com.baro.auth.domain.AuthMember;
@@ -44,9 +44,9 @@ class AuthenticationArgumentResolverTest {
     @Test
     void 매개변수에_AuthMember가_존재하는경우_Argument_resolver를_거친다() {
         // given
-        String testToken = "token";
+        String accessToken = "accessToken";
         Long authMemberId = 1L;
-        when(tokenTranslator.decodeAccessToken(testToken)).thenReturn(authMemberId);
+        setAccessTokenToReturn(authMemberId, accessToken);
 
         // when
         Response response = RestAssured
@@ -54,7 +54,7 @@ class AuthenticationArgumentResolverTest {
                 .log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .header("Authorization", testToken)
+                .header("Authorization", accessToken)
                 .get("/test/auth");
 
         // then
@@ -62,6 +62,10 @@ class AuthenticationArgumentResolverTest {
                 .statusCode(HttpStatus.OK.value())
                 .extract().asString();
         assertThat(result).isEqualTo(authMemberId.toString());
+    }
+
+    private void setAccessTokenToReturn(Long authMemberId, String accessToken) {
+        given(tokenTranslator.decodeAccessToken(accessToken)).willReturn(authMemberId);
     }
 }
 

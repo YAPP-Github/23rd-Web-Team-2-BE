@@ -3,9 +3,8 @@ package com.baro.auth.presentation;
 import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.document;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -15,8 +14,6 @@ import com.baro.auth.application.AuthService;
 import com.baro.auth.application.TokenDecrypter;
 import com.baro.auth.application.dto.SignInDto;
 import com.baro.auth.domain.Token;
-import com.baro.auth.exception.jwt.JwtTokenException;
-import com.baro.auth.exception.jwt.JwtTokenExceptionType;
 import com.baro.common.RestApiDocumentationTest;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -98,8 +95,7 @@ public class AuthApiDocumentTest extends RestApiDocumentationTest {
         var url = "/auth/reissue";
         SignInDto dto = new SignInDto("name", "email", "1", "kakao");
         Token token = authService.signIn(dto);
-        doThrow(new JwtTokenException(JwtTokenExceptionType.EXPIRED_JWT_TOKEN))
-                .when(tokenDecrypter).decryptRefreshToken(token.refreshToken());
+        setAccessTokenToExpire(token);
 
         // when
         var response = given(requestSpec).log().all()
@@ -122,14 +118,17 @@ public class AuthApiDocumentTest extends RestApiDocumentationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    private void setAccessTokenToExpire(Token token) {
+        willDoNothing().given(tokenDecrypter).decryptRefreshToken(token.refreshToken());
+    }
+
     @Test
     void 저장된_refresh_token이_존재하지_않을_경우_예외발생() {
         // given
         var url = "/auth/reissue";
-        var accessToken = "Bearer accessToken";
-        var refreshToken = "Bearer refreshToken";
-        doReturn(Long.MAX_VALUE).when(tokenDecrypter).decryptAccessToken(accessToken);
-        doNothing().when(tokenDecrypter).decryptRefreshToken(refreshToken);
+        SignInDto dto = new SignInDto("name", "email", "1", "kakao");
+        Token token = authService.signIn(dto);
+        setAccessTokenNotToExist(token);
 
         // when
         var response = given(requestSpec).log().all()
@@ -142,14 +141,18 @@ public class AuthApiDocumentTest extends RestApiDocumentationTest {
                                 fieldWithPath("errorMessage").description("에러 메시지")
                         ))
                 )
-                .header(HttpHeaders.AUTHORIZATION, accessToken)
-                .queryParam("refreshToken", refreshToken)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.accessToken())
+                .queryParam("refreshToken", token.refreshToken())
                 .when().get(url)
                 .then().log().all()
                 .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private void setAccessTokenNotToExist(Token token) {
+        given(tokenDecrypter.decryptAccessToken("Bearer " + token.accessToken())).willReturn(Long.MAX_VALUE);
     }
 
     @Test

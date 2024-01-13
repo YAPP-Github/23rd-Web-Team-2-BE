@@ -7,10 +7,9 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import javax.crypto.SecretKey;
 
 @RequiredArgsConstructor
 @Component
@@ -20,6 +19,7 @@ class JwtTokenDecrypter implements TokenDecrypter {
 
     @Override
     public Long decryptAccessToken(String authorization) {
+        System.out.println("authorization = " + authorization);
         String token = validateTokenType(authorization);
         SecretKey accessTokenSecretKey = Keys.hmacShaKeyFor(jwtProperty.accessSecretKey().getBytes());
         try {
@@ -32,6 +32,7 @@ class JwtTokenDecrypter implements TokenDecrypter {
         } catch (ExpiredJwtException e) {
             throw new JwtTokenException(JwtTokenExceptionType.EXPIRED_JWT_TOKEN);
         } catch (JwtException e) {
+            System.out.println(e.getMessage());
             throw new JwtTokenException(JwtTokenExceptionType.INVALID_JWT_TOKEN);
         }
     }
