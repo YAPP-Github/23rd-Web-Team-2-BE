@@ -4,6 +4,7 @@ import com.baro.common.entity.BaseEntity;
 import com.baro.member.domain.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
@@ -30,8 +31,9 @@ public class TemporalMemo extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Member member;
 
-    @Column(length = 512, nullable = false)
-    private String content;
+    @Column(nullable = false)
+    @Embedded
+    private MemoContent content;
 
     @Column(length = 512)
     private String correctionContent;
@@ -40,7 +42,7 @@ public class TemporalMemo extends BaseEntity {
     @JoinColumn(name = "memo_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Memo memo;
 
-    public TemporalMemo(Long id, Member member, String content, String correctionContent, Memo memo) {
+    public TemporalMemo(Long id, Member member, MemoContent content, String correctionContent, Memo memo) {
         this.id = id;
         this.member = member;
         this.content = content;
@@ -48,11 +50,11 @@ public class TemporalMemo extends BaseEntity {
         this.memo = memo;
     }
 
-    public TemporalMemo(Member member, String content, String correctionContent, Memo memo) {
+    public TemporalMemo(Member member, MemoContent content, String correctionContent, Memo memo) {
         this(null, member, content, correctionContent, memo);
     }
 
     public static TemporalMemo of(Member member, String content) {
-        return new TemporalMemo(member, content, null, null);
+        return new TemporalMemo(member, MemoContent.from(content), null, null);
     }
 }
