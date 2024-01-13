@@ -35,7 +35,7 @@ class MemoFolderApiTest extends RestApiTest {
     TokenTranslator tokenTranslator;
 
     @Test
-    void create_memo_folder() {
+    void 메모_폴더를_생성한다() {
         // given
         var url = "/memo-folders";
         var request = new SaveMemoFolderRequest("회사생활👔");
@@ -66,7 +66,7 @@ class MemoFolderApiTest extends RestApiTest {
     }
 
     @Test
-    void create_memo_folder_duplication() {
+    void 중복되는_이름의_폴더를_생성하는_경우_예외를_반환한다() {
         // given
         var url = "/memo-folders";
         String duplicationName = "회사생활👔";
@@ -98,7 +98,7 @@ class MemoFolderApiTest extends RestApiTest {
     }
 
     @Test
-    void create_memo_folder_not_exist_member() {
+    void 존재하지_않는_멤버가_폴더를_생성하는_경우_예외를_반환한다() {
         // given
         var url = "/memo-folders";
         var request = new SaveMemoFolderRequest("회사생활👔");
@@ -127,7 +127,7 @@ class MemoFolderApiTest extends RestApiTest {
     }
 
     @Test
-    void create_memo_folder_over_max_size_name() {
+    void 최대치_이름_길이를_초과하는_폴더를_생성하는_경우_예외를_반환한다() {
         // given
         var url = "/memo-folders";
         var request = new SaveMemoFolderRequest("회사생활은재미없겠지만해야겠지👔👔👔");
@@ -157,7 +157,7 @@ class MemoFolderApiTest extends RestApiTest {
     }
 
     @Test
-    void get_memo_folders() {
+    void 메모_폴더를_불러온다() {
         // given
         var url = "/memo-folders";
         Member savedMember = memberRepository.save(MemberFixture.memberWithNickname("바로"));
