@@ -16,7 +16,6 @@ import static com.baro.common.acceptance.memofolder.MemoFolderAcceptanceSteps.�
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.willThrow;
 
-import com.baro.auth.domain.Token;
 import com.baro.common.RestApiTest;
 import com.baro.member.domain.MemberRepository;
 import com.baro.member.exception.MemberException;
@@ -94,7 +93,7 @@ class MemoFolderApiTest extends RestApiTest {
     @Test
     void 메모_폴더를_불러온다() {
         // given
-        Token 토큰 = 로그인(원진());
+        var 토큰 = 로그인(원진());
         메모_폴더_생성_요청(토큰, 정상_바디);
 
         // when

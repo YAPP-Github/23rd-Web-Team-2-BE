@@ -10,8 +10,6 @@ import com.baro.auth.application.oauth.OAuthInfoProvider;
 import com.baro.auth.application.oauth.dto.OAuthMemberInfo;
 import com.baro.auth.domain.Token;
 import com.baro.common.data.JpaDataCleaner;
-import com.baro.member.domain.MemberRepository;
-import com.baro.memofolder.domain.MemoFolderRepository;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
@@ -38,10 +36,6 @@ public abstract class RestApiTest {
     public static RequestSpecification requestSpec;
     @Autowired
     protected JpaDataCleaner dataCleaner;
-    @Autowired
-    protected MemberRepository memberRepository;
-    @Autowired
-    protected MemoFolderRepository memoFolderRepository;
     @SpyBean
     OAuthInfoProvider oAuthInfoProvider;
     @LocalServerPort
