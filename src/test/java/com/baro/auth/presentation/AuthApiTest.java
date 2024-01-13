@@ -1,5 +1,8 @@
 package com.baro.auth.presentation;
 
+import static com.baro.auth.fixture.OAuthMemberInfoFixture.동균;
+import static com.baro.auth.fixture.OAuthMemberInfoFixture.원진;
+import static com.baro.auth.fixture.OAuthMemberInfoFixture.은지;
 import static com.baro.common.acceptance.AcceptanceSteps.성공;
 import static com.baro.common.acceptance.AcceptanceSteps.응답값을_검증한다;
 import static com.baro.common.acceptance.AcceptanceSteps.잘못된_요청;
@@ -14,7 +17,6 @@ import com.baro.auth.application.TokenStorage;
 import com.baro.auth.domain.Token;
 import com.baro.auth.exception.jwt.JwtTokenException;
 import com.baro.auth.exception.jwt.JwtTokenExceptionType;
-import com.baro.auth.fixture.OAuthMemberInfoFixture;
 import com.baro.common.RestApiTest;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -33,7 +35,7 @@ public class AuthApiTest extends RestApiTest {
     @Test
     void reissue_성공() {
         // given
-        var 토큰 = 로그인(OAuthMemberInfoFixture.동균());
+        var 토큰 = 로그인(동균());
 
         // when
         var 응답 = 토큰_재발급_요청(토큰);
@@ -45,7 +47,7 @@ public class AuthApiTest extends RestApiTest {
     @Test
     void refresh토큰이_null일경우_예외발생() {
         // given
-        var 토큰 = 로그인(OAuthMemberInfoFixture.태연());
+        var 토큰 = 로그인(동균());
         var 리프레시_토큰이_없는_토큰 = new Token(토큰.accessToken(), null);
 
         // when
@@ -58,7 +60,7 @@ public class AuthApiTest extends RestApiTest {
     @Test
     void refresh토큰이_만료된_경우_예외발생() {
         // given
-        var 토큰 = 로그인(OAuthMemberInfoFixture.은지());
+        var 토큰 = 로그인(은지());
         리프레시_토큰_만료();
 
         // when
@@ -71,7 +73,7 @@ public class AuthApiTest extends RestApiTest {
     @Test
     void 저장된_refresh_token이_존재하지_않을_경우_예외발생() {
         // given
-        var 토큰 = 로그인(OAuthMemberInfoFixture.원진());
+        var 토큰 = 로그인(원진());
         리프레시_토큰이_서버에_존재하지_않는다();
 
         // when
@@ -84,7 +86,7 @@ public class AuthApiTest extends RestApiTest {
     @Test
     void 클라이언트와_토큰이_일치하지_않을_경우_예외발생() {
         // given
-        var 토큰 = 로그인(OAuthMemberInfoFixture.준희());
+        var 토큰 = 로그인(은지());
         var 뒤섞인_토큰 = new Token(토큰.accessToken(), 토큰.refreshToken() + "a");
 
         // when
@@ -97,7 +99,7 @@ public class AuthApiTest extends RestApiTest {
     @Test
     void 올바르지_않은_리프레시_토큰의_경우_예외발생() {
         // given
-        var 토큰 = 로그인(OAuthMemberInfoFixture.유빈());
+        var 토큰 = 로그인(원진());
         var 올바르지_않은_리프레시_토큰이_담긴_토큰 = new Token(토큰.accessToken(), "올바르지 않은 리프레시 토큰");
 
         // when
@@ -110,7 +112,7 @@ public class AuthApiTest extends RestApiTest {
     @Test
     void 리프레시_토큰이_Bearer_타입이_아닌경우_예외발생() {
         // given
-        var 토큰 = 로그인(OAuthMemberInfoFixture.태연());
+        var 토큰 = 로그인(은지());
 
         // when
         var 응답 = Bearer_타입이_아닌_토큰_재발급_요청(토큰);

@@ -1,5 +1,6 @@
 package com.baro.auth.presentation;
 
+import static com.baro.auth.fixture.OAuthMemberInfoFixture.아현;
 import static com.baro.auth.presentation.ArgumentResolverAcceptanceSteps.Authorization_헤더를_포함한_요청;
 import static com.baro.common.acceptance.AcceptanceSteps.성공;
 import static com.baro.common.acceptance.AcceptanceSteps.응답값을_검증한다;
@@ -8,7 +9,6 @@ import static io.restassured.RestAssured.given;
 
 import com.baro.auth.domain.AuthMember;
 import com.baro.auth.domain.Token;
-import com.baro.auth.fixture.OAuthMemberInfoFixture;
 import com.baro.common.RestApiTest;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -33,7 +33,7 @@ class AuthenticationArgumentResolverTest extends RestApiTest {
     @Test
     void 매개변수에_AuthMember가_존재하는경우_Argument_resolver를_거친다() {
         // given
-        var 토큰 = 로그인(OAuthMemberInfoFixture.아현());
+        var 토큰 = 로그인(아현());
 
         // when
         var 응답 = Authorization_헤더를_포함한_요청(토큰);
