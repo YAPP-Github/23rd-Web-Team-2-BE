@@ -50,4 +50,11 @@ public class FakeMemberRepository implements MemberRepository {
         return members.values().stream()
                 .anyMatch(member -> member.getNickname().equals(nickname));
     }
+
+    @Override
+    public Optional<Member> findById(final Long memberId) {
+        return members.values().stream()
+                .filter(member -> member.getId().equals(memberId))
+                .findAny();
+    }
 }

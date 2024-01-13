@@ -1,6 +1,8 @@
 package com.baro.memofolder.fake;
 
+import com.baro.member.domain.Member;
 import com.baro.memofolder.domain.MemoFolder;
+import com.baro.memofolder.domain.MemoFolderName;
 import com.baro.memofolder.domain.MemoFolderRepository;
 import java.util.List;
 import java.util.Map;
@@ -31,5 +33,12 @@ public class FakeMemoFolderRepository implements MemoFolderRepository {
     @Override
     public List<MemoFolder> findAll() {
         return List.copyOf(memoFolders.values());
+    }
+
+    @Override
+    public boolean existByMemberAndName(Member member, String name) {
+        return memoFolders.values().stream()
+                .anyMatch(memoFolder -> memoFolder.getMember().getId().equals(member.getId())
+                        && memoFolder.getName().equals(MemoFolderName.from(name)));
     }
 }

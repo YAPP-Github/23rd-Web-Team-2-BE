@@ -43,6 +43,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64'
 
+    // emoji
+    implementation 'com.vdurmont:emoji-java:5.1.1'
+
     // db
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -110,6 +113,8 @@ swaggerSources {
 
 openapi3 {
     servers = [
+            { url = "https://dev.api.ba-ro.co.kr" },
+            { url = "https://api.ba-ro.co.kr" },
             { url = "http://localhost:8080" }
     ]
     title = "Baro API"

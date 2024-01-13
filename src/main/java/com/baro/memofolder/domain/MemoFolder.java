@@ -4,6 +4,7 @@ import com.baro.common.entity.BaseEntity;
 import com.baro.member.domain.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
@@ -33,15 +34,19 @@ public class MemoFolder extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Member member;
 
-    @Column(nullable = false)
-    private String name;
+    @Embedded
+    private MemoFolderName name;
 
-    private MemoFolder(Member member, String name) {
+    private MemoFolder(Member member, MemoFolderName name) {
         this.member = member;
         this.name = name;
     }
 
     public static MemoFolder defaultFolder(Member member) {
-        return new MemoFolder(member, DEFAULT_FOLDER_NAME);
+        return new MemoFolder(member, MemoFolderName.getDefault());
+    }
+
+    public static MemoFolder of(Member member, String name) {
+        return new MemoFolder(member, MemoFolderName.from(name));
     }
 }
