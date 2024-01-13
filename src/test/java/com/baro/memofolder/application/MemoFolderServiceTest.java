@@ -90,7 +90,7 @@ class MemoFolderServiceTest {
         Member memberA = memberRepository.save(MemberFixture.memberWithNickname("nickname1"));
         Member memberB = memberRepository.save(MemberFixture.memberWithNickname("nickname2"));
         memoFolderRepository.save(MemoFolder.defaultFolder(memberA));
-        memoFolderRepository.save(MemoFolder.of(memberA, "folderName1"));
+        memoFolderRepository.save(MemoFolder.of(memberA, "폴더이름"));
         memoFolderRepository.save(MemoFolder.defaultFolder(memberB));
 
         // when
@@ -99,6 +99,6 @@ class MemoFolderServiceTest {
         // then
         assertThat(memoFolders).hasSize(2);
         assertThat(memoFolders).extracting("name")
-                .containsExactlyInAnyOrder("기본", "folderName1");
+                .containsExactlyInAnyOrder("기본", "폴더이름");
     }
 }
