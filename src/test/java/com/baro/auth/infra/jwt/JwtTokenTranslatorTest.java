@@ -11,30 +11,37 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 class JwtTokenTranslatorTest {
 
     TimeServer timeServer = new FakeTimeServer(Instant.parse("2024-01-01T13:00:00.00Z"));
     TokenCreator tokenCreator = new FakeTokenCreator("accessToken", "refreshToken");
-    TokenDecrypter tokenDecrypter = new FakeTokenDecrypter(1L);
+    TokenDecrypter tokenDecrypter = new FakeTokenDecrypter();
     JwtTokenTranslator translator = new JwtTokenTranslator(timeServer, tokenCreator, tokenDecrypter);
 
     @Test
-    void id가_주어지면_해당하는_토큰을_반환한다() {
+    void id가_주어지면_해당하는_액세스_토큰을_반환한다() {
         // when
         Token token = translator.encode(1L);
 
         // then
-        assertEquals("accessToken", token.accessToken());
+        assertThat(token.accessToken()).isEqualTo("accessToken");
     }
 
     @Test
-    void 토큰이_주어지면_복호화한다() {
+    void 액세스_토큰이_주어지면_복호화한다() {
         // when
-        Long id = translator.decode("token");
+        Long id = translator.decodeAccessToken("token");
 
         // then
-        assertEquals(1L, id);
+        assertThat(id).isEqualTo(1L);
+    }
+
+    @Test
+    void 정상적인_리프레시_토큰_validation_중에_토큰만료_등의_예외가_발생하지_않는다() {
+        assertThatCode(() -> translator.validateRefreshToken("token"))
+                .doesNotThrowAnyException();
     }
 }

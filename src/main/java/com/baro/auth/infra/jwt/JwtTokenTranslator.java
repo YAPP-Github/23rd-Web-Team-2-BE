@@ -13,16 +13,21 @@ import org.springframework.stereotype.Component;
 public class JwtTokenTranslator implements TokenTranslator {
 
     private final TimeServer timeServer;
-    private final TokenCreator jwtTokenCreator;
-    private final TokenDecrypter jwtTokenDecrypter;
+    private final TokenCreator tokenCreator;
+    private final TokenDecrypter tokenDecrypter;
 
     @Override
     public Token encode(Long id) {
-        return jwtTokenCreator.createToken(id, timeServer.now());
+        return tokenCreator.createToken(id, timeServer.now());
     }
 
     @Override
-    public Long decode(String token) {
-        return jwtTokenDecrypter.decrypt(token);
+    public Long decodeAccessToken(String token) {
+        return tokenDecrypter.decryptAccessToken(token);
+    }
+
+    @Override
+    public void validateRefreshToken(String token) {
+        tokenDecrypter.decryptRefreshToken(token);
     }
 }

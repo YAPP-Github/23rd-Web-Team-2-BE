@@ -11,7 +11,11 @@ public class FakeTokenTranslator implements TokenTranslator {
     }
 
     @Override
-    public Long decode(String token) {
+    public Long decodeAccessToken(String token) {
         return 1L;
+    }
+
+    @Override
+    public void validateRefreshToken(String token) {
     }
 }

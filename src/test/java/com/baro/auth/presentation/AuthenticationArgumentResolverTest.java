@@ -43,7 +43,7 @@ class AuthenticationArgumentResolverTest {
         // given
         String testToken = "token";
         Long authMemberId = 1L;
-        when(tokenTranslator.decode(testToken)).thenReturn(authMemberId);
+        when(tokenTranslator.decodeAccessToken(testToken)).thenReturn(authMemberId);
 
         // when
         Response response = RestAssured

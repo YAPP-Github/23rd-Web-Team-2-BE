@@ -7,6 +7,7 @@ import com.baro.auth.application.oauth.OAuthInfoProvider;
 import java.net.URI;
 
 import com.baro.auth.application.oauth.dto.OAuthMemberInfo;
+import com.baro.auth.domain.AuthMember;
 import com.baro.auth.domain.Token;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -37,7 +38,14 @@ public class AuthController {
     @GetMapping("/oauth/sign-in/{oauthType}")
     ResponseEntity<Token> signIn(@PathVariable String oauthType, @RequestParam String authCode) {
         OAuthMemberInfo memberInfo = oAuthInfoProvider.getMemberInfo(oauthType, authCode);
-        Token token = authService.signIn(new SignInDto(memberInfo.name(), memberInfo.email(), memberInfo.oAuthId(), oauthType));
+        Token token = authService.signIn(
+                new SignInDto(memberInfo.name(), memberInfo.email(), memberInfo.oAuthId(), oauthType));
+        return ResponseEntity.ok().body(token);
+    }
+
+    @GetMapping("/reissue")
+    ResponseEntity<Token> reissue(@RequestParam String refreshToken, AuthMember authMember) {
+        Token token = authService.reissue(authMember.id(), refreshToken);
         return ResponseEntity.ok().body(token);
     }
 }

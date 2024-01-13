@@ -12,6 +12,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 
+import com.baro.auth.application.AuthService;
 import com.baro.auth.infra.oauth.kakao.KakaoOAuthClient;
 import com.baro.auth.infra.oauth.kakao.KakaoRequestApi;
 import com.baro.auth.infra.oauth.kakao.dto.KakaoMemberResponse;
@@ -32,6 +33,9 @@ class OAuthApiDocumentTest extends RestApiDocumentationTest {
 
     @Autowired
     KakaoOAuthClient oAuthClient;
+
+    @Autowired
+    AuthService authService;
 
     @Test
     void oauth_sign_in_url() {
