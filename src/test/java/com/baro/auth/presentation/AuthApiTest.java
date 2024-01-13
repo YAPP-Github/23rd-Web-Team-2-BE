@@ -1,27 +1,25 @@
 package com.baro.auth.presentation;
 
-import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.document;
-import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.Assertions.assertThat;
+import static com.baro.common.acceptance.AcceptanceSteps.성공;
+import static com.baro.common.acceptance.AcceptanceSteps.응답값을_검증한다;
+import static com.baro.common.acceptance.AcceptanceSteps.잘못된_요청;
+import static com.baro.common.acceptance.auth.AuthAcceptanceSteps.Bearer_타입이_아닌_토큰_재발급_요청;
+import static com.baro.common.acceptance.auth.AuthAcceptanceSteps.토큰_재발급_요청;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willDoNothing;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
+import static org.mockito.BDDMockito.willThrow;
 
-import com.baro.auth.application.AuthService;
 import com.baro.auth.application.TokenDecrypter;
-import com.baro.auth.application.dto.SignInDto;
+import com.baro.auth.application.TokenStorage;
 import com.baro.auth.domain.Token;
+import com.baro.auth.exception.jwt.JwtTokenException;
+import com.baro.auth.exception.jwt.JwtTokenExceptionType;
+import com.baro.auth.fixture.OAuthMemberInfoFixture;
 import com.baro.common.RestApiTest;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -29,215 +27,104 @@ public class AuthApiTest extends RestApiTest {
 
     @SpyBean
     TokenDecrypter tokenDecrypter;
-
-    @Autowired
-    AuthService authService;
+    @SpyBean
+    TokenStorage tokenStorage;
 
     @Test
     void reissue_성공() {
         // given
-        var url = "/auth/reissue";
-        SignInDto dto = new SignInDto("name", "email", "1", "kakao");
-        Token token = authService.signIn(dto);
+        var 토큰 = 로그인(OAuthMemberInfoFixture.동균());
 
         // when
-        var response = given(requestSpec).log().all()
-                .filter(document(DEFAULT_REST_DOCS_PATH,
-                        queryParameters(
-                                parameterWithName("refreshToken").description("refreshToken")
-                        ),
-                        responseFields(
-                                fieldWithPath("accessToken").description("액세스 토큰"),
-                                fieldWithPath("refreshToken").description("리프레시 토큰")
-                        ))
-                )
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.accessToken())
-                .queryParam("refreshToken", "Bearer " + token.refreshToken())
-                .when().get(url)
-                .then().log().all()
-                .extract();
+        var 응답 = 토큰_재발급_요청(토큰);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        응답값을_검증한다(응답, 성공);
     }
 
     @Test
     void refresh토큰이_null일경우_예외발생() {
         // given
-        var url = "/auth/reissue";
-        SignInDto dto = new SignInDto("name", "email", "1", "kakao");
-        Token token = authService.signIn(dto);
+        var 토큰 = 로그인(OAuthMemberInfoFixture.태연());
+        var 리프레시_토큰이_없는_토큰 = new Token(토큰.accessToken(), null);
 
         // when
-        var response = given(requestSpec).log().all()
-                .filter(document(DEFAULT_REST_DOCS_PATH,
-                        queryParameters(
-                                parameterWithName("refreshToken").description("refreshToken")
-                        ),
-                        responseFields(
-                                fieldWithPath("errorCode").description("에러 코드"),
-                                fieldWithPath("errorMessage").description("에러 메시지")
-                        ))
-                )
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.accessToken())
-                .queryParam("refreshToken")
-                .when().get(url)
-                .then().log().all()
-                .extract();
+        var 응답 = 토큰_재발급_요청(리프레시_토큰이_없는_토큰);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        응답값을_검증한다(응답, 잘못된_요청);
     }
 
     @Test
     void refresh토큰이_만료된_경우_예외발생() {
         // given
-        var url = "/auth/reissue";
-        SignInDto dto = new SignInDto("name", "email", "1", "kakao");
-        Token token = authService.signIn(dto);
-        setAccessTokenToExpire(token);
+        var 토큰 = 로그인(OAuthMemberInfoFixture.은지());
+        리프레시_토큰_만료();
 
         // when
-        var response = given(requestSpec).log().all()
-                .filter(document(DEFAULT_REST_DOCS_PATH,
-                        queryParameters(
-                                parameterWithName("refreshToken").description("refreshToken")
-                        ),
-                        responseFields(
-                                fieldWithPath("errorCode").description("에러 코드"),
-                                fieldWithPath("errorMessage").description("에러 메시지")
-                        ))
-                )
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.accessToken())
-                .queryParam("refreshToken", token.refreshToken())
-                .when().get(url)
-                .then().log().all()
-                .extract();
+        var 응답 = 토큰_재발급_요청(토큰);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    private void setAccessTokenToExpire(Token token) {
-        willDoNothing().given(tokenDecrypter).decryptRefreshToken(token.refreshToken());
+        응답값을_검증한다(응답, 잘못된_요청);
     }
 
     @Test
     void 저장된_refresh_token이_존재하지_않을_경우_예외발생() {
         // given
-        var url = "/auth/reissue";
-        SignInDto dto = new SignInDto("name", "email", "1", "kakao");
-        Token token = authService.signIn(dto);
-        setAccessTokenNotToExist(token);
+        var 토큰 = 로그인(OAuthMemberInfoFixture.원진());
+        리프레시_토큰이_서버에_존재하지_않는다();
 
         // when
-        var response = given(requestSpec).log().all()
-                .filter(document(DEFAULT_REST_DOCS_PATH,
-                        queryParameters(
-                                parameterWithName("refreshToken").description("refreshToken")
-                        ),
-                        responseFields(
-                                fieldWithPath("errorCode").description("에러 코드"),
-                                fieldWithPath("errorMessage").description("에러 메시지")
-                        ))
-                )
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.accessToken())
-                .queryParam("refreshToken", token.refreshToken())
-                .when().get(url)
-                .then().log().all()
-                .extract();
+        var 응답 = 토큰_재발급_요청(토큰);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    private void setAccessTokenNotToExist(Token token) {
-        given(tokenDecrypter.decryptAccessToken("Bearer " + token.accessToken())).willReturn(Long.MAX_VALUE);
+        응답값을_검증한다(응답, 잘못된_요청);
     }
 
     @Test
     void 클라이언트와_토큰이_일치하지_않을_경우_예외발생() {
         // given
-        var url = "/auth/reissue";
-        SignInDto dtoA = new SignInDto("name", "email", "1", "kakao");
-        SignInDto dtoB = new SignInDto("name", "email", "2", "naver");
-        Token tokenA = authService.signIn(dtoA);
-        Token tokenB = authService.signIn(dtoB);
+        var 토큰 = 로그인(OAuthMemberInfoFixture.준희());
+        var 뒤섞인_토큰 = new Token(토큰.accessToken(), 토큰.refreshToken() + "a");
 
         // when
-        var response = given(requestSpec).log().all()
-                .filter(document(DEFAULT_REST_DOCS_PATH,
-                        queryParameters(
-                                parameterWithName("refreshToken").description("refreshToken")
-                        ),
-                        responseFields(
-                                fieldWithPath("errorCode").description("에러 코드"),
-                                fieldWithPath("errorMessage").description("에러 메시지")
-                        ))
-                )
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenA.accessToken())
-                .queryParam("refreshToken", tokenB.refreshToken())
-                .when().get(url)
-                .then().log().all()
-                .extract();
+        var 응답 = 토큰_재발급_요청(뒤섞인_토큰);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        응답값을_검증한다(응답, 잘못된_요청);
     }
 
     @Test
     void 올바르지_않은_리프레시_토큰의_경우_예외발생() {
         // given
-        var url = "/auth/reissue";
-        SignInDto dto = new SignInDto("name", "email", "1", "kakao");
-        Token token = authService.signIn(dto);
+        var 토큰 = 로그인(OAuthMemberInfoFixture.유빈());
+        var 올바르지_않은_리프레시_토큰이_담긴_토큰 = new Token(토큰.accessToken(), "올바르지 않은 리프레시 토큰");
 
         // when
-        var response = given(requestSpec).log().all()
-                .filter(document(DEFAULT_REST_DOCS_PATH,
-                        queryParameters(
-                                parameterWithName("refreshToken").description("refreshToken")
-                        ),
-                        responseFields(
-                                fieldWithPath("errorCode").description("에러 코드"),
-                                fieldWithPath("errorMessage").description("에러 메시지")
-                        ))
-                )
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.accessToken())
-                .queryParam("refreshToken", "invalidRefreshToken")
-                .when().get(url)
-                .then().log().all()
-                .extract();
+        var 응답 = 토큰_재발급_요청(올바르지_않은_리프레시_토큰이_담긴_토큰);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        응답값을_검증한다(응답, 잘못된_요청);
     }
 
     @Test
     void 리프레시_토큰이_Bearer_타입이_아닌경우_예외발생() {
         // given
-        var url = "/auth/reissue";
-        SignInDto dto = new SignInDto("name", "email", "1", "kakao");
-        Token token = authService.signIn(dto);
+        var 토큰 = 로그인(OAuthMemberInfoFixture.태연());
 
         // when
-        var response = given(requestSpec).log().all()
-                .filter(document(DEFAULT_REST_DOCS_PATH,
-                        queryParameters(
-                                parameterWithName("refreshToken").description("refreshToken")
-                        ),
-                        responseFields(
-                                fieldWithPath("errorCode").description("에러 코드"),
-                                fieldWithPath("errorMessage").description("에러 메시지")
-                        ))
-                )
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.accessToken())
-                .queryParam("refreshToken", token.refreshToken())
-                .when().get(url)
-                .then().log().all()
-                .extract();
+        var 응답 = Bearer_타입이_아닌_토큰_재발급_요청(토큰);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        응답값을_검증한다(응답, 잘못된_요청);
+    }
+
+    private void 리프레시_토큰_만료() {
+        willThrow(new JwtTokenException(JwtTokenExceptionType.EXPIRED_JWT_TOKEN)).given(tokenDecrypter)
+                .decryptRefreshToken(anyString());
+    }
+
+    private void 리프레시_토큰이_서버에_존재하지_않는다() {
+        given(tokenStorage.findRefreshToken(anyString())).willReturn(null);
     }
 }

@@ -1,194 +1,104 @@
 package com.baro.memofolder.presentation;
 
-import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.document;
-import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static com.baro.common.acceptance.AcceptanceSteps.생성됨;
+import static com.baro.common.acceptance.AcceptanceSteps.성공;
+import static com.baro.common.acceptance.AcceptanceSteps.응답값을_검증한다;
+import static com.baro.common.acceptance.AcceptanceSteps.응답의_Location_헤더가_존재한다;
+import static com.baro.common.acceptance.AcceptanceSteps.잘못된_요청;
+import static com.baro.common.acceptance.memofolder.MemoFolderAcceptanceSteps.메모_폴더_불러오기_요청;
+import static com.baro.common.acceptance.memofolder.MemoFolderAcceptanceSteps.메모_폴더_생성_요청;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doThrow;
 
-import com.baro.auth.application.TokenTranslator;
+import com.baro.auth.domain.Token;
+import com.baro.auth.fixture.OAuthMemberInfoFixture;
 import com.baro.common.RestApiTest;
-import com.baro.member.domain.Member;
-import com.baro.member.fixture.MemberFixture;
-import com.baro.memofolder.domain.MemoFolder;
+import com.baro.member.domain.MemberRepository;
+import com.baro.member.exception.MemberException;
+import com.baro.member.exception.MemberExceptionType;
 import com.baro.memofolder.presentation.dto.SaveMemoFolderRequest;
-import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 class MemoFolderApiTest extends RestApiTest {
 
-    private static final String SET_UP_ACCESS_TOKEN = "accessToken";
-
-    @MockBean
-    TokenTranslator tokenTranslator;
+    @SpyBean
+    MemberRepository memberRepository;
 
     @Test
     void 메모_폴더를_생성한다() {
         // given
-        var url = "/memo-folders";
-        var request = new SaveMemoFolderRequest("회사생활👔");
-        Member savedMember = memberRepository.save(MemberFixture.memberWithNickname("바로"));
-        setTokenDecrypt(savedMember);
+        var 요청_바디 = new SaveMemoFolderRequest("회사생활👔");
+        var 토큰 = 로그인(OAuthMemberInfoFixture.태연());
 
         // when
-        var response = given(requestSpec).log().all()
-                .filter(document(DEFAULT_REST_DOCS_PATH,
-                        requestHeaders(
-                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
-                        ),
-                        responseHeaders(
-                                headerWithName(HttpHeaders.LOCATION).description("생성된 폴더 경로")
-                        ),
-                        requestFields(
-                                fieldWithPath("folderName").description("폴더 이름")
-                        ))
-                ).header(HttpHeaders.AUTHORIZATION, SET_UP_ACCESS_TOKEN).body(request)
-                .when().post(url)
-                .then().log().all()
-                .extract();
+        var 응답 = 메모_폴더_생성_요청(토큰, 요청_바디);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        String location = new String(response.header("Location").getBytes(StandardCharsets.UTF_8));
-        assertThat(location).isNotNull();
+        응답값을_검증한다(응답, 생성됨);
+        응답의_Location_헤더가_존재한다(응답);
     }
 
     @Test
     void 중복되는_이름의_폴더를_생성하는_경우_예외를_반환한다() {
         // given
-        var url = "/memo-folders";
-        String duplicationName = "회사생활👔";
-        var request = new SaveMemoFolderRequest(duplicationName);
-        Member savedMember = memberRepository.save(MemberFixture.memberWithNickname("바로"));
-        setTokenDecrypt(savedMember);
-        memoFolderRepository.save(MemoFolder.of(savedMember, duplicationName));
+        var 요청_바디 = new SaveMemoFolderRequest("회사생활👔");
+        var 토큰 = 로그인(OAuthMemberInfoFixture.유빈());
+        메모_폴더_생성_요청(토큰, 요청_바디);
 
         // when
-        var response = given(requestSpec).log().all()
-                .filter(document(DEFAULT_REST_DOCS_PATH,
-                        requestHeaders(
-                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
-                        ),
-                        requestFields(
-                                fieldWithPath("folderName").description("폴더 이름")
-                        ),
-                        responseFields(
-                                fieldWithPath("errorCode").description("에러 코드"),
-                                fieldWithPath("errorMessage").description("에러 메시지")
-                        ))
-                ).header(HttpHeaders.AUTHORIZATION, SET_UP_ACCESS_TOKEN).body(request)
-                .when().post(url)
-                .then().log().all()
-                .extract();
+        var 응답 = 메모_폴더_생성_요청(토큰, 요청_바디);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        응답값을_검증한다(응답, 잘못된_요청);
     }
 
     @Test
     void 존재하지_않는_멤버가_폴더를_생성하는_경우_예외를_반환한다() {
         // given
-        var url = "/memo-folders";
-        var request = new SaveMemoFolderRequest("회사생활👔");
-        setTokenDecryptAsNotExistMember();
+        var 요청_바디 = new SaveMemoFolderRequest("회사생활👔");
+        var 동균 = OAuthMemberInfoFixture.동균();
+        var 토큰 = 로그인(동균);
+        멤버가_존재하지_않는다();
 
         // when
-        var response = given(requestSpec).log().all()
-                .filter(document(DEFAULT_REST_DOCS_PATH,
-                        requestHeaders(
-                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
-                        ),
-                        requestFields(
-                                fieldWithPath("folderName").description("폴더 이름")
-                        ),
-                        responseFields(
-                                fieldWithPath("errorCode").description("에러 코드"),
-                                fieldWithPath("errorMessage").description("에러 메시지")
-                        ))
-                ).header(HttpHeaders.AUTHORIZATION, SET_UP_ACCESS_TOKEN).body(request)
-                .when().post(url)
-                .then().log().all()
-                .extract();
+        var 응답 = 메모_폴더_생성_요청(토큰, 요청_바디);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        응답값을_검증한다(응답, 잘못된_요청);
     }
 
     @Test
     void 최대치_이름_길이를_초과하는_폴더를_생성하는_경우_예외를_반환한다() {
         // given
-        var url = "/memo-folders";
-        var request = new SaveMemoFolderRequest("회사생활은재미없겠지만해야겠지👔👔👔");
-        Member savedMember = memberRepository.save(MemberFixture.memberWithNickname("바로"));
-        setTokenDecrypt(savedMember);
+        var 요청_바디 = new SaveMemoFolderRequest("회사생활은재미없겠지만해야겠지👔👔👔");
+        var 토큰 = 로그인(OAuthMemberInfoFixture.은지());
 
         // when
-        var response = given(requestSpec).log().all()
-                .filter(document(DEFAULT_REST_DOCS_PATH,
-                        requestHeaders(
-                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
-                        ),
-                        requestFields(
-                                fieldWithPath("folderName").description("폴더 이름")
-                        ),
-                        responseFields(
-                                fieldWithPath("errorCode").description("에러 코드"),
-                                fieldWithPath("errorMessage").description("에러 메시지")
-                        ))
-                ).header(HttpHeaders.AUTHORIZATION, SET_UP_ACCESS_TOKEN).body(request)
-                .when().post(url)
-                .then().log().all()
-                .extract();
+        var 응답 = 메모_폴더_생성_요청(토큰, 요청_바디);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        응답값을_검증한다(응답, 잘못된_요청);
     }
 
     @Test
     void 메모_폴더를_불러온다() {
         // given
-        var url = "/memo-folders";
-        Member savedMember = memberRepository.save(MemberFixture.memberWithNickname("바로"));
-        setTokenDecrypt(savedMember);
-        memoFolderRepository.save(MemoFolder.defaultFolder(savedMember));
-        memoFolderRepository.save(MemoFolder.of(savedMember, "회사생활👔"));
+        Token 토큰 = 로그인(OAuthMemberInfoFixture.원진());
+        메모_폴더_생성_요청(토큰, new SaveMemoFolderRequest("회사생활👔"));
 
         // when
-        var response = given(requestSpec).log().all()
-                .filter(document(DEFAULT_REST_DOCS_PATH,
-                        requestHeaders(
-                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
-                        ),
-                        responseFields(
-                                fieldWithPath("[].id").description("폴더 id"),
-                                fieldWithPath("[].name").description("폴더 이름")
-                        ))
-                ).header(HttpHeaders.AUTHORIZATION, SET_UP_ACCESS_TOKEN)
-                .when().get(url)
-                .then().log().all()
-                .extract();
+        var 응답 = 메모_폴더_불러오기_요청(토큰);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        응답값을_검증한다(응답, 성공);
     }
 
-    void setTokenDecrypt(Member savedMember) {
-        given(tokenTranslator.decodeAccessToken(SET_UP_ACCESS_TOKEN)).willReturn(savedMember.getId());
-    }
-
-    void setTokenDecryptAsNotExistMember() {
-        given(tokenTranslator.decodeAccessToken(SET_UP_ACCESS_TOKEN)).willReturn(9999L);
+    void 멤버가_존재하지_않는다() {
+        doThrow(new MemberException(MemberExceptionType.NOT_EXIST_MEMBER)).when(memberRepository).getById(anyLong());
     }
 }
