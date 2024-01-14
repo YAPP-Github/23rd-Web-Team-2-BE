@@ -36,18 +36,17 @@ public class TemporalMemoService {
     }
 
     public void updateTemporalMemo(UpdateTemporalMemoCommand command) {
-        Member member = memberRepository.getById(command.memberId());
         TemporalMemo temporalMemo = temporalMemoRepository.getById(command.temporalMemoId());
-        temporalMemo.matchOwner(member);
+        temporalMemo.matchOwner(command.memberId());
         temporalMemo.updateContent(MemoContent.from(command.content()));
     }
 
     public ArchiveTemporalMemoResult archiveTemporalMemo(ArchiveTemporalMemoCommand command) {
         Member member = memberRepository.getById(command.memberId());
         TemporalMemo temporalMemo = temporalMemoRepository.getById(command.temporalMemoId());
-        temporalMemo.matchOwner(member);
+        temporalMemo.matchOwner(member.getId());
         MemoFolder memoFolder = memoFolderRepository.getById(command.memoFolderId());
-        memoFolder.matchOwner(member);
+        memoFolder.matchOwner(member.getId());
 
         Memo memo = memoRepository.save(Memo.of(member, memoFolder, temporalMemo.getArchivingContent()));
         temporalMemo.archivedAsMemo(memo);

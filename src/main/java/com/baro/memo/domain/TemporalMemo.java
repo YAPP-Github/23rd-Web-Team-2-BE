@@ -67,8 +67,8 @@ public class TemporalMemo extends BaseEntity {
         this.content = memoContent;
     }
 
-    public void matchOwner(Member member) {
-        if (!Objects.equals(this.member.getId(), member.getId())) {
+    public void matchOwner(Long memberId) {
+        if (!Objects.equals(this.member.getId(), memberId)) {
             throw new TemporalMemoException(TemporalMemoExceptionType.NOT_MATCH_OWNER);
         }
     }

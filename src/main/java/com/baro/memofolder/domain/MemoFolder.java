@@ -14,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -52,8 +53,8 @@ public class MemoFolder extends BaseEntity {
         return new MemoFolder(member, MemoFolderName.from(name));
     }
 
-    public void matchOwner(Member member) {
-        if (!this.member.getId().equals(member.getId())) {
+    public void matchOwner(Long memberId) {
+        if (!Objects.equals(this.member.getId(), memberId)) {
             throw new MemoFolderException(MemoFolderExceptionType.NOT_MATCH_OWNER);
         }
     }
