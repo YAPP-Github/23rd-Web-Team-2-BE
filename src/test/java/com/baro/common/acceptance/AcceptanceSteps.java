@@ -11,7 +11,6 @@ public class AcceptanceSteps {
 
     public static final HttpStatus 성공 = HttpStatus.OK;
     public static final HttpStatus 생성됨 = HttpStatus.CREATED;
-    public static final HttpStatus 응답값_없음 = HttpStatus.NO_CONTENT;
     public static final HttpStatus 리디렉션 = HttpStatus.MOVED_PERMANENTLY;
     public static final HttpStatus 잘못된_요청 = HttpStatus.BAD_REQUEST;
 

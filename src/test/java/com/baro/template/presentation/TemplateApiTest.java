@@ -3,7 +3,6 @@ package com.baro.template.presentation;
 import static com.baro.auth.fixture.OAuthMemberInfoFixture.동균;
 import static com.baro.auth.fixture.OAuthMemberInfoFixture.유빈;
 import static com.baro.common.acceptance.AcceptanceSteps.성공;
-import static com.baro.common.acceptance.AcceptanceSteps.응답값_없음;
 import static com.baro.common.acceptance.AcceptanceSteps.응답값을_검증한다;
 import static com.baro.common.acceptance.AcceptanceSteps.응답의_개수를_검증한다;
 import static com.baro.common.acceptance.AcceptanceSteps.잘못된_요청;
@@ -85,7 +84,8 @@ class TemplateApiTest extends RestApiTest {
         var 응답 = 템플릿_조회시_응답값이_없는_요청(토큰, 카테고리, 정렬);
 
         // then
-        응답값을_검증한다(응답, 응답값_없음);
+        응답값을_검증한다(응답, 성공);
+        응답의_개수를_검증한다(응답, rootPath, 0);
     }
 
     private void 템플릿_데이터_준비(List<Template> templates) {

@@ -32,9 +32,6 @@ public class TemplateController {
         List<FindTemplateResult> result = templateService.findTemplates(
                 new FindTemplateQuery(Category.getCategory(categoryName), sort));
 
-        if (result.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
         return ResponseEntity.ok().body(result);
     }
 }
