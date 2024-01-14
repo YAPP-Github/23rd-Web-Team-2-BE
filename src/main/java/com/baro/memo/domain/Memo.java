@@ -3,8 +3,10 @@ package com.baro.memo.domain;
 import com.baro.common.entity.BaseEntity;
 import com.baro.member.domain.Member;
 import com.baro.memofolder.domain.MemoFolder;
+import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
@@ -36,6 +38,17 @@ public class Memo extends BaseEntity {
     @JoinColumn(name = "memo_folder_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private MemoFolder memoFolder;
 
-    @Column(length = 512, nullable = false)
-    private String content;
+    @Embedded
+    @AttributeOverride(name = "content", column = @Column(name = "content", nullable = false))
+    private MemoContent content;
+
+    private Memo(Member member, MemoFolder memoFolder, MemoContent content) {
+        this.member = member;
+        this.memoFolder = memoFolder;
+        this.content = content;
+    }
+
+    public static Memo of(Member member, MemoFolder memoFolder, MemoContent content) {
+        return new Memo(member, memoFolder, content);
+    }
 }
