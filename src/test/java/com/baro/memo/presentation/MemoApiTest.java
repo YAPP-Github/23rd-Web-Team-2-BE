@@ -37,7 +37,7 @@ public class MemoApiTest extends RestApiTest {
     }
 
     @Test
-    void create_temporal_memo_over_max_size_content() {
+    void 최대치_이름_길이를_초과하는_끄적이는_메모_생성하는_경우_예외를_반환한다() {
         // given
         var 토큰 = 로그인(태연());
         var 요청_바디 = OVER_SIZE_MEMO_CONTENT;
