@@ -2,6 +2,7 @@ package com.baro.memo.domain;
 
 import com.baro.common.entity.BaseEntity;
 import com.baro.member.domain.Member;
+import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Embedded;
@@ -31,18 +32,19 @@ public class TemporalMemo extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Member member;
 
-    @Column(nullable = false)
     @Embedded
+    @AttributeOverride(name = "content", column = @Column(name = "content", nullable = false))
     private MemoContent content;
 
-    @Column(length = 512)
-    private String correctionContent;
+    @Embedded
+    @AttributeOverride(name = "content", column = @Column(name = "correction_content"))
+    private MemoContent correctionContent;
 
     @OneToOne
     @JoinColumn(name = "memo_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Memo memo;
 
-    public TemporalMemo(Long id, Member member, MemoContent content, String correctionContent, Memo memo) {
+    public TemporalMemo(Long id, Member member, MemoContent content, MemoContent correctionContent, Memo memo) {
         this.id = id;
         this.member = member;
         this.content = content;
@@ -50,7 +52,7 @@ public class TemporalMemo extends BaseEntity {
         this.memo = memo;
     }
 
-    public TemporalMemo(Member member, MemoContent content, String correctionContent, Memo memo) {
+    public TemporalMemo(Member member, MemoContent content, MemoContent correctionContent, Memo memo) {
         this(null, member, content, correctionContent, memo);
     }
 
