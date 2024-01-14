@@ -3,9 +3,12 @@ package com.baro.memo.presentation;
 
 import com.baro.auth.domain.AuthMember;
 import com.baro.memo.application.TemporalMemoService;
+import com.baro.memo.application.dto.ArchiveTemporalMemoCommand;
+import com.baro.memo.application.dto.ArchiveTemporalMemoResult;
 import com.baro.memo.application.dto.SaveTemporalMemoCommand;
 import com.baro.memo.application.dto.SaveTemporalMemoResult;
 import com.baro.memo.application.dto.UpdateTemporalMemoCommand;
+import com.baro.memo.presentation.dto.ArchiveTemporalMemoRequest;
 import com.baro.memo.presentation.dto.SaveTemporalMemoRequest;
 import com.baro.memo.presentation.dto.UpdateTemporalMemoRequest;
 import java.net.URI;
@@ -48,5 +51,22 @@ public class TemporalMemoController {
                 request.content());
         temporalMemoService.updateTemporalMemo(command);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{temporalMemoId}/archive")
+    public ResponseEntity<Void> archiveAsMemo(
+            AuthMember authMember,
+            @RequestBody ArchiveTemporalMemoRequest request,
+            @PathVariable Long temporalMemoId
+    ) {
+        ArchiveTemporalMemoCommand command = new ArchiveTemporalMemoCommand(authMember.id(), temporalMemoId,
+                request.memoFolderId());
+        ArchiveTemporalMemoResult result = temporalMemoService.archiveTemporalMemo(command);
+
+        URI location = ServletUriComponentsBuilder.fromPath("/memos")
+                .path("/{id}")
+                .buildAndExpand(result.id())
+                .toUri();
+        return ResponseEntity.created(location).build();
     }
 }

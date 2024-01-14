@@ -20,6 +20,10 @@ import org.springframework.http.MediaType;
 
 public class MemoFolderAcceptanceSteps {
 
+
+    public static final SaveMemoFolderRequest 폴더_이름_바디 = new SaveMemoFolderRequest("회사생활👔");
+    public static final SaveMemoFolderRequest 폴더_이름_길이_초과_바디 = new SaveMemoFolderRequest("회사생활은재미없겠지만해야겠지👔👔👔");
+
     public static ExtractableResponse<Response> 메모_폴더_생성_요청(Token 토큰, SaveMemoFolderRequest 바디) {
         var url = "/memo-folders";
 
@@ -40,6 +44,19 @@ public class MemoFolderAcceptanceSteps {
                 .when().post(url)
                 .then().log().all()
                 .extract();
+    }
+
+    public static Long 메모_폴더를_생성_하고_ID를_반환한다(Token 토큰, SaveMemoFolderRequest 바디) {
+        String location = given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken()).body(바디)
+                .when().post("/memo-folders")
+                .then().log().all()
+                .extract()
+                .response().header(HttpHeaders.LOCATION);
+
+        String[] split = location.split("/");
+        return Long.parseLong(split[split.length - 1]);
     }
 
     public static ExtractableResponse<Response> 잘못된_메모_폴더_생성_요청(Token 토큰, SaveMemoFolderRequest 바디) {
