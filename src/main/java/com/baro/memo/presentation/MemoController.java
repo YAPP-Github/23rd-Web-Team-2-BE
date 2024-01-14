@@ -23,7 +23,7 @@ public class MemoController {
     private final MemoService memoService;
 
     @PostMapping("/temporal")
-    public ResponseEntity<Void> saveMemo(AuthMember authMember, @RequestBody SaveTemporalMemoRequest request) {
+    public ResponseEntity<Void> saveTemporalMemo(AuthMember authMember, @RequestBody SaveTemporalMemoRequest request) {
         SaveTemporalMemoCommand command = new SaveTemporalMemoCommand(authMember.id(), request.content());
         SaveTemporalMemoResult result = memoService.saveTemporalMemo(command);
 
