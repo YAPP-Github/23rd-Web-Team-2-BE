@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 @Service
-public class MemoService {
+public class TemporalMemoService {
 
     private final MemoRepository memoRepository;
     private final TemporalMemoRepository temporalMemoRepository;

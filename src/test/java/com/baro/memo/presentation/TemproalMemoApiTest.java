@@ -8,11 +8,11 @@ import static com.baro.common.acceptance.AcceptanceSteps.응답값_없음;
 import static com.baro.common.acceptance.AcceptanceSteps.응답값을_검증한다;
 import static com.baro.common.acceptance.AcceptanceSteps.응답의_Location_헤더가_존재한다;
 import static com.baro.common.acceptance.AcceptanceSteps.잘못된_요청;
-import static com.baro.common.acceptance.memo.MemoAcceptanceSteps.끄적이는메모_생성_요청;
-import static com.baro.common.acceptance.memo.MemoAcceptanceSteps.끄적이는메모_수정_요청;
-import static com.baro.common.acceptance.memo.MemoAcceptanceSteps.끄적이는메모를_생성하고_ID를_반환한다;
-import static com.baro.common.acceptance.memo.MemoAcceptanceSteps.잘못된_끄적이는_메모_생성_요청;
-import static com.baro.common.acceptance.memo.MemoAcceptanceSteps.잘못된_끄적이는메모_수정_요청;
+import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는메모_생성_요청;
+import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는메모_수정_요청;
+import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는메모를_생성하고_ID를_반환한다;
+import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.잘못된_끄적이는_메모_생성_요청;
+import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.잘못된_끄적이는메모_수정_요청;
 
 import com.baro.common.RestApiTest;
 import com.baro.memo.presentation.dto.SaveTemporalMemoRequest;
@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
-public class MemoApiTest extends RestApiTest {
+public class TemproalMemoApiTest extends RestApiTest {
 
     private static final String 크기_초과_컨텐츠 = "끄적이는 메모 컨텐츠".repeat(500);
     private static final SaveTemporalMemoRequest 끄적이는_메모_바디 = new SaveTemporalMemoRequest("끄적이는 메모 컨텐츠");

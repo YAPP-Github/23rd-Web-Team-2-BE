@@ -19,7 +19,7 @@ import io.restassured.response.Response;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
-public class MemoAcceptanceSteps {
+public class TemporalMemoAcceptanceSteps {
 
     public static ExtractableResponse<Response> 끄적이는메모_생성_요청(Token 토큰, SaveTemporalMemoRequest 바디) {
         return RestAssured.given(requestSpec).log().all()
@@ -35,7 +35,7 @@ public class MemoAcceptanceSteps {
                         ))
                 ).contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken()).body(바디)
-                .when().post("/memos/temporal")
+                .when().post("/temporal-memos")
                 .then().log().all()
                 .extract();
     }
@@ -51,7 +51,7 @@ public class MemoAcceptanceSteps {
                                 fieldWithPath("errorMessage").description("에러 메시지")
                         ))
                 ).header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken()).body(바디)
-                .when().post("/memos/temporal")
+                .when().post("/temporal-memos")
                 .then().log().all()
                 .extract();
     }
@@ -70,7 +70,7 @@ public class MemoAcceptanceSteps {
                         ))
                 ).contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken()).body(바디)
-                .when().post("/memos/temporal")
+                .when().post("/temporal-memos")
                 .then().log().all()
                 .extract()
                 .response().header(HttpHeaders.LOCATION);
@@ -90,7 +90,7 @@ public class MemoAcceptanceSteps {
                         ))
                 ).contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken()).body(바디)
-                .when().patch("/memos/temporal/{temporalMemoId}", 끄적이는_메모_ID)
+                .when().patch("/temporal-memos/{temporalMemoId}", 끄적이는_메모_ID)
                 .then().log().all()
                 .extract();
     }
@@ -111,7 +111,7 @@ public class MemoAcceptanceSteps {
                         ))
                 ).contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken()).body(바디)
-                .when().patch("/memos/temporal/{temporalMemoId}", 끄적이는_메모_ID)
+                .when().patch("/temporal-memos/{temporalMemoId}", 끄적이는_메모_ID)
                 .then().log().all()
                 .extract();
     }

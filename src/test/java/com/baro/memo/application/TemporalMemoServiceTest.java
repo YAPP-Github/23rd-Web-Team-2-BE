@@ -17,6 +17,8 @@ import com.baro.memo.domain.TemporalMemo;
 import com.baro.memo.domain.TemporalMemoRepository;
 import com.baro.memo.exception.MemoException;
 import com.baro.memo.exception.MemoExceptionType;
+import com.baro.memo.exception.TemporalMemoException;
+import com.baro.memo.exception.TemporalMemoExceptionType;
 import com.baro.memo.fake.FakeMemoRepository;
 import com.baro.memo.fake.FakeTemporalMemoRepository;
 import com.baro.memofolder.domain.MemoFolder;
@@ -32,9 +34,9 @@ import org.junit.jupiter.api.Test;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
-class MemoServiceTest {
+class TemporalMemoServiceTest {
 
-    private MemoService memoService;
+    private TemporalMemoService temporalMemoService;
     private MemberRepository memberRepository;
     private TemporalMemoRepository temporalMemoRepository;
     private MemoFolderRepository memoFolderRepository;
@@ -46,7 +48,8 @@ class MemoServiceTest {
         temporalMemoRepository = new FakeTemporalMemoRepository();
         memoFolderRepository = new FakeMemoFolderRepository();
         memoRepository = new FakeMemoRepository();
-        memoService = new MemoService(memoRepository, temporalMemoRepository, memberRepository, memoFolderRepository);
+        temporalMemoService = new TemporalMemoService(memoRepository, temporalMemoRepository, memberRepository,
+                memoFolderRepository);
     }
 
     @Test
@@ -57,7 +60,7 @@ class MemoServiceTest {
         SaveTemporalMemoCommand command = new SaveTemporalMemoCommand(memberId, content);
 
         // when
-        memoService.saveTemporalMemo(command);
+        temporalMemoService.saveTemporalMemo(command);
 
         // then
         List<TemporalMemo> all = temporalMemoRepository.findAll();
@@ -76,7 +79,7 @@ class MemoServiceTest {
         UpdateTemporalMemoCommand command = new UpdateTemporalMemoCommand(memberId, temporalMemoId, updateContent);
 
         // when
-        memoService.updateTemporalMemo(command);
+        temporalMemoService.updateTemporalMemo(command);
 
         // then
         TemporalMemo updatedTemporalMemo = temporalMemoRepository.getById(temporalMemoId);
@@ -95,10 +98,10 @@ class MemoServiceTest {
         UpdateTemporalMemoCommand command = new UpdateTemporalMemoCommand(otherMemberId, temporalMemoId, updateContent);
 
         // when & then
-        assertThatThrownBy(() -> memoService.updateTemporalMemo(command))
-                .isInstanceOf(MemoException.class)
+        assertThatThrownBy(() -> temporalMemoService.updateTemporalMemo(command))
+                .isInstanceOf(TemporalMemoException.class)
                 .extracting("exceptionType")
-                .isEqualTo(MemoExceptionType.NOT_MATCH_OWNER);
+                .isEqualTo(TemporalMemoExceptionType.NOT_MATCH_OWNER);
     }
 
     @Test
@@ -112,7 +115,7 @@ class MemoServiceTest {
         UpdateTemporalMemoCommand command = new UpdateTemporalMemoCommand(memberId, temporalMemoId, updateContent);
 
         // when & then
-        assertThatThrownBy(() -> memoService.updateTemporalMemo(command))
+        assertThatThrownBy(() -> temporalMemoService.updateTemporalMemo(command))
                 .isInstanceOf(MemoException.class)
                 .extracting("exceptionType")
                 .isEqualTo(MemoExceptionType.OVER_MAX_SIZE_CONTENT);
@@ -146,7 +149,7 @@ class MemoServiceTest {
                 memoFolderId);
 
         // when
-        memoService.archiveTemporalMemo(command);
+        temporalMemoService.archiveTemporalMemo(command);
 
         // then
         List<Memo> allMemos = memoRepository.findAll();
@@ -168,10 +171,10 @@ class MemoServiceTest {
                 memoFolderId);
 
         // when & then
-        assertThatThrownBy(() -> memoService.archiveTemporalMemo(command))
-                .isInstanceOf(MemoException.class)
+        assertThatThrownBy(() -> temporalMemoService.archiveTemporalMemo(command))
+                .isInstanceOf(TemporalMemoException.class)
                 .extracting("exceptionType")
-                .isEqualTo(MemoExceptionType.NOT_MATCH_OWNER);
+                .isEqualTo(TemporalMemoExceptionType.NOT_MATCH_OWNER);
     }
 
     @Test
@@ -185,7 +188,7 @@ class MemoServiceTest {
                 notExistMemoFolderId);
 
         // when & then
-        assertThatThrownBy(() -> memoService.archiveTemporalMemo(command))
+        assertThatThrownBy(() -> temporalMemoService.archiveTemporalMemo(command))
                 .isInstanceOf(MemoFolderException.class)
                 .extracting("exceptionType")
                 .isEqualTo(MemoFolderExceptionType.NOT_EXIST_MEMO_FOLDER);
@@ -203,7 +206,7 @@ class MemoServiceTest {
                 memoFolderId);
 
         // when & then
-        assertThatThrownBy(() -> memoService.archiveTemporalMemo(command))
+        assertThatThrownBy(() -> temporalMemoService.archiveTemporalMemo(command))
                 .isInstanceOf(MemoFolderException.class)
                 .extracting("exceptionType")
                 .isEqualTo(MemoFolderExceptionType.NOT_MATCH_OWNER);

@@ -2,8 +2,8 @@ package com.baro.memo.fake;
 
 import com.baro.memo.domain.TemporalMemo;
 import com.baro.memo.domain.TemporalMemoRepository;
-import com.baro.memo.exception.MemoException;
-import com.baro.memo.exception.MemoExceptionType;
+import com.baro.memo.exception.TemporalMemoException;
+import com.baro.memo.exception.TemporalMemoExceptionType;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -42,6 +42,6 @@ public class FakeTemporalMemoRepository implements TemporalMemoRepository {
         return temporalMemos.values().stream()
                 .filter(temporalMemo -> temporalMemo.getId().equals(id))
                 .findFirst()
-                .orElseThrow(() -> new MemoException(MemoExceptionType.NOT_EXIST_MEMO));
+                .orElseThrow(() -> new TemporalMemoException(TemporalMemoExceptionType.NOT_EXIST_TEMPORAL_MEMO));
     }
 }

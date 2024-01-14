@@ -2,8 +2,8 @@ package com.baro.memo.infrastructure;
 
 import com.baro.memo.domain.TemporalMemo;
 import com.baro.memo.domain.TemporalMemoRepository;
-import com.baro.memo.exception.MemoException;
-import com.baro.memo.exception.MemoExceptionType;
+import com.baro.memo.exception.TemporalMemoException;
+import com.baro.memo.exception.TemporalMemoExceptionType;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -27,6 +27,6 @@ public class TemporalMemoRepositoryImpl implements TemporalMemoRepository {
     @Override
     public TemporalMemo getById(Long id) {
         return temporalMemoJpaRepository.findById(id)
-                .orElseThrow(() -> new MemoException(MemoExceptionType.NOT_EXIST_MEMO));
+                .orElseThrow(() -> new TemporalMemoException(TemporalMemoExceptionType.NOT_EXIST_TEMPORAL_MEMO));
     }
 }
