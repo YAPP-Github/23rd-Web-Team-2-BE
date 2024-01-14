@@ -5,10 +5,14 @@ import com.baro.auth.domain.AuthMember;
 import com.baro.memo.application.MemoService;
 import com.baro.memo.application.dto.SaveTemporalMemoCommand;
 import com.baro.memo.application.dto.SaveTemporalMemoResult;
+import com.baro.memo.application.dto.UpdateTemporalMemoCommand;
 import com.baro.memo.presentation.dto.SaveTemporalMemoRequest;
+import com.baro.memo.presentation.dto.UpdateTemporalMemoRequest;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,5 +36,17 @@ public class MemoController {
                 .buildAndExpand(result.id())
                 .toUri();
         return ResponseEntity.created(location).build();
+    }
+
+    @PatchMapping("/temporal/{temporalMemoId}")
+    public ResponseEntity<Void> updateTemporalMemo(
+            AuthMember authMember,
+            @RequestBody UpdateTemporalMemoRequest request,
+            @PathVariable Long temporalMemoId
+    ) {
+        UpdateTemporalMemoCommand command = new UpdateTemporalMemoCommand(authMember.id(), temporalMemoId,
+                request.content());
+        memoService.updateTemporalMemo(command);
+        return ResponseEntity.noContent().build();
     }
 }
