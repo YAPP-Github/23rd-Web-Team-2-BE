@@ -34,4 +34,9 @@ public class FakeTemporalMemoRepository implements TemporalMemoRepository {
     public List<TemporalMemo> findAll() {
         return List.copyOf(temporalMemos.values());
     }
+
+    @Override
+    public TemporalMemo getById(Long id) {
+        return temporalMemos.get(id);
+    }
 }
