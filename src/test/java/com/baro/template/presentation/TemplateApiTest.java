@@ -26,9 +26,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 @SuppressWarnings("NonAsciiCharacters")
 class TemplateApiTest extends RestApiTest {
 
+    private final String rootPath = "";
     @Autowired
     private TemplateRepository templateRepository;
-    private final String rootPath = "";
 
     @Test
     void 특정_카테고리의_템플릿을_조회한다() {
