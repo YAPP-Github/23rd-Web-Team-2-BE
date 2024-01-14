@@ -20,6 +20,11 @@ public class TemplateRepositoryImpl implements TemplateRepository {
     }
 
     @Override
+    public Template save(Template template) {
+        return templateJpaRepository.save(template);
+    }
+
+    @Override
     public int count() {
         return (int) templateJpaRepository.count();
     }

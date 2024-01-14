@@ -7,5 +7,7 @@ public interface TemplateRepository {
 
     List<Template> findAllByCategory(Category category, Pageable pageable);
 
+    Template save(Template template);
+
     int count();
 }
