@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 public enum TemplateExceptionType implements RequestExceptionType {
 
     INVALID_CATEGORY("TE01", "존재하지 않는 카테고리입니다.", HttpStatus.BAD_REQUEST),
-    EMPTY_TEMPLATE("TE02", "해당 카테고리에 템플릿이 존재하지 않습니다", HttpStatus.NO_CONTENT),
     ;
 
     private final String errorCode;
