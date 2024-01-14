@@ -2,6 +2,8 @@ package com.baro.memo.fake;
 
 import com.baro.memo.domain.Memo;
 import com.baro.memo.domain.MemoRepository;
+import com.baro.memo.exception.MemoException;
+import com.baro.memo.exception.MemoExceptionType;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -36,6 +38,9 @@ public class FakeMemoRepository implements MemoRepository {
 
     @Override
     public Memo getById(Long id) {
-        return memos.get(id);
+        return memos.values().stream()
+                .filter(memo -> memo.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new MemoException(MemoExceptionType.NOT_EXIST_MEMO));
     }
 }
