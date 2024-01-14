@@ -43,6 +43,6 @@ class MemoServiceTest {
         // then
         List<TemporalMemo> all = temporalMemoRepository.findAll();
         assertThat(all).hasSize(1);
-        assertThat(all.get(0).getContent()).isEqualTo(content);
+        assertThat(all.get(0).getContent().value()).isEqualTo(content);
     }
 }

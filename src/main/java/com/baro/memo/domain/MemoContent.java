@@ -32,4 +32,8 @@ public class MemoContent {
     public static MemoContent from(String content) {
         return new MemoContent(content);
     }
+
+    public String value() {
+        return content;
+    }
 }
