@@ -12,4 +12,6 @@ public interface MemoFolderRepository {
     boolean existByMemberAndName(Member member, String name);
 
     List<MemoFolder> findAllByMember(Member member);
+
+    MemoFolder getById(Long id);
 }

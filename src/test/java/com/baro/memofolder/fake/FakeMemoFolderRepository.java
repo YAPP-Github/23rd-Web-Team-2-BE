@@ -48,4 +48,9 @@ public class FakeMemoFolderRepository implements MemoFolderRepository {
                 .filter(memoFolder -> memoFolder.getMember().getId().equals(member.getId()))
                 .toList();
     }
+
+    @Override
+    public MemoFolder getById(Long id) {
+        return memoFolders.get(id);
+    }
 }
