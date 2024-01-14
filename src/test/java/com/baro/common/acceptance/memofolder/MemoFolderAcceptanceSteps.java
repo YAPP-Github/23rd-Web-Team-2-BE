@@ -2,6 +2,7 @@ package com.baro.common.acceptance.memofolder;
 
 import static com.baro.common.RestApiTest.DEFAULT_REST_DOCS_PATH;
 import static com.baro.common.RestApiTest.requestSpec;
+import static com.baro.common.acceptance.AcceptanceSteps.예외_응답;
 import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.document;
 import static io.restassured.RestAssured.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -70,11 +71,8 @@ public class MemoFolderAcceptanceSteps {
                         requestFields(
                                 fieldWithPath("folderName").description("폴더 이름")
                         ),
-                        responseFields(
-                                fieldWithPath("errorCode").description("에러 코드"),
-                                fieldWithPath("errorMessage").description("에러 메시지")
-                        ))
-                )
+                        responseFields(예외_응답())
+                ))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken()).body(바디)
                 .when().post(url)

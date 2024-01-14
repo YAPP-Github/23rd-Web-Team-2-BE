@@ -16,6 +16,7 @@ public class ActuatorTest extends RestApiTest {
 
     @Test
     void 헬스_체크() {
+        // when
         var 응답 = 액추에이터_헬스체크_요청();
 
         // then

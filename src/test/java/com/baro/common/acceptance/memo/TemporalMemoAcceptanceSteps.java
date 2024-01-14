@@ -2,6 +2,7 @@ package com.baro.common.acceptance.memo;
 
 import static com.baro.common.RestApiTest.DEFAULT_REST_DOCS_PATH;
 import static com.baro.common.RestApiTest.requestSpec;
+import static com.baro.common.acceptance.AcceptanceSteps.예외_응답;
 import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.document;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -59,10 +60,7 @@ public class TemporalMemoAcceptanceSteps {
                         requestHeaders(
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
                         ),
-                        responseFields(
-                                fieldWithPath("errorCode").description("에러 코드"),
-                                fieldWithPath("errorMessage").description("에러 메시지")
-                        ))
+                        responseFields(예외_응답()))
                 ).header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken()).body(바디)
                 .when().post("/temporal-memos")
                 .then().log().all()
@@ -114,10 +112,7 @@ public class TemporalMemoAcceptanceSteps {
                         requestFields(
                                 fieldWithPath("content").description("끄적이는 메모 내용")
                         ),
-                        responseFields(
-                                fieldWithPath("errorCode").description("에러 코드"),
-                                fieldWithPath("errorMessage").description("에러 메시지")
-                        ))
+                        responseFields(예외_응답()))
                 ).contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken()).body(바디)
                 .when().patch("/temporal-memos/{temporalMemoId}", 끄적이는_메모_ID)
@@ -161,10 +156,7 @@ public class TemporalMemoAcceptanceSteps {
                         requestFields(
                                 fieldWithPath("memoFolderId").description("메모 폴더 ID")
                         ),
-                        responseFields(
-                                fieldWithPath("errorCode").description("에러 코드"),
-                                fieldWithPath("errorMessage").description("에러 메시지")
-                        ))
+                        responseFields(예외_응답()))
                 ).contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken()).body(바디)
                 .when().post("/temporal-memos/{temporalMemoId}/archive", 끄적이는_메모_ID)
