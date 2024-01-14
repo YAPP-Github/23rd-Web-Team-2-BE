@@ -3,17 +3,27 @@ package com.baro.memo.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
 import com.baro.member.fake.FakeMemberRepository;
 import com.baro.member.fixture.MemberFixture;
+import com.baro.memo.application.dto.ArchiveTemporalMemoCommand;
 import com.baro.memo.application.dto.SaveTemporalMemoCommand;
 import com.baro.memo.application.dto.UpdateTemporalMemoCommand;
+import com.baro.memo.domain.Memo;
 import com.baro.memo.domain.MemoContent;
+import com.baro.memo.domain.MemoRepository;
 import com.baro.memo.domain.TemporalMemo;
 import com.baro.memo.domain.TemporalMemoRepository;
 import com.baro.memo.exception.MemoException;
 import com.baro.memo.exception.MemoExceptionType;
+import com.baro.memo.fake.FakeMemoRepository;
 import com.baro.memo.fake.FakeTemporalMemoRepository;
+import com.baro.memofolder.domain.MemoFolder;
+import com.baro.memofolder.domain.MemoFolderRepository;
+import com.baro.memofolder.exception.MemoFolderException;
+import com.baro.memofolder.exception.MemoFolderExceptionType;
+import com.baro.memofolder.fake.FakeMemoFolderRepository;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -27,12 +37,16 @@ class MemoServiceTest {
     private MemoService memoService;
     private MemberRepository memberRepository;
     private TemporalMemoRepository temporalMemoRepository;
+    private MemoFolderRepository memoFolderRepository;
+    private MemoRepository memoRepository;
 
     @BeforeEach
     void setUp() {
         memberRepository = new FakeMemberRepository();
         temporalMemoRepository = new FakeTemporalMemoRepository();
-        memoService = new MemoService(memberRepository, temporalMemoRepository);
+        memoFolderRepository = new FakeMemoFolderRepository();
+        memoRepository = new FakeMemoRepository();
+        memoService = new MemoService(memoRepository, temporalMemoRepository, memberRepository, memoFolderRepository);
     }
 
     @Test
@@ -70,7 +84,7 @@ class MemoServiceTest {
     }
 
     @Test
-    void 다른_회원의_끄적이는_메모_수정시_오류_발생() {
+    void 다른_회원의_끄적이는_메모_수정시_예외_발생() {
         // given
         Long memberId = memberRepository.save(MemberFixture.memberWithNickname("nickname1")).getId();
         TemporalMemo temporalMemo = TemporalMemo.of(memberRepository.getById(memberId), "testContent");
@@ -88,7 +102,7 @@ class MemoServiceTest {
     }
 
     @Test
-    void 끄적이는_메모_수정_내용의_길이_초과시_오류_발생() {
+    void 끄적이는_메모_수정_내용의_길이_초과시_예외_발생() {
         // given
         Long memberId = memberRepository.save(MemberFixture.memberWithNickname("nickname1")).getId();
         TemporalMemo temporalMemo = TemporalMemo.of(memberRepository.getById(memberId), "testContent");
@@ -119,5 +133,79 @@ class MemoServiceTest {
                 .isInstanceOf(MemoException.class)
                 .extracting("exceptionType")
                 .isEqualTo(MemoExceptionType.NOT_EXIST_MEMO);
+    }
+
+    @Test
+    void 끄적이는_메모_아카이브() {
+        // given
+        Member member = memberRepository.save(MemberFixture.memberWithNickname("nickname1"));
+        TemporalMemo temporalMemo = temporalMemoRepository.save(TemporalMemo.of(member, "testContent"));
+        Long memoFolderId = memoFolderRepository.save(MemoFolder.defaultFolder(member)).getId();
+
+        ArchiveTemporalMemoCommand command = new ArchiveTemporalMemoCommand(member.getId(), temporalMemo.getId(),
+                memoFolderId);
+
+        // when
+        memoService.archiveTemporalMemo(command);
+
+        // then
+        List<Memo> allMemos = memoRepository.findAll();
+        Memo savedMemo = allMemos.get(0);
+        assertThat(allMemos).hasSize(1);
+        assertThat(savedMemo.getContent()).isEqualTo(temporalMemo.getArchivingContent());
+        assertThat(temporalMemo.getMemo()).isEqualTo(savedMemo);
+    }
+
+    @Test
+    void 다른_사람의_끄적이는_메모_아카이브시_예외_발생() {
+        // given
+        Member member = memberRepository.save(MemberFixture.memberWithNickname("nickname1"));
+        Member otherMember = memberRepository.save(MemberFixture.memberWithNickname("nickname2"));
+        TemporalMemo temporalMemo = temporalMemoRepository.save(TemporalMemo.of(member, "testContent"));
+        Long memoFolderId = memoFolderRepository.save(MemoFolder.defaultFolder(otherMember)).getId();
+
+        ArchiveTemporalMemoCommand command = new ArchiveTemporalMemoCommand(otherMember.getId(), temporalMemo.getId(),
+                memoFolderId);
+
+        // when & then
+        assertThatThrownBy(() -> memoService.archiveTemporalMemo(command))
+                .isInstanceOf(MemoException.class)
+                .extracting("exceptionType")
+                .isEqualTo(MemoExceptionType.NOT_MATCH_OWNER);
+    }
+
+    @Test
+    void 존재하지_않는_메모_폴더에_아카이브시_예외_발생() {
+        // given
+        Member member = memberRepository.save(MemberFixture.memberWithNickname("nickname1"));
+        TemporalMemo temporalMemo = temporalMemoRepository.save(TemporalMemo.of(member, "testContent"));
+        Long notExistMemoFolderId = 1L;
+
+        ArchiveTemporalMemoCommand command = new ArchiveTemporalMemoCommand(member.getId(), temporalMemo.getId(),
+                notExistMemoFolderId);
+
+        // when & then
+        assertThatThrownBy(() -> memoService.archiveTemporalMemo(command))
+                .isInstanceOf(MemoFolderException.class)
+                .extracting("exceptionType")
+                .isEqualTo(MemoFolderExceptionType.NOT_EXIST_MEMO_FOLDER);
+    }
+
+    @Test
+    void 다른_사람의_메모_폴더에_아카이브시_예외_발생() {
+        // given
+        Member member = memberRepository.save(MemberFixture.memberWithNickname("nickname1"));
+        Member otherMember = memberRepository.save(MemberFixture.memberWithNickname("nickname2"));
+        TemporalMemo temporalMemo = temporalMemoRepository.save(TemporalMemo.of(otherMember, "testContent"));
+        Long memoFolderId = memoFolderRepository.save(MemoFolder.defaultFolder(member)).getId();
+
+        ArchiveTemporalMemoCommand command = new ArchiveTemporalMemoCommand(otherMember.getId(), temporalMemo.getId(),
+                memoFolderId);
+
+        // when & then
+        assertThatThrownBy(() -> memoService.archiveTemporalMemo(command))
+                .isInstanceOf(MemoFolderException.class)
+                .extracting("exceptionType")
+                .isEqualTo(MemoFolderExceptionType.NOT_MATCH_OWNER);
     }
 }

@@ -72,4 +72,19 @@ public class TemporalMemo extends BaseEntity {
             throw new MemoException(MemoExceptionType.NOT_MATCH_OWNER);
         }
     }
+
+    public boolean isCorrected() {
+        return Objects.nonNull(this.correctionContent);
+    }
+
+    public MemoContent getArchivingContent() {
+        if (isCorrected()) {
+            return this.correctionContent;
+        }
+        return this.content;
+    }
+
+    public void archivedAsMemo(Memo memo) {
+        this.memo = memo;
+    }
 }
