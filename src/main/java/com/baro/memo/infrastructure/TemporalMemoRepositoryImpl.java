@@ -13,7 +13,7 @@ public class TemporalMemoRepositoryImpl implements TemporalMemoRepository {
     private final TemporalMemoJpaRepository temporalMemoJpaRepository;
 
     @Override
-    public TemporalMemo save(final TemporalMemo temporalMemo) {
+    public TemporalMemo save(TemporalMemo temporalMemo) {
         return temporalMemoJpaRepository.save(temporalMemo);
     }
 
