@@ -28,7 +28,7 @@ public class TemporalMemoAcceptanceSteps {
     public static final String 크기_초과_컨텐츠 = "끄적이는 메모 컨텐츠".repeat(500);
     public static final SaveTemporalMemoRequest 끄적이는_메모_바디 = new SaveTemporalMemoRequest("끄적이는 메모 컨텐츠");
     public static final SaveTemporalMemoRequest 크기_초과_끄적이는_메모_작성_바디 = new SaveTemporalMemoRequest(크기_초과_컨텐츠);
-    public static final UpdateTemporalMemoRequest 끄적이는_메모_수정_바디 = new UpdateTemporalMemoRequest("끄적이는 메모 컨텐츠");
+    public static final UpdateTemporalMemoRequest 끄적이는_메모_수정_바디 = new UpdateTemporalMemoRequest("끄적이는 메모 수정 컨텐츠");
     public static final UpdateTemporalMemoRequest 크기_초과_끄적이는_메모_수정_바디 = new UpdateTemporalMemoRequest(크기_초과_컨텐츠);
 
     public static ArchiveTemporalMemoRequest 메모_아카이브_요청_바디(Long 메모_폴더_ID) {
