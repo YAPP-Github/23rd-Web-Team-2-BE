@@ -2,6 +2,8 @@ package com.baro.memofolder.domain;
 
 import com.baro.common.entity.BaseEntity;
 import com.baro.member.domain.Member;
+import com.baro.memofolder.exception.MemoFolderException;
+import com.baro.memofolder.exception.MemoFolderExceptionType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Embedded;
@@ -48,5 +50,11 @@ public class MemoFolder extends BaseEntity {
 
     public static MemoFolder of(Member member, String name) {
         return new MemoFolder(member, MemoFolderName.from(name));
+    }
+
+    public void matchOwner(Member member) {
+        if (!this.member.getId().equals(member.getId())) {
+            throw new MemoFolderException(MemoFolderExceptionType.NOT_MATCH_OWNER);
+        }
     }
 }
