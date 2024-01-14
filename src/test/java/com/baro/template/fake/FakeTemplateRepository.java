@@ -1,5 +1,7 @@
 package com.baro.template.fake;
 
+import static com.baro.template.domain.Template.instanceForTest;
+
 import com.baro.template.domain.Category;
 import com.baro.template.domain.Template;
 import com.baro.template.domain.TemplateRepository;
@@ -55,13 +57,8 @@ public class FakeTemplateRepository implements TemplateRepository {
     public Template save(Template template) {
         if (Objects.isNull(template.getId())) {
             Long pk = id.getAndIncrement();
-            Template newTemplate = new Template(
-                    template.getCategory(),
-                    template.getSubCategory(),
-                    template.getContent(),
-                    template.getCopiedCount(),
-                    template.getSavedCount()
-            );
+            Template newTemplate = instanceForTest(template.getCategory(), template.getSubCategory(),
+                    template.getContent(), template.getSavedCount(), template.getCopiedCount());
             templates.put(pk, newTemplate);
             return newTemplate;
         }

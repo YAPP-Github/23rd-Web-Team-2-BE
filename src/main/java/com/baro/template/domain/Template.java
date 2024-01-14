@@ -36,7 +36,23 @@ public class Template extends BaseEntity {
 
     private int savedCount;
 
-    public Template(Category category, String subCategory, String content, int copiedCount, int savedCount) {
+    public Template(Category category, String subCategory, String content) {
+        this.category = category;
+        this.subCategory = subCategory;
+        this.content = content;
+        this.copiedCount = 0;
+        this.savedCount = 0;
+    }
+
+    /**
+     * 테스트용 팩토리메서드
+     */
+    public static Template instanceForTest(Category category, String subCategory, String content, int copiedCount,
+                                           int savedCount) {
+        return new Template(category, subCategory, content, copiedCount, savedCount);
+    }
+
+    private Template(Category category, String subCategory, String content, int copiedCount, int savedCount) {
         this.category = category;
         this.subCategory = subCategory;
         this.content = content;
@@ -44,13 +60,5 @@ public class Template extends BaseEntity {
         this.savedCount = savedCount;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
-    }
-
-    public Template(Category category, String subCategory, String content) {
-        this.category = category;
-        this.subCategory = subCategory;
-        this.content = content;
-        this.copiedCount = 0;
-        this.savedCount = 0;
     }
 }
