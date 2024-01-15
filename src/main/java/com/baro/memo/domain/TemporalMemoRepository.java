@@ -7,4 +7,6 @@ public interface TemporalMemoRepository {
     TemporalMemo save(TemporalMemo temporalMemo);
 
     List<TemporalMemo> findAll();
+
+    TemporalMemo getById(Long id);
 }

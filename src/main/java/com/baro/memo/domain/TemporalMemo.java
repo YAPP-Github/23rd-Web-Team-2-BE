@@ -2,6 +2,8 @@ package com.baro.memo.domain;
 
 import com.baro.common.entity.BaseEntity;
 import com.baro.member.domain.Member;
+import com.baro.memo.exception.MemoException;
+import com.baro.memo.exception.MemoExceptionType;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
@@ -14,6 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -58,5 +61,15 @@ public class TemporalMemo extends BaseEntity {
 
     public static TemporalMemo of(Member member, String content) {
         return new TemporalMemo(member, MemoContent.from(content), null, null);
+    }
+
+    public void updateContent(MemoContent memoContent) {
+        this.content = memoContent;
+    }
+
+    public void matchOwner(Member member) {
+        if (!Objects.equals(this.member.getId(), member.getId())) {
+            throw new MemoException(MemoExceptionType.NOT_MATCH_OWNER);
+        }
     }
 }
