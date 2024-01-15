@@ -27,11 +27,11 @@ public class MemoAcceptanceSteps {
                         requestHeaders(
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
                         ),
-                        responseHeaders(
-                                headerWithName(HttpHeaders.LOCATION).description("생성된 끄적이는 메모 경로")
-                        ),
                         requestFields(
                                 fieldWithPath("content").description("끄적이는 메모 내용")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.LOCATION).description("생성된 끄적이는 메모 경로")
                         ))
                 ).contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken()).body(바디)
@@ -62,11 +62,11 @@ public class MemoAcceptanceSteps {
                         requestHeaders(
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
                         ),
-                        responseHeaders(
-                                headerWithName(HttpHeaders.LOCATION).description("생성된 끄적이는 메모 경로")
-                        ),
                         requestFields(
                                 fieldWithPath("content").description("끄적이는 메모 내용")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.LOCATION).description("생성된 끄적이는 메모 경로")
                         ))
                 ).contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken()).body(바디)

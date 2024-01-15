@@ -28,11 +28,11 @@ public class MemoFolderAcceptanceSteps {
                         requestHeaders(
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
                         ),
-                        responseHeaders(
-                                headerWithName(HttpHeaders.LOCATION).description("생성된 폴더 경로")
-                        ),
                         requestFields(
                                 fieldWithPath("folderName").description("폴더 이름")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.LOCATION).description("생성된 폴더 경로")
                         ))
                 )
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
