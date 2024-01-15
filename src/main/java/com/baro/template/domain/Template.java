@@ -47,14 +47,14 @@ public class Template extends BaseEntity {
     /**
      * 테스트용 팩토리메서드
      */
-    public static Template instanceForTest(TemplateCategory templateCategory, String subCategory, String content,
-                                           int copiedCount,
-                                           int savedCount) {
-        return new Template(templateCategory, subCategory, content, copiedCount, savedCount);
+    public static Template instanceForTest(Long id, TemplateCategory templateCategory, String subCategory,
+                                           String content, int copiedCount, int savedCount) {
+        return new Template(id, templateCategory, subCategory, content, copiedCount, savedCount);
     }
 
-    private Template(TemplateCategory templateCategory, String subCategory, String content, int copiedCount,
+    private Template(Long id, TemplateCategory templateCategory, String subCategory, String content, int copiedCount,
                      int savedCount) {
+        this.id = id;
         this.templateCategory = templateCategory;
         this.subCategory = subCategory;
         this.content = content;

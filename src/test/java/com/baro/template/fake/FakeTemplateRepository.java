@@ -34,6 +34,31 @@ public class FakeTemplateRepository implements TemplateRepository {
 
         Sort sortType = pageable.getSort();
 
+        categorizedTemplates = sort(sortType, categorizedTemplates);
+
+        return categorizedTemplates.subList(start, end);
+    }
+
+    @Override
+    public Template save(Template template) {
+        if (Objects.isNull(template.getId())) {
+            Long templateId = id.getAndIncrement();
+            Template newTemplate = instanceForTest(templateId, template.getTemplateCategory(),
+                    template.getSubCategory(),
+                    template.getContent(), template.getSavedCount(), template.getCopiedCount());
+            templates.put(templateId, newTemplate);
+            return newTemplate;
+        }
+        templates.put(template.getId(), template);
+        return template;
+    }
+
+    @Override
+    public int count() {
+        return Collections.size(templates.values());
+    }
+
+    private List<Template> sort(Sort sortType, List<Template> categorizedTemplates) {
         if (sortType.equals(SortType.NEW.getSort())) {
             categorizedTemplates = categorizedTemplates.stream()
                     .sorted(Comparator.comparing(Template::getCreatedAt).reversed())
@@ -49,25 +74,6 @@ public class FakeTemplateRepository implements TemplateRepository {
         } else {
             throw new SortException(SortExceptionType.INVALID_SORT_TYPE);
         }
-
-        return categorizedTemplates.subList(start, end);
-    }
-
-    @Override
-    public Template save(Template template) {
-        if (Objects.isNull(template.getId())) {
-            Long pk = id.getAndIncrement();
-            Template newTemplate = instanceForTest(template.getTemplateCategory(), template.getSubCategory(),
-                    template.getContent(), template.getSavedCount(), template.getCopiedCount());
-            templates.put(pk, newTemplate);
-            return newTemplate;
-        }
-        templates.put(template.getId(), template);
-        return template;
-    }
-
-    @Override
-    public int count() {
-        return Collections.size(templates.values());
+        return categorizedTemplates;
     }
 }

@@ -5,11 +5,13 @@ import static com.baro.template.fixture.TemplateFixture.보고하기;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.baro.template.application.dto.FindTemplateQuery;
+import com.baro.template.application.dto.FindTemplateResult;
 import com.baro.template.domain.Template;
 import com.baro.template.domain.TemplateCategory;
 import com.baro.template.domain.TemplateRepository;
 import com.baro.template.fake.FakeTemplateRepository;
 import com.baro.template.presentation.SortType;
+import java.util.Comparator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -57,7 +59,7 @@ class TemplateServiceTest {
 
         // then
         assertThat(result).hasSize(3);
-        assertThat(result.get(0).templateId()).isEqualTo(template3.getId());
+        assertThat(result).isSortedAccordingTo(Comparator.comparing(FindTemplateResult::copiedCount).reversed());
     }
 
     @Test
@@ -73,6 +75,7 @@ class TemplateServiceTest {
 
         // then
         assertThat(result.get(0).templateId()).isEqualTo(template3.getId());
+        assertThat(result).isSortedAccordingTo(Comparator.comparing(FindTemplateResult::savedCount).reversed());
     }
 
     @Test

@@ -29,8 +29,8 @@ public class TemplateController {
             @RequestParam("sort") String sortName
     ) {
         Sort sort = SortType.getSort(sortName);
-        List<FindTemplateResult> result = templateService.findTemplates(
-                new FindTemplateQuery(TemplateCategory.getCategory(categoryName), sort));
+        FindTemplateQuery query = new FindTemplateQuery(TemplateCategory.getCategory(categoryName), sort);
+        List<FindTemplateResult> result = templateService.findTemplates(query);
 
         return ResponseEntity.ok().body(result);
     }
