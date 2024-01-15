@@ -132,10 +132,10 @@ class TemporalMemoServiceTest {
                 updateContent);
 
         // when & then
-        assertThatThrownBy(() -> memoService.updateTemporalMemo(command))
-                .isInstanceOf(MemoException.class)
+        assertThatThrownBy(() -> temporalMemoService.updateTemporalMemo(command))
+                .isInstanceOf(TemporalMemoException.class)
                 .extracting("exceptionType")
-                .isEqualTo(MemoExceptionType.NOT_EXIST_MEMO);
+                .isEqualTo(TemporalMemoExceptionType.NOT_EXIST_TEMPORAL_MEMO);
     }
 
     @Test
