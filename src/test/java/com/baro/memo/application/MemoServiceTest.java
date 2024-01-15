@@ -94,7 +94,7 @@ class MemoServiceTest {
         TemporalMemo temporalMemo = TemporalMemo.of(memberRepository.getById(memberId), "testContent");
         Long temporalMemoId = temporalMemoRepository.save(temporalMemo).getId();
 
-        String updateContent = "updatedContent".repeat(500);
+        String updateContent = "글".repeat(501);
         UpdateTemporalMemoCommand command = new UpdateTemporalMemoCommand(memberId, temporalMemoId, updateContent);
 
         // when & then
