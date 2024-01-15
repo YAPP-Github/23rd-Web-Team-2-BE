@@ -87,4 +87,11 @@ public class TemporalMemo extends BaseEntity {
     public void archivedAsMemo(Memo memo) {
         this.memo = memo;
     }
+
+    public void applyCorrection(MemoContent correctionContent) {
+        if (isCorrected()) {
+            throw new TemporalMemoException(TemporalMemoExceptionType.ALREADY_CORRECTED);
+        }
+        this.correctionContent = correctionContent;
+    }
 }
