@@ -3,12 +3,14 @@ package com.baro.memo.presentation;
 
 import com.baro.auth.domain.AuthMember;
 import com.baro.memo.application.TemporalMemoService;
+import com.baro.memo.application.dto.ApplyCorrectionCommand;
 import com.baro.memo.application.dto.ArchiveTemporalMemoCommand;
 import com.baro.memo.application.dto.ArchiveTemporalMemoResult;
 import com.baro.memo.application.dto.DeleteTemporalMemoCommand;
 import com.baro.memo.application.dto.SaveTemporalMemoCommand;
 import com.baro.memo.application.dto.SaveTemporalMemoResult;
 import com.baro.memo.application.dto.UpdateTemporalMemoCommand;
+import com.baro.memo.presentation.dto.ApplyCorrectionRequest;
 import com.baro.memo.presentation.dto.ArchiveTemporalMemoRequest;
 import com.baro.memo.presentation.dto.SaveTemporalMemoRequest;
 import com.baro.memo.presentation.dto.UpdateTemporalMemoRequest;
@@ -79,6 +81,18 @@ public class TemporalMemoController {
     ) {
         DeleteTemporalMemoCommand command = new DeleteTemporalMemoCommand(authMember.id(), temporalMemoId);
         temporalMemoService.deleteTemporalMemo(command);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{temporalMemoId}/correction")
+    public ResponseEntity<Void> applyCorrection(
+            AuthMember authMember,
+            @RequestBody ApplyCorrectionRequest request,
+            @PathVariable Long temporalMemoId
+    ) {
+        ApplyCorrectionCommand command = new ApplyCorrectionCommand(authMember.id(), temporalMemoId,
+                request.content());
+        temporalMemoService.applyCorrection(command);
         return ResponseEntity.noContent().build();
     }
 }
