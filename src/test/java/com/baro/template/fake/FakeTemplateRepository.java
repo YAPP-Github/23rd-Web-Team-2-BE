@@ -26,12 +26,11 @@ public class FakeTemplateRepository implements TemplateRepository {
     @Override
     public List<Template> findAllByCategory(TemplateCategory templateCategory, Pageable pageable) {
         List<Template> categorizedTemplates = templates.values().stream()
-                .filter(template -> template.getTemplateCategory().equals(templateCategory))
+                .filter(template -> template.getCategory().equals(templateCategory))
                 .toList();
 
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), categorizedTemplates.size());
-
         Sort sortType = pageable.getSort();
 
         categorizedTemplates = sort(sortType, categorizedTemplates);
@@ -43,7 +42,7 @@ public class FakeTemplateRepository implements TemplateRepository {
     public Template save(Template template) {
         if (Objects.isNull(template.getId())) {
             Long templateId = id.getAndIncrement();
-            Template newTemplate = instanceForTest(templateId, template.getTemplateCategory(),
+            Template newTemplate = instanceForTest(templateId, template.getCategory(),
                     template.getSubCategory(),
                     template.getContent(), template.getSavedCount(), template.getCopiedCount());
             templates.put(templateId, newTemplate);

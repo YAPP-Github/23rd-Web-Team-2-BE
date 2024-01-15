@@ -25,7 +25,7 @@ public class Template extends BaseEntity {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private TemplateCategory templateCategory;
+    private TemplateCategory category;
 
     private String subCategory;
 
@@ -36,8 +36,8 @@ public class Template extends BaseEntity {
 
     private int savedCount;
 
-    public Template(TemplateCategory templateCategory, String subCategory, String content) {
-        this.templateCategory = templateCategory;
+    public Template(TemplateCategory category, String subCategory, String content) {
+        this.category = category;
         this.subCategory = subCategory;
         this.content = content;
         this.copiedCount = 0;
@@ -47,15 +47,15 @@ public class Template extends BaseEntity {
     /**
      * 테스트용 팩토리메서드
      */
-    public static Template instanceForTest(Long id, TemplateCategory templateCategory, String subCategory,
+    public static Template instanceForTest(Long id, TemplateCategory category, String subCategory,
                                            String content, int copiedCount, int savedCount) {
-        return new Template(id, templateCategory, subCategory, content, copiedCount, savedCount);
+        return new Template(id, category, subCategory, content, copiedCount, savedCount);
     }
 
-    private Template(Long id, TemplateCategory templateCategory, String subCategory, String content, int copiedCount,
+    private Template(Long id, TemplateCategory category, String subCategory, String content, int copiedCount,
                      int savedCount) {
         this.id = id;
-        this.templateCategory = templateCategory;
+        this.category = category;
         this.subCategory = subCategory;
         this.content = content;
         this.copiedCount = copiedCount;
