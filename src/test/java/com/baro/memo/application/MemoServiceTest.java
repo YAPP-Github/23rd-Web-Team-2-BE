@@ -105,7 +105,7 @@ class MemoServiceTest {
     }
 
     @Test
-    void 존재_하지_않는_끄적이는_메모_수정_내용의_길이_초과시_예외_발생() {
+    void 존재_하지_않는_끄적이는_메모_수정시_예외_발생() {
         // given
         Long memberId = memberRepository.save(MemberFixture.memberWithNickname("nickname1")).getId();
         Long notExistTemporalMemoId = 999L;
