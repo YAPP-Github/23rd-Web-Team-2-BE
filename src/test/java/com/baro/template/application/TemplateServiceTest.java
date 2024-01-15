@@ -5,8 +5,8 @@ import static com.baro.template.fixture.TemplateFixture.보고하기;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.baro.template.application.dto.FindTemplateQuery;
-import com.baro.template.domain.Category;
 import com.baro.template.domain.Template;
+import com.baro.template.domain.TemplateCategory;
 import com.baro.template.domain.TemplateRepository;
 import com.baro.template.fake.FakeTemplateRepository;
 import com.baro.template.presentation.SortType;
@@ -37,7 +37,7 @@ class TemplateServiceTest {
         Template template4 = repository.save(감사전하기());
 
         // when
-        var result = service.findTemplates(new FindTemplateQuery(Category.REPORT, SortType.NEW.getSort()));
+        var result = service.findTemplates(new FindTemplateQuery(TemplateCategory.REPORT, SortType.NEW.getSort()));
 
         // then
         assertThat(result).hasSize(3);
@@ -53,7 +53,7 @@ class TemplateServiceTest {
         Template template4 = repository.save(감사전하기(0, 3));
 
         // when
-        var result = service.findTemplates(new FindTemplateQuery(Category.REPORT, SortType.COPY.getSort()));
+        var result = service.findTemplates(new FindTemplateQuery(TemplateCategory.REPORT, SortType.COPY.getSort()));
 
         // then
         assertThat(result).hasSize(3);
@@ -69,7 +69,7 @@ class TemplateServiceTest {
         Template template4 = repository.save(감사전하기(3, 0));
 
         // when
-        var result = service.findTemplates(new FindTemplateQuery(Category.REPORT, SortType.SAVE.getSort()));
+        var result = service.findTemplates(new FindTemplateQuery(TemplateCategory.REPORT, SortType.SAVE.getSort()));
 
         // then
         assertThat(result.get(0).templateId()).isEqualTo(template3.getId());
@@ -78,7 +78,7 @@ class TemplateServiceTest {
     @Test
     void 빈_템플릿_조회() {
         // when
-        var result = service.findTemplates(new FindTemplateQuery(Category.REPORT, SortType.NEW.getSort()));
+        var result = service.findTemplates(new FindTemplateQuery(TemplateCategory.REPORT, SortType.NEW.getSort()));
 
         // then
         assertThat(result).isEmpty();

@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface TemplateRepository {
 
-    List<Template> findAllByCategory(Category category, Pageable pageable);
+    List<Template> findAllByCategory(TemplateCategory templateCategory, Pageable pageable);
 
     Template save(Template template);
 

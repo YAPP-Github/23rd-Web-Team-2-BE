@@ -2,8 +2,8 @@ package com.baro.template.fake;
 
 import static com.baro.template.domain.Template.instanceForTest;
 
-import com.baro.template.domain.Category;
 import com.baro.template.domain.Template;
+import com.baro.template.domain.TemplateCategory;
 import com.baro.template.domain.TemplateRepository;
 import com.baro.template.exception.SortException;
 import com.baro.template.exception.SortExceptionType;
@@ -24,9 +24,9 @@ public class FakeTemplateRepository implements TemplateRepository {
     private final Map<Long, Template> templates = new ConcurrentHashMap<>();
 
     @Override
-    public List<Template> findAllByCategory(Category category, Pageable pageable) {
+    public List<Template> findAllByCategory(TemplateCategory templateCategory, Pageable pageable) {
         List<Template> categorizedTemplates = templates.values().stream()
-                .filter(template -> template.getCategory().equals(category))
+                .filter(template -> template.getTemplateCategory().equals(templateCategory))
                 .toList();
 
         int start = (int) pageable.getOffset();
@@ -57,7 +57,7 @@ public class FakeTemplateRepository implements TemplateRepository {
     public Template save(Template template) {
         if (Objects.isNull(template.getId())) {
             Long pk = id.getAndIncrement();
-            Template newTemplate = instanceForTest(template.getCategory(), template.getSubCategory(),
+            Template newTemplate = instanceForTest(template.getTemplateCategory(), template.getSubCategory(),
                     template.getContent(), template.getSavedCount(), template.getCopiedCount());
             templates.put(pk, newTemplate);
             return newTemplate;

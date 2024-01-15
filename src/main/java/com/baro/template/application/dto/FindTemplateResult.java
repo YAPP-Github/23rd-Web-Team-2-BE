@@ -14,7 +14,7 @@ public record FindTemplateResult(
     public static FindTemplateResult from(Template template) {
         return new FindTemplateResult(
                 template.getId(),
-                template.getCategory().name().toLowerCase(),
+                template.getTemplateCategory().name().toLowerCase(),
                 template.getSubCategory(),
                 template.getContent(),
                 template.getSavedCount(),

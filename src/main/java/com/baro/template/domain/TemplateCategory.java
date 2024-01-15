@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public enum Category {
+public enum TemplateCategory {
 
     ASK,
     REPORT,
@@ -19,8 +19,8 @@ public enum Category {
     ETC,
     ;
 
-    public static Category getCategory(String name) {
-        return Arrays.stream(Category.values())
+    public static TemplateCategory getCategory(String name) {
+        return Arrays.stream(TemplateCategory.values())
                 .filter(category -> category.name().equalsIgnoreCase(name))
                 .findFirst()
                 .orElseThrow(() -> new TemplateException(TemplateExceptionType.INVALID_CATEGORY));

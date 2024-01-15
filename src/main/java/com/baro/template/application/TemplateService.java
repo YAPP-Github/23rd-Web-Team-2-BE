@@ -16,6 +16,7 @@ public class TemplateService {
 
     private final TemplateRepository repository;
 
+    @Transactional(readOnly = true)
     public List<FindTemplateResult> findTemplates(FindTemplateQuery query) {
         int pageSize = repository.count();
         if (pageSize < 1) {
@@ -23,7 +24,7 @@ public class TemplateService {
         }
 
         PageRequest pageRequest = PageRequest.of(0, pageSize, query.sort());
-        return repository.findAllByCategory(query.category(), pageRequest)
+        return repository.findAllByCategory(query.templateCategory(), pageRequest)
                 .stream().map(FindTemplateResult::from).toList();
     }
 }

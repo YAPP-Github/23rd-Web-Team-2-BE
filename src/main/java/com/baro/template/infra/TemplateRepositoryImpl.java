@@ -1,7 +1,7 @@
 package com.baro.template.infra;
 
-import com.baro.template.domain.Category;
 import com.baro.template.domain.Template;
+import com.baro.template.domain.TemplateCategory;
 import com.baro.template.domain.TemplateRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +15,8 @@ public class TemplateRepositoryImpl implements TemplateRepository {
     private final TemplateJpaRepository templateJpaRepository;
 
     @Override
-    public List<Template> findAllByCategory(Category category, Pageable pageable) {
-        return templateJpaRepository.findAllByCategory(category, pageable);
+    public List<Template> findAllByCategory(TemplateCategory templateCategory, Pageable pageable) {
+        return templateJpaRepository.findAllByCategory(templateCategory, pageable);
     }
 
     @Override

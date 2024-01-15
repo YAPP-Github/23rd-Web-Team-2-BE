@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
-class CategoryTest {
+class TemplateCategoryTest {
 
     @Test
     void 해당하는_카테고리를_반환한다() {
@@ -19,10 +19,10 @@ class CategoryTest {
         var category = "report";
 
         // when
-        var result = Category.getCategory(category);
+        var result = TemplateCategory.getCategory(category);
 
         // then
-        assertThat(result).isEqualTo(Category.REPORT);
+        assertThat(result).isEqualTo(TemplateCategory.REPORT);
     }
 
     @Test
@@ -31,7 +31,7 @@ class CategoryTest {
         var category = "nothing";
 
         // when & then
-        assertThatThrownBy(() -> Category.getCategory(category))
+        assertThatThrownBy(() -> TemplateCategory.getCategory(category))
                 .isInstanceOf(TemplateException.class)
                 .extracting("exceptionType")
                 .isEqualTo(TemplateExceptionType.INVALID_CATEGORY);

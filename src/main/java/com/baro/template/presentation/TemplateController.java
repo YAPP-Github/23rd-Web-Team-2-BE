@@ -4,7 +4,7 @@ import com.baro.auth.domain.AuthMember;
 import com.baro.template.application.TemplateService;
 import com.baro.template.application.dto.FindTemplateQuery;
 import com.baro.template.application.dto.FindTemplateResult;
-import com.baro.template.domain.Category;
+import com.baro.template.domain.TemplateCategory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -30,7 +30,7 @@ public class TemplateController {
     ) {
         Sort sort = SortType.getSort(sortName);
         List<FindTemplateResult> result = templateService.findTemplates(
-                new FindTemplateQuery(Category.getCategory(categoryName), sort));
+                new FindTemplateQuery(TemplateCategory.getCategory(categoryName), sort));
 
         return ResponseEntity.ok().body(result);
     }
