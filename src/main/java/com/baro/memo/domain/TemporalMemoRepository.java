@@ -9,4 +9,6 @@ public interface TemporalMemoRepository {
     List<TemporalMemo> findAll();
 
     TemporalMemo getById(Long id);
+
+    void delete(TemporalMemo temporalMemo);
 }

@@ -9,6 +9,7 @@ import com.baro.member.domain.MemberRepository;
 import com.baro.member.fake.FakeMemberRepository;
 import com.baro.member.fixture.MemberFixture;
 import com.baro.memo.application.dto.ArchiveTemporalMemoCommand;
+import com.baro.memo.application.dto.DeleteTemporalMemoCommand;
 import com.baro.memo.application.dto.SaveTemporalMemoCommand;
 import com.baro.memo.application.dto.UpdateTemporalMemoCommand;
 import com.baro.memo.domain.Memo;
@@ -215,5 +216,48 @@ class TemporalMemoServiceTest {
                 .isInstanceOf(MemoFolderException.class)
                 .extracting("exceptionType")
                 .isEqualTo(MemoFolderExceptionType.NOT_MATCH_OWNER);
+    }
+
+    @Test
+    void 끄적이는_메모_삭제() {
+        // given
+        Member member = memberRepository.save(MemberFixture.memberWithNickname("nickname1"));
+        TemporalMemo temporalMemo = temporalMemoRepository.save(TemporalMemo.of(member, "testContent"));
+        DeleteTemporalMemoCommand command = new DeleteTemporalMemoCommand(member.getId(), temporalMemo.getId());
+
+        // when
+        temporalMemoService.deleteTemporalMemo(command);
+
+        // then
+        assertThat(temporalMemoRepository.findAll()).isEmpty();
+    }
+
+    @Test
+    void 다른_사람의_끄적이는_메모_삭제시_예외_발생() {
+        // given
+        Member member = memberRepository.save(MemberFixture.memberWithNickname("nickname1"));
+        Member otherMember = memberRepository.save(MemberFixture.memberWithNickname("nickname2"));
+        TemporalMemo temporalMemo = temporalMemoRepository.save(TemporalMemo.of(member, "testContent"));
+        DeleteTemporalMemoCommand command = new DeleteTemporalMemoCommand(otherMember.getId(), temporalMemo.getId());
+
+        // when & then
+        assertThatThrownBy(() -> temporalMemoService.deleteTemporalMemo(command))
+                .isInstanceOf(TemporalMemoException.class)
+                .extracting("exceptionType")
+                .isEqualTo(TemporalMemoExceptionType.NOT_MATCH_OWNER);
+    }
+
+    @Test
+    void 존재하지_않는_끄적이는_메모_삭제시_예외_발생() {
+        // given
+        Member member = memberRepository.save(MemberFixture.memberWithNickname("nickname1"));
+        Long notExistTemporalMemoId = 999L;
+        DeleteTemporalMemoCommand command = new DeleteTemporalMemoCommand(member.getId(), notExistTemporalMemoId);
+
+        // when & then
+        assertThatThrownBy(() -> temporalMemoService.deleteTemporalMemo(command))
+                .isInstanceOf(TemporalMemoException.class)
+                .extracting("exceptionType")
+                .isEqualTo(TemporalMemoExceptionType.NOT_EXIST_TEMPORAL_MEMO);
     }
 }
