@@ -103,4 +103,21 @@ class MemoServiceTest {
                 .extracting("exceptionType")
                 .isEqualTo(MemoExceptionType.OVER_MAX_SIZE_CONTENT);
     }
+
+    @Test
+    void 존재_하지_않는_끄적이는_메모_수정_내용의_길이_초과시_예외_발생() {
+        // given
+        Long memberId = memberRepository.save(MemberFixture.memberWithNickname("nickname1")).getId();
+        Long notExistTemporalMemoId = 999L;
+
+        String updateContent = "updatedContent";
+        UpdateTemporalMemoCommand command = new UpdateTemporalMemoCommand(memberId, notExistTemporalMemoId,
+                updateContent);
+
+        // when & then
+        assertThatThrownBy(() -> memoService.updateTemporalMemo(command))
+                .isInstanceOf(MemoException.class)
+                .extracting("exceptionType")
+                .isEqualTo(MemoExceptionType.NOT_EXIST_MEMO);
+    }
 }
