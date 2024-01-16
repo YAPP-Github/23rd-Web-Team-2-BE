@@ -41,6 +41,14 @@ public class AcceptanceSteps {
         assertThat(응답.body().jsonPath().getString(필드)).isEqualTo(값);
     }
 
+    public static void 응답의_개수를_검증한다(
+            ExtractableResponse<Response> 응답,
+            String json키,
+            int 값
+    ) {
+        assertThat(응답.body().jsonPath().getList(json키)).hasSize(값);
+    }
+
     public static FieldDescriptor[] 예외_응답() {
         return new FieldDescriptor[]{
                 fieldWithPath("errorCode").description("에러 코드"),
