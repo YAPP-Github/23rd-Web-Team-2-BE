@@ -16,7 +16,6 @@ import static org.springframework.restdocs.snippet.Attributes.key;
 import com.baro.auth.domain.Token;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -45,9 +44,10 @@ public class TemplateAcceptanceSteps {
                                                 "new, copy, save"))
                         ),
                         responseFields(
-                                content_결괏값이_있는_템플릿_페이지네이션_조회_Slice_필드()
-                        ))
-                )
+                                페이지네이션_조회_필드()
+                        )
+                                .and(템플릿_content())
+                ))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken())
                 .pathParam("category", 카테고리)
@@ -77,9 +77,7 @@ public class TemplateAcceptanceSteps {
                                         .attributes(key("정렬 예시").value(
                                                 "new, copy, save"))
                         ),
-                        responseFields(
-                                content_결괏값이_없는_템플릿_페이지네이션_조회_Slice_필드()
-                        )
+                        responseFields(페이지네이션_조회_필드())
                 ))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken())
@@ -121,14 +119,7 @@ public class TemplateAcceptanceSteps {
                 .extract();
     }
 
-    private static List<FieldDescriptor> content_결괏값이_있는_템플릿_페이지네이션_조회_Slice_필드() {
-        var responseFields = new ArrayList<>(content_결괏값이_없는_템플릿_페이지네이션_조회_Slice_필드());
-        responseFields.addAll(템플릿_content());
-        return responseFields;
-    }
-
-
-    private static List<FieldDescriptor> content_결괏값이_없는_템플릿_페이지네이션_조회_Slice_필드() {
+    private static List<FieldDescriptor> 페이지네이션_조회_필드() {
         return List.of(
                 fieldWithPath("content").description("템플릿 데이터"),
                 fieldWithPath("pageable").description("페이지 정보"),
