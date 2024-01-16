@@ -13,6 +13,8 @@ import static com.baro.common.acceptance.AcceptanceSteps.잘못된_요청;
 import static com.baro.common.acceptance.memofolder.MemoFolderAcceptanceSteps.메모_폴더_불러오기_요청;
 import static com.baro.common.acceptance.memofolder.MemoFolderAcceptanceSteps.메모_폴더_생성_요청;
 import static com.baro.common.acceptance.memofolder.MemoFolderAcceptanceSteps.잘못된_메모_폴더_생성_요청;
+import static com.baro.common.acceptance.memofolder.MemoFolderAcceptanceSteps.폴더_이름_길이_초과_바디;
+import static com.baro.common.acceptance.memofolder.MemoFolderAcceptanceSteps.폴더_이름_바디;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.willThrow;
 
@@ -20,7 +22,6 @@ import com.baro.common.RestApiTest;
 import com.baro.member.domain.MemberRepository;
 import com.baro.member.exception.MemberException;
 import com.baro.member.exception.MemberExceptionType;
-import com.baro.memofolder.presentation.dto.SaveMemoFolderRequest;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
@@ -30,15 +31,13 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 @SuppressWarnings("NonAsciiCharacters")
 class MemoFolderApiTest extends RestApiTest {
 
-    private final SaveMemoFolderRequest 정상_바디 = new SaveMemoFolderRequest("회사생활👔");
-    private final SaveMemoFolderRequest 폴더_이름_길이_초과_바디 = new SaveMemoFolderRequest("회사생활은재미없겠지만해야겠지👔👔👔");
     @SpyBean
     MemberRepository memberRepository;
 
     @Test
     void 메모_폴더를_생성한다() {
         // given
-        var 요청_바디 = 정상_바디;
+        var 요청_바디 = 폴더_이름_바디;
         var 토큰 = 로그인(태연());
 
         // when
@@ -52,7 +51,7 @@ class MemoFolderApiTest extends RestApiTest {
     @Test
     void 중복되는_이름의_폴더를_생성하는_경우_예외를_반환한다() {
         // given
-        var 요청_바디 = 정상_바디;
+        var 요청_바디 = 폴더_이름_바디;
         var 토큰 = 로그인(유빈());
         메모_폴더_생성_요청(토큰, 요청_바디);
 
@@ -66,7 +65,7 @@ class MemoFolderApiTest extends RestApiTest {
     @Test
     void 존재하지_않는_멤버가_폴더를_생성하는_경우_예외를_반환한다() {
         // given
-        var 요청_바디 = 정상_바디;
+        var 요청_바디 = 폴더_이름_바디;
         var 토큰 = 로그인(동균());
         멤버가_존재하지_않는다();
 
@@ -94,7 +93,7 @@ class MemoFolderApiTest extends RestApiTest {
     void 메모_폴더를_불러온다() {
         // given
         var 토큰 = 로그인(원진());
-        메모_폴더_생성_요청(토큰, 정상_바디);
+        메모_폴더_생성_요청(토큰, 폴더_이름_바디);
 
         // when
         var 응답 = 메모_폴더_불러오기_요청(토큰);

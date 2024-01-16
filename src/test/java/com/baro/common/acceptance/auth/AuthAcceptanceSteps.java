@@ -2,6 +2,7 @@ package com.baro.common.acceptance.auth;
 
 import static com.baro.common.RestApiTest.DEFAULT_REST_DOCS_PATH;
 import static com.baro.common.RestApiTest.requestSpec;
+import static com.baro.common.acceptance.AcceptanceSteps.예외_응답;
 import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.document;
 import static io.restassured.RestAssured.given;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -46,11 +47,8 @@ public class AuthAcceptanceSteps {
                         queryParameters(
                                 parameterWithName("refreshToken").description("refreshToken")
                         ),
-                        responseFields(
-                                fieldWithPath("errorCode").description("에러 코드"),
-                                fieldWithPath("errorMessage").description("에러 메시지")
-                        ))
-                )
+                        responseFields(예외_응답())
+                ))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.accessToken())
                 .queryParam("refreshToken", "Bearer " + token.refreshToken())
@@ -67,11 +65,8 @@ public class AuthAcceptanceSteps {
                         queryParameters(
                                 parameterWithName("refreshToken").description("refreshToken")
                         ),
-                        responseFields(
-                                fieldWithPath("errorCode").description("에러 코드"),
-                                fieldWithPath("errorMessage").description("에러 메시지")
-                        ))
-                )
+                        responseFields(예외_응답())
+                ))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.accessToken())
                 .queryParam("refreshToken", "Basic " + token.refreshToken())
