@@ -7,6 +7,9 @@ import com.baro.memo.application.dto.ApplyCorrectionCommand;
 import com.baro.memo.application.dto.ArchiveTemporalMemoCommand;
 import com.baro.memo.application.dto.ArchiveTemporalMemoResult;
 import com.baro.memo.application.dto.DeleteTemporalMemoCommand;
+import com.baro.memo.application.dto.FindTemporalMemoHistoriesQuery;
+import com.baro.memo.application.dto.FindTemporalMemoHistoriesResult;
+import com.baro.memo.application.dto.FindTemporalMemoResult;
 import com.baro.memo.application.dto.SaveTemporalMemoCommand;
 import com.baro.memo.application.dto.SaveTemporalMemoResult;
 import com.baro.memo.application.dto.UpdateTemporalMemoCommand;
@@ -15,8 +18,15 @@ import com.baro.memo.domain.MemoContent;
 import com.baro.memo.domain.MemoRepository;
 import com.baro.memo.domain.TemporalMemo;
 import com.baro.memo.domain.TemporalMemoRepository;
+import com.baro.memo.exception.TemporalMemoException;
+import com.baro.memo.exception.TemporalMemoExceptionType;
 import com.baro.memofolder.domain.MemoFolder;
 import com.baro.memofolder.domain.MemoFolderRepository;
+import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,5 +75,39 @@ public class TemporalMemoService {
         TemporalMemo temporalMemo = temporalMemoRepository.getById(command.temporalMemoId());
         temporalMemo.matchOwner(command.memberId());
         temporalMemo.applyCorrection(MemoContent.from(command.contents()));
+    }
+
+    @Transactional(readOnly = true)
+    public List<FindTemporalMemoHistoriesResult> findTemporalMemos(FindTemporalMemoHistoriesQuery query) {
+        validateQueryDateRange(query);
+        List<TemporalMemo> temporalMemos = temporalMemoRepository.findAllByMemberIdAndCreatedAtBetween(query.memberId(),
+                query.startDate(), query.endDate());
+        Map<LocalDate, List<TemporalMemo>> temporalMemosByDate = groupTemporalMemosByCreatedAt(temporalMemos);
+
+        return temporalMemosByDate.keySet().stream()
+                .sorted(Comparator.reverseOrder())
+                .map(createdAt -> new FindTemporalMemoHistoriesResult(createdAt,
+                        toTemporalMemoResults(temporalMemosByDate.get(createdAt))
+                ))
+                .toList();
+    }
+
+    private void validateQueryDateRange(FindTemporalMemoHistoriesQuery query) {
+        if (query.startDate().isAfter(query.endDate())) {
+            throw new TemporalMemoException(TemporalMemoExceptionType.NON_SEQUENTIAL_DATES_EXCEPTION);
+        }
+    }
+
+    private Map<LocalDate, List<TemporalMemo>> groupTemporalMemosByCreatedAt(List<TemporalMemo> temporalMemos) {
+        return temporalMemos.stream().collect(Collectors.groupingBy(
+                temporalMemo -> temporalMemo.getCreatedAt().toLocalDate()
+        ));
+    }
+
+    private List<FindTemporalMemoResult> toTemporalMemoResults(List<TemporalMemo> temporalMemos) {
+        return temporalMemos.stream()
+                .map(FindTemporalMemoResult::from)
+//                .sorted(Comparator.comparing(FindTemporalMemoResult::createdAt).reversed()) FIXME: 회의후 정렬기준 반영
+                .toList();
     }
 }
