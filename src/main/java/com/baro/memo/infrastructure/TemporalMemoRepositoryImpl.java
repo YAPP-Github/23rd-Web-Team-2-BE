@@ -4,6 +4,7 @@ import com.baro.memo.domain.TemporalMemo;
 import com.baro.memo.domain.TemporalMemoRepository;
 import com.baro.memo.exception.TemporalMemoException;
 import com.baro.memo.exception.TemporalMemoExceptionType;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -33,5 +34,11 @@ public class TemporalMemoRepositoryImpl implements TemporalMemoRepository {
     @Override
     public void delete(TemporalMemo temporalMemo) {
         temporalMemoJpaRepository.delete(temporalMemo);
+    }
+
+    @Override
+    public List<TemporalMemo> findAllByMemberIdAndCreatedAtBetween(Long memberId, LocalDateTime start,
+                                                                   LocalDateTime end) {
+        return temporalMemoJpaRepository.findAllByMemberIdAndCreatedAtBetween(memberId, start, end);
     }
 }
