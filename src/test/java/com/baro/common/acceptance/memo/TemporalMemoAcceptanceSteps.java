@@ -25,7 +25,7 @@ import org.springframework.http.MediaType;
 
 public class TemporalMemoAcceptanceSteps {
 
-    public static final String 크기_초과_컨텐츠 = "끄적이는 메모 컨텐츠".repeat(500);
+    public static final String 크기_초과_컨텐츠 = "글".repeat(501);
     public static final SaveTemporalMemoRequest 끄적이는_메모_바디 = new SaveTemporalMemoRequest("끄적이는 메모 컨텐츠");
     public static final SaveTemporalMemoRequest 크기_초과_끄적이는_메모_작성_바디 = new SaveTemporalMemoRequest(크기_초과_컨텐츠);
     public static final UpdateTemporalMemoRequest 끄적이는_메모_수정_바디 = new UpdateTemporalMemoRequest("끄적이는 메모 수정 컨텐츠");
@@ -130,11 +130,11 @@ public class TemporalMemoAcceptanceSteps {
                         requestHeaders(
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
                         ),
-                        responseHeaders(
-                                headerWithName(HttpHeaders.LOCATION).description("아카이브된 메모 경로")
-                        ),
                         requestFields(
                                 fieldWithPath("memoFolderId").description("메모 폴더 ID")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.LOCATION).description("아카이브된 메모 경로")
                         ))
                 ).contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken()).body(바디)
