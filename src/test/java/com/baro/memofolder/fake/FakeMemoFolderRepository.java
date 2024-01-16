@@ -4,6 +4,8 @@ import com.baro.member.domain.Member;
 import com.baro.memofolder.domain.MemoFolder;
 import com.baro.memofolder.domain.MemoFolderName;
 import com.baro.memofolder.domain.MemoFolderRepository;
+import com.baro.memofolder.exception.MemoFolderException;
+import com.baro.memofolder.exception.MemoFolderExceptionType;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -47,5 +49,13 @@ public class FakeMemoFolderRepository implements MemoFolderRepository {
         return memoFolders.values().stream()
                 .filter(memoFolder -> memoFolder.getMember().getId().equals(member.getId()))
                 .toList();
+    }
+
+    @Override
+    public MemoFolder getById(Long id) {
+        return memoFolders.values().stream()
+                .filter(memoFolder -> memoFolder.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new MemoFolderException(MemoFolderExceptionType.NOT_EXIST_MEMO_FOLDER));
     }
 }

@@ -1,16 +1,14 @@
-package com.baro.memofolder.exception;
+package com.baro.memo.exception;
 
 import com.baro.common.exception.RequestExceptionType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 @RequiredArgsConstructor
-public enum MemoFolderExceptionType implements RequestExceptionType {
+public enum MemoExceptionType implements RequestExceptionType {
 
-    NAME_DUPLICATION("MF01", "중복된 이름의 폴더가 존재합니다.", HttpStatus.BAD_REQUEST),
-    OVER_MAX_SIZE_NAME("MF02", "폴더 이름은 최대 20자까지 가능합니다.", HttpStatus.BAD_REQUEST),
-    NOT_EXIST_MEMO_FOLDER("MF03", "존재하지 않는 폴더입니다.", HttpStatus.NOT_FOUND),
-    NOT_MATCH_OWNER("MF04", "폴더의 소유자가 아닙니다.", HttpStatus.FORBIDDEN),
+    OVER_MAX_SIZE_CONTENT("MO01", "메모의 최대 길이는 500자입니다.", HttpStatus.BAD_REQUEST),
+    NOT_EXIST_MEMO("MO02", "존재하지 않는 메모 입니다.", HttpStatus.NOT_FOUND),
     ;
 
     private final String errorCode;

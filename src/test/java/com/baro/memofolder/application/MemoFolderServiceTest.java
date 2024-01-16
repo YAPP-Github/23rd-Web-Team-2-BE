@@ -2,6 +2,7 @@ package com.baro.memofolder.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
@@ -50,8 +51,10 @@ class MemoFolderServiceTest {
 
         // then
         List<MemoFolder> all = memoFolderRepository.findAll();
-        assertThat(all).hasSize(1);
-        assertThat(all.get(0).getName()).isEqualTo(MemoFolderName.from(folderName));
+        assertAll(
+                () -> assertThat(all).hasSize(1),
+                () -> assertThat(all.get(0).getName()).isEqualTo(MemoFolderName.from(folderName))
+        );
     }
 
 
@@ -97,8 +100,11 @@ class MemoFolderServiceTest {
         List<GetMemoFolderResult> memoFolders = memoFolderService.getMemoFolder(memberA.getId());
 
         // then
-        assertThat(memoFolders).hasSize(2);
-        assertThat(memoFolders).extracting("name")
-                .containsExactlyInAnyOrder("기본", "폴더이름");
+        assertAll(
+                () -> assertThat(memoFolders).hasSize(2),
+                () -> assertThat(memoFolders).extracting("name")
+                        .containsExactlyInAnyOrder("기본", "폴더이름")
+        );
+
     }
 }
