@@ -5,8 +5,8 @@ import com.baro.template.application.TemplateService;
 import com.baro.template.application.dto.FindTemplateQuery;
 import com.baro.template.application.dto.FindTemplateResult;
 import com.baro.template.domain.TemplateCategory;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,14 +23,14 @@ public class TemplateController {
     private final TemplateService templateService;
 
     @GetMapping("/{category}")
-    ResponseEntity<List<FindTemplateResult>> findTemplates(
+    ResponseEntity<Slice<FindTemplateResult>> findTemplates(
             AuthMember authMember,
             @PathVariable("category") String categoryName,
             @RequestParam("sort") String sortName
     ) {
         Sort sort = SortType.getSort(sortName);
         FindTemplateQuery query = new FindTemplateQuery(TemplateCategory.getCategory(categoryName), sort);
-        List<FindTemplateResult> result = templateService.findTemplates(query);
+        Slice<FindTemplateResult> result = templateService.findTemplates(query);
 
         return ResponseEntity.ok().body(result);
     }

@@ -3,6 +3,7 @@ package com.baro.template.application;
 import static com.baro.template.fixture.TemplateFixture.감사전하기;
 import static com.baro.template.fixture.TemplateFixture.보고하기;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.baro.template.application.dto.FindTemplateQuery;
 import com.baro.template.application.dto.FindTemplateResult;
@@ -41,8 +42,9 @@ class TemplateServiceTest {
         var result = service.findTemplates(new FindTemplateQuery(TemplateCategory.REPORT, SortType.NEW.getSort()));
 
         // then
-        assertThat(result).hasSize(3);
-        assertThat(result).isSortedAccordingTo(Comparator.comparing(FindTemplateResult::templateId).reversed());
+        assertThat(result.getContent()).hasSize(3);
+        assertThat(result.getContent()).isSortedAccordingTo(
+                Comparator.comparing(FindTemplateResult::templateId).reversed());
     }
 
     @Test
@@ -57,8 +59,11 @@ class TemplateServiceTest {
         var result = service.findTemplates(new FindTemplateQuery(TemplateCategory.REPORT, SortType.COPY.getSort()));
 
         // then
-        assertThat(result).hasSize(3);
-        assertThat(result).isSortedAccordingTo(Comparator.comparing(FindTemplateResult::copiedCount).reversed());
+        assertAll(
+                () -> assertThat(result.getNumberOfElements()).isEqualTo(3),
+                () -> assertThat(result.getContent()).isSortedAccordingTo(
+                        Comparator.comparing(FindTemplateResult::copiedCount).reversed())
+        );
     }
 
     @Test
@@ -73,8 +78,11 @@ class TemplateServiceTest {
         var result = service.findTemplates(new FindTemplateQuery(TemplateCategory.REPORT, SortType.SAVE.getSort()));
 
         // then
-        assertThat(result).hasSize(3);
-        assertThat(result).isSortedAccordingTo(Comparator.comparing(FindTemplateResult::savedCount).reversed());
+        assertAll(
+                () -> assertThat(result.getNumberOfElements()).isEqualTo(3),
+                () -> assertThat(result.getContent()).isSortedAccordingTo(
+                        Comparator.comparing(FindTemplateResult::savedCount).reversed())
+        );
     }
 
     @Test
@@ -83,6 +91,11 @@ class TemplateServiceTest {
         var result = service.findTemplates(new FindTemplateQuery(TemplateCategory.REPORT, SortType.NEW.getSort()));
 
         // then
-        assertThat(result).isEmpty();
+        assertAll(
+                () -> assertThat(result.getContent()).isEmpty(),
+                () -> assertThat(result.getNumberOfElements()).isEqualTo(0),
+                () -> assertThat(result.isFirst()).isEqualTo(true),
+                () -> assertThat(result.isLast()).isEqualTo(true)
+        );
     }
 }

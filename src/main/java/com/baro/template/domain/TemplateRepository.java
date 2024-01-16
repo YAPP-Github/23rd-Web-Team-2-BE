@@ -1,11 +1,11 @@
 package com.baro.template.domain;
 
-import java.util.List;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 public interface TemplateRepository {
 
-    List<Template> findAllByCategory(TemplateCategory templateCategory, Pageable pageable);
+    Slice<Template> findAllByCategory(TemplateCategory templateCategory, Pageable pageable);
 
     Template save(Template template);
 

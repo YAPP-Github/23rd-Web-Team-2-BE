@@ -5,6 +5,7 @@ import static com.baro.auth.fixture.OAuthMemberInfoFixture.유빈;
 import static com.baro.common.acceptance.AcceptanceSteps.성공;
 import static com.baro.common.acceptance.AcceptanceSteps.응답값을_검증한다;
 import static com.baro.common.acceptance.AcceptanceSteps.응답의_개수를_검증한다;
+import static com.baro.common.acceptance.AcceptanceSteps.응답의_특정_필드값을_검증한다;
 import static com.baro.common.acceptance.AcceptanceSteps.잘못된_요청;
 import static com.baro.common.acceptance.template.TemplateAcceptanceSteps.템플릿_조회_요청_성공;
 import static com.baro.common.acceptance.template.TemplateAcceptanceSteps.템플릿_조회_요청_실패;
@@ -25,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 @SuppressWarnings("NonAsciiCharacters")
 class TemplateApiTest extends RestApiTest {
 
-    private final String rootPath = "";
     @Autowired
     private TemplateRepository templateRepository;
 
@@ -42,7 +42,7 @@ class TemplateApiTest extends RestApiTest {
 
         // then
         응답값을_검증한다(응답, 성공);
-        응답의_개수를_검증한다(응답, rootPath, 3);
+        응답의_개수를_검증한다(응답, "content", 3);
     }
 
     @Test
@@ -85,7 +85,8 @@ class TemplateApiTest extends RestApiTest {
 
         // then
         응답값을_검증한다(응답, 성공);
-        응답의_개수를_검증한다(응답, rootPath, 0);
+        응답의_개수를_검증한다(응답, "content", 0);
+        응답의_특정_필드값을_검증한다(응답, "empty", "true");
     }
 
     private void 템플릿_데이터_준비(List<Template> templates) {

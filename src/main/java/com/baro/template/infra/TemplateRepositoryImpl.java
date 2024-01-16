@@ -3,9 +3,9 @@ package com.baro.template.infra;
 import com.baro.template.domain.Template;
 import com.baro.template.domain.TemplateCategory;
 import com.baro.template.domain.TemplateRepository;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
@@ -15,7 +15,7 @@ public class TemplateRepositoryImpl implements TemplateRepository {
     private final TemplateJpaRepository templateJpaRepository;
 
     @Override
-    public List<Template> findAllByCategory(TemplateCategory templateCategory, Pageable pageable) {
+    public Slice<Template> findAllByCategory(TemplateCategory templateCategory, Pageable pageable) {
         return templateJpaRepository.findAllByCategory(templateCategory, pageable);
     }
 

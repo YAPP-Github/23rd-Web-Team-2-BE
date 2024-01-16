@@ -16,6 +16,8 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 
 public class FakeTemplateRepository implements TemplateRepository {
@@ -24,18 +26,15 @@ public class FakeTemplateRepository implements TemplateRepository {
     private final Map<Long, Template> templates = new ConcurrentHashMap<>();
 
     @Override
-    public List<Template> findAllByCategory(TemplateCategory templateCategory, Pageable pageable) {
+    public Slice<Template> findAllByCategory(TemplateCategory templateCategory, Pageable pageable) {
         List<Template> categorizedTemplates = templates.values().stream()
                 .filter(template -> template.getCategory().equals(templateCategory))
                 .toList();
-
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), categorizedTemplates.size());
         Sort sortType = pageable.getSort();
 
         categorizedTemplates = sort(sortType, categorizedTemplates);
 
-        return categorizedTemplates.subList(start, end);
+        return new SliceImpl<>(categorizedTemplates, pageable, false);
     }
 
     @Override
