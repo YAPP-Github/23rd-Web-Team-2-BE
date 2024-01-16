@@ -8,6 +8,4 @@ public interface TemplateRepository {
     Slice<Template> findAllByCategory(TemplateCategory templateCategory, Pageable pageable);
 
     Template save(Template template);
-
-    int count();
 }

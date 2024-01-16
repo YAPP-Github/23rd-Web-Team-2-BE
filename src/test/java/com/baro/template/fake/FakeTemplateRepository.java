@@ -8,7 +8,6 @@ import com.baro.template.domain.TemplateRepository;
 import com.baro.template.exception.SortException;
 import com.baro.template.exception.SortExceptionType;
 import com.baro.template.presentation.SortType;
-import io.jsonwebtoken.lang.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -49,11 +48,6 @@ public class FakeTemplateRepository implements TemplateRepository {
         }
         templates.put(template.getId(), template);
         return template;
-    }
-
-    @Override
-    public int count() {
-        return Collections.size(templates.values());
     }
 
     private List<Template> sort(Sort sortType, List<Template> categorizedTemplates) {
