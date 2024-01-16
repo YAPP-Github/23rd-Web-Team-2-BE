@@ -276,8 +276,11 @@ class TemporalMemoServiceTest {
 
         // then
         TemporalMemo updatedTemporalMemo = temporalMemoRepository.getById(temporalMemo.getId());
-        assertThat(updatedTemporalMemo.isCorrected()).isTrue();
-        assertThat(updatedTemporalMemo.getCorrectionContent()).isEqualTo(MemoContent.from(correctionContent));
+        assertAll(
+                () -> assertThat(updatedTemporalMemo.isCorrected()).isTrue(),
+                () -> assertThat(updatedTemporalMemo.getCorrectionContent()).isEqualTo(
+                        MemoContent.from(correctionContent))
+        );
     }
 
     @Test
