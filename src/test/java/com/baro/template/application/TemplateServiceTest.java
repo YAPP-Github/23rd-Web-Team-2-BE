@@ -42,9 +42,11 @@ class TemplateServiceTest {
         var result = service.findTemplates(new FindTemplateQuery(TemplateCategory.REPORT, SortType.NEW.getSort()));
 
         // then
-        assertThat(result.getContent()).hasSize(3);
-        assertThat(result.getContent()).isSortedAccordingTo(
-                Comparator.comparing(FindTemplateResult::templateId).reversed());
+        assertAll(
+                () -> assertThat(result.getContent()).hasSize(3),
+                () -> assertThat(result.getContent()).isSortedAccordingTo(
+                        Comparator.comparing(FindTemplateResult::templateId).reversed())
+        );
     }
 
     @Test
