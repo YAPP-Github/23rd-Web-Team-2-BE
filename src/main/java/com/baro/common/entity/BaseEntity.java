@@ -18,4 +18,8 @@ public class BaseEntity {
 
     @LastModifiedDate
     protected LocalDateTime updatedAt;
+
+    public void setCreatedAtForTest(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }
