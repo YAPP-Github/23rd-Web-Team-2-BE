@@ -2,6 +2,7 @@ package com.baro.memo.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
@@ -64,8 +65,10 @@ class TemporalMemoServiceTest {
 
         // then
         List<TemporalMemo> all = temporalMemoRepository.findAll();
-        assertThat(all).hasSize(1);
-        assertThat(all.get(0).getContent().value()).isEqualTo(content);
+        assertAll(
+                () -> assertThat(all).hasSize(1),
+                () -> assertThat(all.get(0).getContent().value()).isEqualTo(content)
+        );
     }
 
     @Test
@@ -154,9 +157,11 @@ class TemporalMemoServiceTest {
         // then
         List<Memo> allMemos = memoRepository.findAll();
         Memo savedMemo = allMemos.get(0);
-        assertThat(allMemos).hasSize(1);
-        assertThat(savedMemo.getContent()).isEqualTo(temporalMemo.getArchivingContent());
-        assertThat(temporalMemo.getMemo()).isEqualTo(savedMemo);
+        assertAll(
+                () -> assertThat(allMemos).hasSize(1),
+                () -> assertThat(savedMemo.getContent()).isEqualTo(temporalMemo.getArchivingContent()),
+                () -> assertThat(temporalMemo.getMemo()).isEqualTo(savedMemo)
+        );
     }
 
     @Test

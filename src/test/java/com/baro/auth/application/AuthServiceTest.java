@@ -2,6 +2,7 @@ package com.baro.auth.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.baro.auth.application.dto.SignInDto;
 import com.baro.auth.domain.Token;
@@ -276,7 +277,9 @@ class AuthServiceTest {
 
         // then
         List<MemoFolder> all = memoFolderRepository.findAll();
-        assertThat(all).hasSize(1);
-        assertThat(all.get(0).getMember().getOAuthId()).isEqualTo(oauthId);
+        assertAll(
+                () -> assertThat(all).hasSize(1),
+                () -> assertThat(all.get(0).getMember().getOAuthId()).isEqualTo(oauthId)
+        );
     }
 }
