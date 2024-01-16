@@ -86,9 +86,9 @@ public class TemporalMemoService {
 
         return temporalMemosByDate.keySet().stream()
                 .sorted(Comparator.reverseOrder())
-                .map(createdAt -> new FindTemporalMemoHistoriesResult(createdAt,
-                        toTemporalMemoResults(temporalMemosByDate.get(createdAt))
-                ))
+                .map(createdAt -> new FindTemporalMemoHistoriesResult(
+                        createdAt, toTemporalMemoResults(temporalMemosByDate.get(createdAt)
+                )))
                 .toList();
     }
 
@@ -107,7 +107,7 @@ public class TemporalMemoService {
     private List<FindTemporalMemoResult> toTemporalMemoResults(List<TemporalMemo> temporalMemos) {
         return temporalMemos.stream()
                 .map(FindTemporalMemoResult::from)
-//                .sorted(Comparator.comparing(FindTemporalMemoResult::createdAt).reversed()) FIXME: 회의후 정렬기준 반영
+                .sorted(Comparator.comparing(FindTemporalMemoResult::createdAt))
                 .toList();
     }
 }

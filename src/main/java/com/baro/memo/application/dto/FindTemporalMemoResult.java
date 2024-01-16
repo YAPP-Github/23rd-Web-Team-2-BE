@@ -8,6 +8,7 @@ public record FindTemporalMemoResult(
         String content,
         String correctionContent,
         Boolean isCorrected,
+        Boolean isArchived,
         LocalDateTime createdAt
 ) {
 
@@ -17,6 +18,7 @@ public record FindTemporalMemoResult(
                 temporalMemo.getContent().value(),
                 temporalMemo.getCorrectionContent() == null ? null : temporalMemo.getCorrectionContent().value(),
                 temporalMemo.isCorrected(),
+                temporalMemo.isArchived(),
                 temporalMemo.getCreatedAt()
         );
     }
