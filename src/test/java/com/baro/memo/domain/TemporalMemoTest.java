@@ -2,6 +2,7 @@ package com.baro.memo.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.baro.member.domain.Member;
 import com.baro.member.fixture.MemberFixture;
@@ -99,5 +100,35 @@ class TemporalMemoTest {
 
         // then
         assertThat(isCorrected).isFalse();
+    }
+
+    @Test
+    void 끄적이는_메모의_맞춤법_검사_결과를_반영한다() {
+        // given
+        TemporalMemo temporalMemo = TemporalMemo.of(MemberFixture.memberWithNickname("바로"), "메모");
+        MemoContent correctionContent = MemoContent.from("메모");
+
+        // when
+        temporalMemo.applyCorrection(correctionContent);
+
+        // then
+        assertAll(
+                () -> assertThat(temporalMemo.getCorrectionContent()).isEqualTo(correctionContent),
+                () -> assertThat(temporalMemo.isCorrected()).isTrue()
+        );
+    }
+
+    @Test
+    void 이미_맞춤법_검사_결과가_반영된_끄적이는_메모에_결과_반영시_예외를_반환한다() {
+        // given
+        TemporalMemo temporalMemo = TemporalMemo.of(MemberFixture.memberWithNickname("바로"), "메모");
+        MemoContent correctionContent = MemoContent.from("메모");
+        temporalMemo.applyCorrection(correctionContent);
+
+        // when & then
+        assertThatCode(() -> temporalMemo.applyCorrection(correctionContent))
+                .isInstanceOf(TemporalMemoException.class)
+                .extracting("exceptionType")
+                .isEqualTo(TemporalMemoExceptionType.ALREADY_CORRECTED);
     }
 }
