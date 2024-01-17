@@ -122,7 +122,7 @@ openapi3 {
     version = "1.0.0"
     format = "yaml"
 }
-
+서
 tasks.withType(GenerateSwaggerUI) {
     dependsOn 'openapi3'
 }
@@ -144,6 +144,7 @@ tasks.register('copyToLocal', Copy) {
 }
 
 tasks.register('copyOpenApiSpec', Copy) {
+    dependsOn 'openapi3'
     from("./build/api-spec")
     into "./build/resources/main/static/api-spec"
     into './src/main/resources/static/api-spec'
