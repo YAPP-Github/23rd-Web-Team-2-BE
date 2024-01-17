@@ -33,3 +33,6 @@ aws:
     secret_key: test-secret-key
     bucket: "bucket"
     key: "test/directory/"
+
+cors:
+  allowed-origins: "http://localhost:3000"
