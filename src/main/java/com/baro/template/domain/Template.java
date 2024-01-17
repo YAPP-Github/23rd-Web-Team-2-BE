@@ -44,6 +44,10 @@ public class Template extends BaseEntity {
         this.savedCount = 0;
     }
 
+    public void increaseSavedCount() {
+        this.savedCount++;
+    }
+
     /**
      * 테스트용 팩토리메서드
      */

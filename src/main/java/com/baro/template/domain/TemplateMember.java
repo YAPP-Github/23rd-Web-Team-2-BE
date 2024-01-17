@@ -37,4 +37,25 @@ public class TemplateMember extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "template_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Template template;
+
+    public static TemplateMember of(Member member, MemoFolder memoFolder, Template template) {
+        return new TemplateMember(member, memoFolder, template);
+    }
+
+    public static TemplateMember instanceForTest(Long id, Member member, MemoFolder memoFolder, Template template) {
+        return new TemplateMember(id, member, memoFolder, template);
+    }
+
+    private TemplateMember(Member member, MemoFolder memoFolder, Template template) {
+        this.member = member;
+        this.memoFolder = memoFolder;
+        this.template = template;
+    }
+
+    private TemplateMember(Long id, Member member, MemoFolder memoFolder, Template template) {
+        this.id = id;
+        this.member = member;
+        this.memoFolder = memoFolder;
+        this.template = template;
+    }
 }
