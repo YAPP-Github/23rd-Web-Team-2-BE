@@ -48,7 +48,7 @@ class TemporalMemoTest {
     }
 
     @Test
-    void 끄적이는_메모의_권한을_확인한다_권한이_없는_경우_예외를_반환한다() {
+    void 끄적이는_메모의_권한이_없는_경우_예외를_반환한다() {
         // given
         Member memberWithId = new Member(
                 1L,
