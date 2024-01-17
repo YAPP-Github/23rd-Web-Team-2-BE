@@ -16,7 +16,7 @@ public class MemoContent {
 
     private static final int MAX_CONTENT_SIZE = 500;
 
-    @Column(length = MAX_CONTENT_SIZE)
+    @Column(length = 1024)
     private String content;
 
     private MemoContent(String content) {
