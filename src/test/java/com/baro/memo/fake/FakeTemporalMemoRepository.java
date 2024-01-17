@@ -44,4 +44,10 @@ public class FakeTemporalMemoRepository implements TemporalMemoRepository {
                 .findFirst()
                 .orElseThrow(() -> new TemporalMemoException(TemporalMemoExceptionType.NOT_EXIST_TEMPORAL_MEMO));
     }
+
+    @Override
+    public void delete(TemporalMemo temporalMemo) {
+        this.getById(temporalMemo.getId());
+        temporalMemos.remove(temporalMemo.getId());
+    }
 }

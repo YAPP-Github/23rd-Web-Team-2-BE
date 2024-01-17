@@ -1,5 +1,6 @@
 package com.baro.memo.presentation;
 
+import static com.baro.auth.fixture.OAuthMemberInfoFixture.아현;
 import static com.baro.auth.fixture.OAuthMemberInfoFixture.유빈;
 import static com.baro.auth.fixture.OAuthMemberInfoFixture.태연;
 import static com.baro.common.acceptance.AcceptanceSteps.권한_없음;
@@ -11,12 +12,14 @@ import static com.baro.common.acceptance.AcceptanceSteps.잘못된_요청;
 import static com.baro.common.acceptance.AcceptanceSteps.존재하지_않음;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는_메모_바디;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는_메모_수정_바디;
+import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는메모_삭제_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는메모_생성_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는메모_수정_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는메모_아카이빙_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는메모를_생성하고_ID를_반환한다;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.메모_아카이브_요청_바디;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.잘못된_끄적이는_메모_생성_요청;
+import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.잘못된_끄적이는메모_삭제_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.잘못된_끄적이는메모_수정_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.잘못된_끄적이는메모_아카이빙_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.크기_초과_끄적이는_메모_수정_바디;
@@ -179,6 +182,47 @@ public class TemproalMemoApiTest extends RestApiTest {
 
         // when
         var 응답 = 잘못된_끄적이는메모_아카이빙_요청(유빈, 유빈의_끄적이는_메모_ID, 메모_아카이브_요청_바디);
+
+        // then
+        응답값을_검증한다(응답, 존재하지_않음);
+    }
+
+    @Test
+    void 끄적이는_메모를_삭제_한다() {
+        // given
+        var 아현 = 로그인(아현());
+        var 아현의_끄적이는_메모_ID = 끄적이는메모를_생성하고_ID를_반환한다(아현, 끄적이는_메모_바디);
+
+        // when
+        var 응답 = 끄적이는메모_삭제_요청(아현, 아현의_끄적이는_메모_ID);
+
+        // then
+        응답값을_검증한다(응답, 응답값_없음);
+    }
+
+    @Test
+    void 다른_사람의_끄적이는_메모_삭제시_예외를_반환한다() {
+        // given
+        var 아현 = 로그인(아현());
+        var 아현의_끄적이는_메모_ID = 끄적이는메모를_생성하고_ID를_반환한다(아현, 끄적이는_메모_바디);
+
+        var 태연 = 로그인(태연());
+
+        // when
+        var 응답 = 잘못된_끄적이는메모_삭제_요청(태연, 아현의_끄적이는_메모_ID);
+
+        // then
+        응답값을_검증한다(응답, 권한_없음);
+    }
+
+    @Test
+    void 존재_하지_않는_끄적이는_메모_삭제시_예외를_반환한다() {
+        // given
+        var 아현 = 로그인(아현());
+        var 존재_하지_않는_끄적이는_메모_ID = 999L;
+
+        // when
+        var 응답 = 잘못된_끄적이는메모_삭제_요청(아현, 존재_하지_않는_끄적이는_메모_ID);
 
         // then
         응답값을_검증한다(응답, 존재하지_않음);

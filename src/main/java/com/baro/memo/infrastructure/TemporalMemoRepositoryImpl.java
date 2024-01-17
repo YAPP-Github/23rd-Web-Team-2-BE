@@ -29,4 +29,9 @@ public class TemporalMemoRepositoryImpl implements TemporalMemoRepository {
         return temporalMemoJpaRepository.findById(id)
                 .orElseThrow(() -> new TemporalMemoException(TemporalMemoExceptionType.NOT_EXIST_TEMPORAL_MEMO));
     }
+
+    @Override
+    public void delete(TemporalMemo temporalMemo) {
+        temporalMemoJpaRepository.delete(temporalMemo);
+    }
 }

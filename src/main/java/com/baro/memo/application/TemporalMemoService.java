@@ -5,6 +5,7 @@ import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
 import com.baro.memo.application.dto.ArchiveTemporalMemoCommand;
 import com.baro.memo.application.dto.ArchiveTemporalMemoResult;
+import com.baro.memo.application.dto.DeleteTemporalMemoCommand;
 import com.baro.memo.application.dto.SaveTemporalMemoCommand;
 import com.baro.memo.application.dto.SaveTemporalMemoResult;
 import com.baro.memo.application.dto.UpdateTemporalMemoCommand;
@@ -51,5 +52,11 @@ public class TemporalMemoService {
         Memo memo = memoRepository.save(Memo.of(member, memoFolder, temporalMemo.getArchivingContent()));
         temporalMemo.archivedAsMemo(memo);
         return ArchiveTemporalMemoResult.from(memo);
+    }
+
+    public void deleteTemporalMemo(DeleteTemporalMemoCommand command) {
+        TemporalMemo temporalMemo = temporalMemoRepository.getById(command.temporalMemoId());
+        temporalMemo.matchOwner(command.memberId());
+        temporalMemoRepository.delete(temporalMemo);
     }
 }

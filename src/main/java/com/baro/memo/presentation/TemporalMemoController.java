@@ -5,6 +5,7 @@ import com.baro.auth.domain.AuthMember;
 import com.baro.memo.application.TemporalMemoService;
 import com.baro.memo.application.dto.ArchiveTemporalMemoCommand;
 import com.baro.memo.application.dto.ArchiveTemporalMemoResult;
+import com.baro.memo.application.dto.DeleteTemporalMemoCommand;
 import com.baro.memo.application.dto.SaveTemporalMemoCommand;
 import com.baro.memo.application.dto.SaveTemporalMemoResult;
 import com.baro.memo.application.dto.UpdateTemporalMemoCommand;
@@ -14,6 +15,7 @@ import com.baro.memo.presentation.dto.UpdateTemporalMemoRequest;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -68,5 +70,15 @@ public class TemporalMemoController {
                 .buildAndExpand(result.id())
                 .toUri();
         return ResponseEntity.created(location).build();
+    }
+
+    @DeleteMapping("/{temporalMemoId}")
+    public ResponseEntity<Void> deleteTemporalMemo(
+            AuthMember authMember,
+            @PathVariable Long temporalMemoId
+    ) {
+        DeleteTemporalMemoCommand command = new DeleteTemporalMemoCommand(authMember.id(), temporalMemoId);
+        temporalMemoService.deleteTemporalMemo(command);
+        return ResponseEntity.noContent().build();
     }
 }
