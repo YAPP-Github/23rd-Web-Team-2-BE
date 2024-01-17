@@ -134,17 +134,24 @@ tasks.register('copySwaggerUI', Copy) {
     def generateSwaggerUISampleTask = tasks.named('generateSwaggerUISample', GenerateSwaggerUI).get()
 
     from("${generateSwaggerUISampleTask.outputDir}")
-    into "${buildDir}/resources/main/static/docs"
+    into './build/resources/main/static/docs'
 }
 
 tasks.register('copyToLocal', Copy) {
     dependsOn 'copySwaggerUI'
-    from("${buildDir}/resources/main/static/docs")
+    from './build/resources/main/static/docs'
     into './src/main/resources/static/docs'
+}
+
+tasks.register('copyOpenApiSpec', Copy) {
+    from("./build/api-spec")
+    into "./build/resources/main/static/api-spec"
+    into './src/main/resources/static/api-spec'
 }
 
 bootJar {
     dependsOn 'copySecret'
     dependsOn 'copyToLocal'
+    dependsOn 'copyOpenApiSpec'
 }
 
