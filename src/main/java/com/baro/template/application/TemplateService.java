@@ -41,12 +41,13 @@ public class TemplateService {
     public ArchiveTemplateResult archiveTemplate(ArchiveTemplateCommand command) {
         Member member = memberRepository.getById(command.memberId());
         Template template = templateRepository.getById(command.templateId());
-        MemoFolder folder = memoFolderRepository.getById(command.memoFolderId());
-        folder.matchOwner(member.getId());
 
         if (templateMemberRepository.existsByMemberIdAndTemplateId(member.getId(), template.getId())) {
             throw new TemplateException(TemplateExceptionType.ARCHIVED_TEMPLATE);
         }
+
+        MemoFolder folder = memoFolderRepository.getById(command.memoFolderId());
+        folder.matchOwner(member.getId());
 
         TemplateMember templateMember = templateMemberRepository.save(TemplateMember.of(member, folder, template));
         template.increaseSavedCount();
