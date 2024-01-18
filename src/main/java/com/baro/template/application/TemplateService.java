@@ -2,6 +2,7 @@ package com.baro.template.application;
 
 import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
+import com.baro.memo.application.dto.CopyTemplateCommand;
 import com.baro.memofolder.domain.MemoFolder;
 import com.baro.memofolder.domain.MemoFolderRepository;
 import com.baro.template.application.dto.ArchiveTemplateCommand;
@@ -53,5 +54,11 @@ public class TemplateService {
         template.increaseSavedCount();
 
         return ArchiveTemplateResult.from(templateMember);
+    }
+
+    public void copyTemplate(CopyTemplateCommand command) {
+        Member member = memberRepository.getById(command.memberId());
+        Template template = templateRepository.getById(command.templateId());
+        template.increaseCopiedCount();
     }
 }
