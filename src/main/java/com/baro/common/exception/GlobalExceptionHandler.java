@@ -1,5 +1,6 @@
 package com.baro.common.exception;
 
+import static com.baro.common.exception.CommonRequestExceptionType.INVALID_TYPE_REQUEST_EXCEPTION;
 import static com.baro.common.exception.CommonRequestExceptionType.MISSING_PARAMETER_EXCEPTION;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 @Slf4j
@@ -36,6 +38,14 @@ class GlobalExceptionHandler {
         log.warn("[handleRequestException throw MissingServletRequestParameterException : {}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(RequestExceptionResponse.from(MISSING_PARAMETER_EXCEPTION));
+    }
+
+    @ExceptionHandler(value = {MethodArgumentTypeMismatchException.class})
+    public ResponseEntity<RequestExceptionResponse> handleMissingRequestParameters(
+            MethodArgumentTypeMismatchException e) {
+        log.warn("[handleRequestException throw MissingServletRequestParameterException : {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(RequestExceptionResponse.from(INVALID_TYPE_REQUEST_EXCEPTION));
     }
 
     @ExceptionHandler(Exception.class)
