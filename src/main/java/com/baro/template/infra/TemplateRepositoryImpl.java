@@ -3,6 +3,8 @@ package com.baro.template.infra;
 import com.baro.template.domain.Template;
 import com.baro.template.domain.TemplateCategory;
 import com.baro.template.domain.TemplateRepository;
+import com.baro.template.exception.TemplateException;
+import com.baro.template.exception.TemplateExceptionType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -22,5 +24,11 @@ public class TemplateRepositoryImpl implements TemplateRepository {
     @Override
     public Template save(Template template) {
         return templateJpaRepository.save(template);
+    }
+
+    @Override
+    public Template getById(Long id) {
+        return templateJpaRepository.findById(id)
+                .orElseThrow(() -> new TemplateException(TemplateExceptionType.INVALID_TEMPLATE));
     }
 }
