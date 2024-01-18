@@ -6,12 +6,15 @@ import static com.baro.auth.fixture.OAuthMemberInfoFixture.태연;
 import static com.baro.common.acceptance.AcceptanceSteps.권한_없음;
 import static com.baro.common.acceptance.AcceptanceSteps.생성됨;
 import static com.baro.common.acceptance.AcceptanceSteps.성공;
+import static com.baro.common.acceptance.AcceptanceSteps.응답값_없음;
 import static com.baro.common.acceptance.AcceptanceSteps.응답값을_검증한다;
 import static com.baro.common.acceptance.AcceptanceSteps.응답의_개수를_검증한다;
 import static com.baro.common.acceptance.AcceptanceSteps.응답의_특정_필드값을_검증한다;
 import static com.baro.common.acceptance.AcceptanceSteps.잘못된_요청;
 import static com.baro.common.acceptance.AcceptanceSteps.존재하지_않음;
 import static com.baro.common.acceptance.memofolder.MemoFolderAcceptanceSteps.메모_폴더를_생성_하고_ID를_반환한다;
+import static com.baro.common.acceptance.template.TemplateAcceptanceSteps.템플릿_복사_요청_성공;
+import static com.baro.common.acceptance.template.TemplateAcceptanceSteps.템플릿_복사_요청_실패;
 import static com.baro.common.acceptance.template.TemplateAcceptanceSteps.템플릿_아카이브_요청_성공;
 import static com.baro.common.acceptance.template.TemplateAcceptanceSteps.템플릿_아카이브_요청_실패;
 import static com.baro.common.acceptance.template.TemplateAcceptanceSteps.템플릿_조회_요청_성공;
@@ -206,6 +209,48 @@ class TemplateApiTest extends RestApiTest {
 
         // then
         응답값을_검증한다(응답, 존재하지_않음);
+    }
+
+    @Test
+    void 템플릿을_복사한다() {
+        // given
+        var 토큰 = 로그인(유빈());
+        var 템플릿 = 보고하기();
+        템플릿_데이터_준비(List.of(템플릿));
+
+        // when
+        var 응답 = 템플릿_복사_요청_성공(토큰, 템플릿.getId());
+
+        // then
+        응답값을_검증한다(응답, 응답값_없음);
+    }
+
+    @Test
+    void 존재하지_않는_템플릿_복사시_예외를_반환한다() {
+        // given
+        var 토큰 = 로그인(유빈());
+        var 존재하지_않는_템플릿 = 999L;
+
+        // when
+        var 응답 = 템플릿_복사_요청_실패(토큰, 존재하지_않는_템플릿);
+
+        // then
+        응답값을_검증한다(응답, 존재하지_않음);
+    }
+
+    @Test
+    void 존재하지_않는_멤버가_템플릿을_복사할시_예외를_반환한다() {
+        // given
+        var 토큰 = 로그인(유빈());
+        멤버는_존재하지_않는다(토큰);
+        var 템플릿 = 보고하기();
+        템플릿_데이터_준비(List.of(템플릿));
+
+        // when
+        var 응답 = 템플릿_복사_요청_실패(토큰, 템플릿.getId());
+
+        // then
+        응답값을_검증한다(응답, 잘못된_요청);
     }
 
     private void 템플릿_데이터_준비(List<Template> templates) {

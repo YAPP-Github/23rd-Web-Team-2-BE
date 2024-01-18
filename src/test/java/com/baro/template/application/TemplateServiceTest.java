@@ -11,6 +11,7 @@ import com.baro.member.exception.MemberException;
 import com.baro.member.exception.MemberExceptionType;
 import com.baro.member.fake.FakeMemberRepository;
 import com.baro.member.fixture.MemberFixture;
+import com.baro.memo.application.dto.CopyTemplateCommand;
 import com.baro.memofolder.domain.MemoFolder;
 import com.baro.memofolder.domain.MemoFolderRepository;
 import com.baro.memofolder.exception.MemoFolderException;
@@ -238,5 +239,48 @@ class TemplateServiceTest {
                 .isInstanceOf(MemoFolderException.class)
                 .extracting("exceptionType")
                 .isEqualTo(MemoFolderExceptionType.NOT_EXIST_MEMO_FOLDER);
+    }
+
+    @Test
+    void 템플릿_복사() {
+        // given
+        var member = memberRepository.save(MemberFixture.memberWithNickname("바로"));
+        var template = templateRepository.save(보고하기());
+        var countBeforeCopy = template.getCopiedCount();
+        var command = new CopyTemplateCommand(member.getId(), template.getId());
+
+        // when
+        service.copyTemplate(command);
+
+        // then
+        assertThat(template.getCopiedCount()).isEqualTo(countBeforeCopy + 1);
+    }
+
+    @Test
+    void 존재하지_않는_템플릿_복사시_예외_발생() {
+        // given
+        var member = memberRepository.save(MemberFixture.memberWithNickname("바로"));
+        var invalidTemplateId = 9999L;
+        var command = new CopyTemplateCommand(member.getId(), invalidTemplateId);
+
+        // when & then
+        assertThatThrownBy(() -> service.copyTemplate(command))
+                .isInstanceOf(TemplateException.class)
+                .extracting("exceptionType")
+                .isEqualTo(TemplateExceptionType.INVALID_TEMPLATE);
+    }
+
+    @Test
+    void 존재하지_않는_멤버가_템플릿_복사_시도시_예외_발생() {
+        // given
+        var invalidMemberId = 9999L;
+        var template = templateRepository.save(보고하기());
+        var command = new CopyTemplateCommand(invalidMemberId, template.getId());
+
+        // when & then
+        assertThatThrownBy(() -> service.copyTemplate(command))
+                .isInstanceOf(MemberException.class)
+                .extracting("exceptionType")
+                .isEqualTo(MemberExceptionType.NOT_EXIST_MEMBER);
     }
 }
