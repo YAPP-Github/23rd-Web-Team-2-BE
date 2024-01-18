@@ -3,6 +3,7 @@ package com.baro.memo.application;
 
 import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
+import com.baro.memo.application.dto.ApplyCorrectionCommand;
 import com.baro.memo.application.dto.ArchiveTemporalMemoCommand;
 import com.baro.memo.application.dto.ArchiveTemporalMemoResult;
 import com.baro.memo.application.dto.DeleteTemporalMemoCommand;
@@ -58,5 +59,11 @@ public class TemporalMemoService {
         TemporalMemo temporalMemo = temporalMemoRepository.getById(command.temporalMemoId());
         temporalMemo.matchOwner(command.memberId());
         temporalMemoRepository.delete(temporalMemo);
+    }
+
+    public void applyCorrection(ApplyCorrectionCommand command) {
+        TemporalMemo temporalMemo = temporalMemoRepository.getById(command.temporalMemoId());
+        temporalMemo.matchOwner(command.memberId());
+        temporalMemo.applyCorrection(MemoContent.from(command.contents()));
     }
 }

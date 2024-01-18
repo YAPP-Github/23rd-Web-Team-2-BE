@@ -8,6 +8,7 @@ import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
 import com.baro.member.fake.FakeMemberRepository;
 import com.baro.member.fixture.MemberFixture;
+import com.baro.memo.application.dto.ApplyCorrectionCommand;
 import com.baro.memo.application.dto.ArchiveTemporalMemoCommand;
 import com.baro.memo.application.dto.DeleteTemporalMemoCommand;
 import com.baro.memo.application.dto.SaveTemporalMemoCommand;
@@ -259,5 +260,76 @@ class TemporalMemoServiceTest {
                 .isInstanceOf(TemporalMemoException.class)
                 .extracting("exceptionType")
                 .isEqualTo(TemporalMemoExceptionType.NOT_EXIST_TEMPORAL_MEMO);
+    }
+
+    @Test
+    void 끄적이는_메모_맞춤법_검사_결과_반영() {
+        // given
+        Member member = memberRepository.save(MemberFixture.memberWithNickname("nickname1"));
+        TemporalMemo temporalMemo = temporalMemoRepository.save(TemporalMemo.of(member, "testContent"));
+        String correctionContent = "correctedContent";
+        ApplyCorrectionCommand command = new ApplyCorrectionCommand(member.getId(), temporalMemo.getId(),
+                correctionContent);
+
+        // when
+        temporalMemoService.applyCorrection(command);
+
+        // then
+        TemporalMemo updatedTemporalMemo = temporalMemoRepository.getById(temporalMemo.getId());
+        assertAll(
+                () -> assertThat(updatedTemporalMemo.isCorrected()).isTrue(),
+                () -> assertThat(updatedTemporalMemo.getCorrectionContent()).isEqualTo(
+                        MemoContent.from(correctionContent))
+        );
+    }
+
+    @Test
+    void 다른_사람의_끄적이는_메모_맞춤법_검사_결과_반영시_예외_발생() {
+        // given
+        Member member = memberRepository.save(MemberFixture.memberWithNickname("nickname1"));
+        Member otherMember = memberRepository.save(MemberFixture.memberWithNickname("nickname2"));
+        TemporalMemo temporalMemo = temporalMemoRepository.save(TemporalMemo.of(member, "testContent"));
+        String correctionContent = "correctedContent";
+        ApplyCorrectionCommand command = new ApplyCorrectionCommand(otherMember.getId(), temporalMemo.getId(),
+                correctionContent);
+
+        // when & then
+        assertThatThrownBy(() -> temporalMemoService.applyCorrection(command))
+                .isInstanceOf(TemporalMemoException.class)
+                .extracting("exceptionType")
+                .isEqualTo(TemporalMemoExceptionType.NOT_MATCH_OWNER);
+    }
+
+    @Test
+    void 존재하지_않는_끄적이는_메모_맞춤법_검사_결과_반영시_예외_발생() {
+        // given
+        Member member = memberRepository.save(MemberFixture.memberWithNickname("nickname1"));
+        Long notExistTemporalMemoId = 999L;
+        String correctionContent = "correctedContent";
+        ApplyCorrectionCommand command = new ApplyCorrectionCommand(member.getId(), notExistTemporalMemoId,
+                correctionContent);
+
+        // when & then
+        assertThatThrownBy(() -> temporalMemoService.applyCorrection(command))
+                .isInstanceOf(TemporalMemoException.class)
+                .extracting("exceptionType")
+                .isEqualTo(TemporalMemoExceptionType.NOT_EXIST_TEMPORAL_MEMO);
+    }
+
+    @Test
+    void 이미_맞춤법_검사가_완료된_끄적이는_메모_맞춤법_검사_결과_반영시_예외_발생() {
+        // given
+        Member member = memberRepository.save(MemberFixture.memberWithNickname("nickname1"));
+        TemporalMemo temporalMemo = temporalMemoRepository.save(TemporalMemo.of(member, "testContent"));
+        temporalMemo.applyCorrection(MemoContent.from("correctedContent"));
+        String correctionContent = "correctedContent";
+        ApplyCorrectionCommand command = new ApplyCorrectionCommand(member.getId(), temporalMemo.getId(),
+                correctionContent);
+
+        // when & then
+        assertThatThrownBy(() -> temporalMemoService.applyCorrection(command))
+                .isInstanceOf(TemporalMemoException.class)
+                .extracting("exceptionType")
+                .isEqualTo(TemporalMemoExceptionType.ALREADY_CORRECTED);
     }
 }

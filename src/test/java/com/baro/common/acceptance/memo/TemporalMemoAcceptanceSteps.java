@@ -14,6 +14,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 
 import com.baro.auth.domain.Token;
+import com.baro.memo.presentation.dto.ApplyCorrectionRequest;
 import com.baro.memo.presentation.dto.ArchiveTemporalMemoRequest;
 import com.baro.memo.presentation.dto.SaveTemporalMemoRequest;
 import com.baro.memo.presentation.dto.UpdateTemporalMemoRequest;
@@ -30,6 +31,8 @@ public class TemporalMemoAcceptanceSteps {
     public static final SaveTemporalMemoRequest 크기_초과_끄적이는_메모_작성_바디 = new SaveTemporalMemoRequest(크기_초과_컨텐츠);
     public static final UpdateTemporalMemoRequest 끄적이는_메모_수정_바디 = new UpdateTemporalMemoRequest("끄적이는 메모 수정 컨텐츠");
     public static final UpdateTemporalMemoRequest 크기_초과_끄적이는_메모_수정_바디 = new UpdateTemporalMemoRequest(크기_초과_컨텐츠);
+    public static final ApplyCorrectionRequest 맞춤법_검사_결과_반영_바디 = new ApplyCorrectionRequest("맞춤법 검사 결과");
+    public static final ApplyCorrectionRequest 크기_초과_맞춤법_검사_결과_반영_바디 = new ApplyCorrectionRequest(크기_초과_컨텐츠);
 
     public static ArchiveTemporalMemoRequest 메모_아카이브_요청_바디(Long 메모_폴더_ID) {
         return new ArchiveTemporalMemoRequest(메모_폴더_ID);
@@ -193,6 +196,47 @@ public class TemporalMemoAcceptanceSteps {
                 ).contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken())
                 .when().delete("/temporal-memos/{temporalMemoId}", 끄적이는_메모_ID)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 끄적이는_메모_맞춤법_검사_결과_반영_요청(Token 토큰, Long 끄적이는_메모_ID,
+                                                                        ApplyCorrectionRequest 바디) {
+        return RestAssured.given(requestSpec).log().all()
+                .filter(document(DEFAULT_REST_DOCS_PATH,
+                        pathParameters(
+                                parameterWithName("temporalMemoId").description("끄적이는 메모 ID")
+                        ),
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("content").description("맞춤법 검사 결과")
+                        ))
+                ).contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken()).body(바디)
+                .when().patch("/temporal-memos/{temporalMemoId}/correction", 끄적이는_메모_ID)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 잘못된_끄적이는_메모_맞춤법_검사_결과_반영_요청(Token 토큰, Long 끄적이는_메모_ID,
+                                                                            ApplyCorrectionRequest 바디) {
+        return RestAssured.given(requestSpec).log().all()
+                .filter(document(DEFAULT_REST_DOCS_PATH,
+                        pathParameters(
+                                parameterWithName("temporalMemoId").description("끄적이는 메모 ID")
+                        ),
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("content").description("맞춤법 검사 결과")
+                        ),
+                        responseFields(예외_응답()))
+                ).contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken()).body(바디)
+                .when().patch("/temporal-memos/{temporalMemoId}/correction", 끄적이는_메모_ID)
                 .then().log().all()
                 .extract();
     }
