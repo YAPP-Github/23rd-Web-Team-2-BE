@@ -31,7 +31,7 @@ import com.baro.memofolder.domain.MemoFolderRepository;
 import com.baro.memofolder.exception.MemoFolderException;
 import com.baro.memofolder.exception.MemoFolderExceptionType;
 import com.baro.memofolder.fake.FakeMemoFolderRepository;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -340,14 +340,14 @@ class TemporalMemoServiceTest {
     @Test
     void 끄적이는_메모_조회시_최신_순으로_정렬() {
         // given
-        LocalDateTime standardDate = LocalDateTime.now();
+        LocalDate standardDate = LocalDate.now();
         Member member = memberRepository.save(MemberFixture.memberWithNickname("nickname1"));
         TemporalMemo temporalMemoA = TemporalMemo.of(member, "testContent1");
         TemporalMemo temporalMemoB = TemporalMemo.of(member, "testContent2");
         TemporalMemo temporalMemoC = TemporalMemo.of(member, "testContent3");
-        temporalMemoA.setCreatedAtForTest(standardDate.plusDays(3));
-        temporalMemoB.setCreatedAtForTest(standardDate.plusDays(3));
-        temporalMemoC.setCreatedAtForTest(standardDate.plusDays(1));
+        temporalMemoA.setCreatedAtForTest(standardDate.plusDays(3).atStartOfDay());
+        temporalMemoB.setCreatedAtForTest(standardDate.plusDays(3).atStartOfDay());
+        temporalMemoC.setCreatedAtForTest(standardDate.plusDays(1).atStartOfDay());
         temporalMemoRepository.save(temporalMemoA);
         temporalMemoRepository.save(temporalMemoB);
         temporalMemoRepository.save(temporalMemoC);
@@ -364,8 +364,8 @@ class TemporalMemoServiceTest {
                 () -> assertThat(temporalMemos).hasSize(2),
                 () -> assertThat(temporalMemos).isSortedAccordingTo(
                         Comparator.comparing(FindTemporalMemoHistoriesResult::createdAt).reversed()),
-                () -> assertThat(temporalMemos.get(0).createdAt()).isEqualTo(standardDate.plusDays(3).toLocalDate()),
-                () -> assertThat(temporalMemos.get(1).createdAt()).isEqualTo(standardDate.plusDays(1).toLocalDate()),
+                () -> assertThat(temporalMemos.get(0).createdAt()).isEqualTo(standardDate.plusDays(3)),
+                () -> assertThat(temporalMemos.get(1).createdAt()).isEqualTo(standardDate.plusDays(1)),
                 () -> assertThat(temporalMemos.get(0).temporalMemos()).hasSize(2),
                 () -> assertThat(temporalMemos.get(1).temporalMemos()).hasSize(1)
         );
@@ -374,14 +374,14 @@ class TemporalMemoServiceTest {
     @Test
     void 끄적이는_메모_조회시_조회_기간_내_끄적이는_메모만_조회_된다() {
         // given
-        LocalDateTime standardDate = LocalDateTime.now();
+        LocalDate standardDate = LocalDate.now();
         Member member = memberRepository.save(MemberFixture.memberWithNickname("nickname1"));
         TemporalMemo temporalMemoA = TemporalMemo.of(member, "testContent1");
         TemporalMemo temporalMemoB = TemporalMemo.of(member, "testContent2");
         TemporalMemo temporalMemoC = TemporalMemo.of(member, "testContent3");
-        temporalMemoA.setCreatedAtForTest(standardDate.plusDays(3));
-        temporalMemoB.setCreatedAtForTest(standardDate.plusDays(3));
-        temporalMemoC.setCreatedAtForTest(standardDate.plusDays(1));
+        temporalMemoA.setCreatedAtForTest(standardDate.plusDays(3).atStartOfDay());
+        temporalMemoB.setCreatedAtForTest(standardDate.plusDays(3).atStartOfDay());
+        temporalMemoC.setCreatedAtForTest(standardDate.plusDays(1).atStartOfDay());
         temporalMemoRepository.save(temporalMemoA);
         temporalMemoRepository.save(temporalMemoB);
         temporalMemoRepository.save(temporalMemoC);
@@ -400,7 +400,7 @@ class TemporalMemoServiceTest {
     @Test
     void 끄적이는_메모_조회시_조회_시작_기간이_끝_기간_보다_이후일_경우_예외_발생() {
         // given
-        LocalDateTime standardDate = LocalDateTime.now();
+        LocalDate standardDate = LocalDate.now();
         Member member = memberRepository.save(MemberFixture.memberWithNickname("nickname1"));
         TemporalMemo temporalMemoA = TemporalMemo.of(member, "testContent1");
         temporalMemoRepository.save(temporalMemoA);

@@ -23,6 +23,7 @@ import com.baro.memo.exception.TemporalMemoExceptionType;
 import com.baro.memofolder.domain.MemoFolder;
 import com.baro.memofolder.domain.MemoFolderRepository;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -81,7 +82,7 @@ public class TemporalMemoService {
     public List<FindTemporalMemoHistoriesResult> findTemporalMemos(FindTemporalMemoHistoriesQuery query) {
         validateQueryDateRange(query);
         List<TemporalMemo> temporalMemos = temporalMemoRepository.findAllByMemberIdAndCreatedAtBetween(query.memberId(),
-                query.startDate(), query.endDate());
+                query.startDate().atStartOfDay(), query.endDate().atTime(LocalTime.MAX));
         Map<LocalDate, List<TemporalMemo>> temporalMemosByDate = groupTemporalMemosByCreatedAt(temporalMemos);
 
         return temporalMemosByDate.keySet().stream()

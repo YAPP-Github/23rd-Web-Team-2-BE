@@ -1,10 +1,10 @@
 package com.baro.memo.application.dto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public record FindTemporalMemoHistoriesQuery(
         Long memberId,
-        LocalDateTime startDate,
-        LocalDateTime endDate
+        LocalDate startDate,
+        LocalDate endDate
 ) {
 }
