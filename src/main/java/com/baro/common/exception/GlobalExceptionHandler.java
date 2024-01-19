@@ -41,9 +41,9 @@ class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = {MethodArgumentTypeMismatchException.class})
-    public ResponseEntity<RequestExceptionResponse> handleMissingRequestParameters(
+    public ResponseEntity<RequestExceptionResponse> handleMethodArgumentTypeMismatchException(
             MethodArgumentTypeMismatchException e) {
-        log.warn("[handleRequestException throw MissingServletRequestParameterException : {}", e.getMessage());
+        log.warn("[handleRequestException throw MethodArgumentTypeMismatchException : {}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(RequestExceptionResponse.from(INVALID_TYPE_REQUEST_EXCEPTION));
     }
