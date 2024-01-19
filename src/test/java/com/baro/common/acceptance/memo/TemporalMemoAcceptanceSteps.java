@@ -12,6 +12,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 
 import com.baro.auth.domain.Token;
 import com.baro.memo.presentation.dto.ApplyCorrectionRequest;
@@ -21,6 +22,7 @@ import com.baro.memo.presentation.dto.UpdateTemporalMemoRequest;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.time.LocalDate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
@@ -237,6 +239,55 @@ public class TemporalMemoAcceptanceSteps {
                 ).contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken()).body(바디)
                 .when().patch("/temporal-memos/{temporalMemoId}/correction", 끄적이는_메모_ID)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 끄적이는_메모_조회_요청(Token 토큰, LocalDate 시작_날짜, LocalDate 끝_날짜) {
+        return RestAssured.given(requestSpec).log().all()
+                .filter(document(DEFAULT_REST_DOCS_PATH,
+                        queryParameters(
+                                parameterWithName("startDate").description("끄적이는 메모 조회 시작 날짜"),
+                                parameterWithName("endDate").description("끄적이는 메모 조회 끝 날짜")
+                        ),
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
+                        ),
+                        responseFields(
+                                fieldWithPath("[].createdAt").description("끄적이는 메모 생성 날짜"),
+                                fieldWithPath("[].temporalMemos").description("끄적이는 메모 목록"),
+                                fieldWithPath("[].temporalMemos[].id").description("끄적이는 메모 ID"),
+                                fieldWithPath("[].temporalMemos[].content").description("끄적이는 메모 내용"),
+                                fieldWithPath("[].temporalMemos[].correctionContent").description("끄적이는 메모 맞춤법 검사 결과"),
+                                fieldWithPath("[].temporalMemos[].isCorrected").description("끄적이는 메모 맞춤법 검사 결과 반영 여부"),
+                                fieldWithPath("[].temporalMemos[].isArchived").description("끄적이는 메모 아카이브 여부"),
+                                fieldWithPath("[].temporalMemos[].createdAt").description("끄적이는 메모 생성 시간")
+                        ))
+                ).contentType(MediaType.APPLICATION_JSON_VALUE)
+                .queryParam("startDate", 시작_날짜.toString())
+                .queryParam("endDate", 끝_날짜.toString())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken())
+                .when().get("/temporal-memos")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 잘못된_끄적이는_메모_조회_요청(Token 토큰, LocalDate 시작_날짜, LocalDate 끝_날짜) {
+        return RestAssured.given(requestSpec).log().all()
+                .filter(document(DEFAULT_REST_DOCS_PATH,
+                        queryParameters(
+                                parameterWithName("startDate").description("끄적이는 메모 조회 시작 날짜"),
+                                parameterWithName("endDate").description("끄적이는 메모 조회 끝 날짜")
+                        ),
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
+                        ),
+                        responseFields(예외_응답()))
+                ).contentType(MediaType.APPLICATION_JSON_VALUE)
+                .queryParam("startDate", 시작_날짜.toString())
+                .queryParam("endDate", 끝_날짜.toString())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken())
+                .when().get("/temporal-memos")
                 .then().log().all()
                 .extract();
     }

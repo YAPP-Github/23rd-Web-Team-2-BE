@@ -4,6 +4,7 @@ import com.baro.memo.domain.TemporalMemo;
 import com.baro.memo.domain.TemporalMemoRepository;
 import com.baro.memo.exception.TemporalMemoException;
 import com.baro.memo.exception.TemporalMemoExceptionType;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -18,15 +19,18 @@ public class FakeTemporalMemoRepository implements TemporalMemoRepository {
     @Override
     public TemporalMemo save(TemporalMemo temporalMemo) {
         if (Objects.isNull(temporalMemo.getId())) {
-            TemporalMemo newMemoFolder = new TemporalMemo(
+            TemporalMemo newTemporalMemo = new TemporalMemo(
                     id.getAndIncrement(),
                     temporalMemo.getMember(),
                     temporalMemo.getContent(),
                     temporalMemo.getCorrectionContent(),
                     temporalMemo.getMemo()
             );
-            temporalMemos.put(newMemoFolder.getId(), newMemoFolder);
-            return newMemoFolder;
+            if (Objects.nonNull(temporalMemo.getCreatedAt())) {
+                newTemporalMemo.setCreatedAtForTest(temporalMemo.getCreatedAt());
+            }
+            temporalMemos.put(newTemporalMemo.getId(), newTemporalMemo);
+            return newTemporalMemo;
         }
         temporalMemos.put(temporalMemo.getId(), temporalMemo);
         return temporalMemo;
@@ -49,5 +53,17 @@ public class FakeTemporalMemoRepository implements TemporalMemoRepository {
     public void delete(TemporalMemo temporalMemo) {
         this.getById(temporalMemo.getId());
         temporalMemos.remove(temporalMemo.getId());
+    }
+
+    @Override
+    public List<TemporalMemo> findAllByMemberIdAndCreatedAtBetween(Long memberId, LocalDateTime start,
+                                                                   LocalDateTime end) {
+        return temporalMemos.values().stream()
+                .filter(temporalMemo -> temporalMemo.getMember().getId().equals(memberId))
+                .filter(temporalMemo ->
+                        temporalMemo.getCreatedAt().isAfter(start) || temporalMemo.getCreatedAt().isEqual(start))
+                .filter(temporalMemo ->
+                        temporalMemo.getCreatedAt().isBefore(end) || temporalMemo.getCreatedAt().isEqual(end))
+                .toList();
     }
 }

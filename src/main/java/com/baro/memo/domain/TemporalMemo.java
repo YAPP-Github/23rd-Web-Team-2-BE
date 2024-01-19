@@ -94,4 +94,8 @@ public class TemporalMemo extends BaseEntity {
         }
         this.correctionContent = correctionContent;
     }
+
+    public boolean isArchived() {
+        return Objects.nonNull(this.memo);
+    }
 }

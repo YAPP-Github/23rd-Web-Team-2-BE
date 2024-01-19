@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 public enum CommonRequestExceptionType implements RequestExceptionType {
 
     MISSING_PARAMETER_EXCEPTION("CM01", "Request parameter is empty", HttpStatus.BAD_REQUEST),
+    INVALID_TYPE_REQUEST_EXCEPTION("CM02", "Request type is invalid", HttpStatus.BAD_REQUEST),
     ;
 
     private final String errorCode;

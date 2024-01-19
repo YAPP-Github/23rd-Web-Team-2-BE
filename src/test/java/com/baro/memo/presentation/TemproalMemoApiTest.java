@@ -2,10 +2,12 @@ package com.baro.memo.presentation;
 
 import static com.baro.auth.fixture.OAuthMemberInfoFixture.아현;
 import static com.baro.auth.fixture.OAuthMemberInfoFixture.유빈;
+import static com.baro.auth.fixture.OAuthMemberInfoFixture.은지;
 import static com.baro.auth.fixture.OAuthMemberInfoFixture.준희;
 import static com.baro.auth.fixture.OAuthMemberInfoFixture.태연;
 import static com.baro.common.acceptance.AcceptanceSteps.권한_없음;
 import static com.baro.common.acceptance.AcceptanceSteps.생성됨;
+import static com.baro.common.acceptance.AcceptanceSteps.성공;
 import static com.baro.common.acceptance.AcceptanceSteps.응답값_없음;
 import static com.baro.common.acceptance.AcceptanceSteps.응답값을_검증한다;
 import static com.baro.common.acceptance.AcceptanceSteps.응답의_Location_헤더가_존재한다;
@@ -14,6 +16,7 @@ import static com.baro.common.acceptance.AcceptanceSteps.존재하지_않음;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는_메모_맞춤법_검사_결과_반영_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는_메모_바디;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는_메모_수정_바디;
+import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는_메모_조회_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는메모_삭제_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는메모_생성_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는메모_수정_요청;
@@ -23,6 +26,7 @@ import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.맞춤
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.메모_아카이브_요청_바디;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.잘못된_끄적이는_메모_맞춤법_검사_결과_반영_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.잘못된_끄적이는_메모_생성_요청;
+import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.잘못된_끄적이는_메모_조회_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.잘못된_끄적이는메모_삭제_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.잘못된_끄적이는메모_수정_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.잘못된_끄적이는메모_아카이빙_요청;
@@ -33,6 +37,7 @@ import static com.baro.common.acceptance.memofolder.MemoFolderAcceptanceSteps.�
 import static com.baro.common.acceptance.memofolder.MemoFolderAcceptanceSteps.폴더_이름_바디;
 
 import com.baro.common.RestApiTest;
+import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
@@ -296,6 +301,42 @@ public class TemproalMemoApiTest extends RestApiTest {
 
         // when
         var 응답 = 잘못된_끄적이는_메모_맞춤법_검사_결과_반영_요청(준희, 준희의_끄적이는_메모_ID, 맞춤법_검사_결과_반영_바디);
+
+        // then
+        응답값을_검증한다(응답, 잘못된_요청);
+    }
+
+    @Test
+    void 끄적이는_메모를_조회한다() {
+        // given
+        var 은지 = 로그인(은지());
+        끄적이는메모를_생성하고_ID를_반환한다(은지, 끄적이는_메모_바디);
+        끄적이는메모를_생성하고_ID를_반환한다(은지, 끄적이는_메모_바디);
+        끄적이는메모를_생성하고_ID를_반환한다(은지, 끄적이는_메모_바디);
+
+        var 시작_날짜 = LocalDate.now();
+        var 끝_날짜 = LocalDate.now().plusDays(2);
+
+        // when
+        var 응답 = 끄적이는_메모_조회_요청(은지, 시작_날짜, 끝_날짜);
+
+        // then
+        응답값을_검증한다(응답, 성공);
+    }
+
+    @Test
+    void 끄적이는_메모를_조회할_때_시작_날짜가_끝_날짜보다_클_경우_예외를_반환한다() {
+        // given
+        var 은지 = 로그인(은지());
+        끄적이는메모를_생성하고_ID를_반환한다(은지, 끄적이는_메모_바디);
+        끄적이는메모를_생성하고_ID를_반환한다(은지, 끄적이는_메모_바디);
+        끄적이는메모를_생성하고_ID를_반환한다(은지, 끄적이는_메모_바디);
+
+        var 시작_날짜 = LocalDate.now().plusDays(2);
+        var 끝_날짜 = LocalDate.now();
+
+        // when
+        var 응답 = 잘못된_끄적이는_메모_조회_요청(은지, 시작_날짜, 끝_날짜);
 
         // then
         응답값을_검증한다(응답, 잘못된_요청);

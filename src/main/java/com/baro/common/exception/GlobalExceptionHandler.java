@@ -1,11 +1,16 @@
 package com.baro.common.exception;
 
+import static com.baro.common.exception.CommonRequestExceptionType.INVALID_TYPE_REQUEST_EXCEPTION;
+import static com.baro.common.exception.CommonRequestExceptionType.MISSING_PARAMETER_EXCEPTION;
+
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 @Slf4j
@@ -25,6 +30,22 @@ class GlobalExceptionHandler {
         log.warn("[handleRequestException throw MaxUploadSizeExceededException : {}", e.getMessage());
         return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
                 .body("File size limit exceeded");
+    }
+
+    @ExceptionHandler(value = {MissingServletRequestParameterException.class})
+    public ResponseEntity<RequestExceptionResponse> handleMissingRequestParameters(
+            MissingServletRequestParameterException e) {
+        log.warn("[handleRequestException throw MissingServletRequestParameterException : {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(RequestExceptionResponse.from(MISSING_PARAMETER_EXCEPTION));
+    }
+
+    @ExceptionHandler(value = {MethodArgumentTypeMismatchException.class})
+    public ResponseEntity<RequestExceptionResponse> handleMethodArgumentTypeMismatchException(
+            MethodArgumentTypeMismatchException e) {
+        log.warn("[handleRequestException throw MethodArgumentTypeMismatchException : {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(RequestExceptionResponse.from(INVALID_TYPE_REQUEST_EXCEPTION));
     }
 
     @ExceptionHandler(Exception.class)
