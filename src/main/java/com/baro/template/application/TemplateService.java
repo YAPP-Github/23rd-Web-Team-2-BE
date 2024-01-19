@@ -2,11 +2,11 @@ package com.baro.template.application;
 
 import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
-import com.baro.memo.application.dto.CopyTemplateCommand;
 import com.baro.memofolder.domain.MemoFolder;
 import com.baro.memofolder.domain.MemoFolderRepository;
 import com.baro.template.application.dto.ArchiveTemplateCommand;
 import com.baro.template.application.dto.ArchiveTemplateResult;
+import com.baro.template.application.dto.CopyTemplateCommand;
 import com.baro.template.application.dto.FindTemplateQuery;
 import com.baro.template.application.dto.FindTemplateResult;
 import com.baro.template.domain.Template;

@@ -1,10 +1,10 @@
 package com.baro.template.presentation;
 
 import com.baro.auth.domain.AuthMember;
-import com.baro.memo.application.dto.CopyTemplateCommand;
 import com.baro.template.application.TemplateService;
 import com.baro.template.application.dto.ArchiveTemplateCommand;
 import com.baro.template.application.dto.ArchiveTemplateResult;
+import com.baro.template.application.dto.CopyTemplateCommand;
 import com.baro.template.application.dto.FindTemplateQuery;
 import com.baro.template.application.dto.FindTemplateResult;
 import com.baro.template.domain.TemplateCategory;

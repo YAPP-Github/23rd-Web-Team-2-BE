@@ -1,4 +1,4 @@
-package com.baro.memo.application.dto;
+package com.baro.template.application.dto;
 
 public record CopyTemplateCommand(
         Long memberId,
