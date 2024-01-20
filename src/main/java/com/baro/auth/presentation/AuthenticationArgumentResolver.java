@@ -2,6 +2,7 @@ package com.baro.auth.presentation;
 
 import com.baro.auth.application.TokenTranslator;
 import com.baro.auth.domain.AuthMember;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
@@ -26,6 +27,11 @@ public class AuthenticationArgumentResolver implements HandlerMethodArgumentReso
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+        HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
+        // FIXME interceptor에서 수행
+        if ("OPTIONS".equals(request.getMethod())) {
+            return null;
+        }
         String authHeader = webRequest.getHeader("Authorization");
         return new AuthMember(translator.decodeAccessToken(authHeader));
     }
