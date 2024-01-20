@@ -1,10 +1,8 @@
 package com.baro.auth.presentation.oauth;
 
 import static com.baro.auth.fixture.OAuthMemberInfoFixture.유빈;
-import static com.baro.common.acceptance.AcceptanceSteps.리디렉션;
 import static com.baro.common.acceptance.AcceptanceSteps.성공;
 import static com.baro.common.acceptance.AcceptanceSteps.응답값을_검증한다;
-import static com.baro.common.acceptance.AcceptanceSteps.응답의_Location_헤더가_존재한다;
 import static com.baro.common.acceptance.auth.OAuthAcceptanceSteps.로그인_요청;
 import static com.baro.common.acceptance.auth.OAuthAcceptanceSteps.리다이렉트_URI_요청;
 
@@ -23,8 +21,7 @@ class OAuthApiTest extends RestApiTest {
         var 응답 = 리다이렉트_URI_요청("kakao");
 
         // then
-        응답값을_검증한다(응답, 리디렉션);
-        응답의_Location_헤더가_존재한다(응답);
+        응답값을_검증한다(응답, 성공);
     }
 
     @Test

@@ -3,15 +3,11 @@ package com.baro.auth.presentation;
 import com.baro.auth.application.AuthService;
 import com.baro.auth.application.dto.SignInDto;
 import com.baro.auth.application.oauth.OAuthInfoProvider;
-
-import java.net.URI;
-
 import com.baro.auth.application.oauth.dto.OAuthMemberInfo;
 import com.baro.auth.domain.AuthMember;
 import com.baro.auth.domain.Token;
+import com.baro.auth.presentation.dto.OAuthServiceUrlResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,11 +24,9 @@ public class AuthController {
     private final OAuthInfoProvider oAuthInfoProvider;
 
     @GetMapping("/oauth/{oauthType}")
-    ResponseEntity<Void> signInRequestUrl(@PathVariable String oauthType) {
+    ResponseEntity<OAuthServiceUrlResponse> signInRequestUrl(@PathVariable String oauthType) {
         String signInUrl = oAuthInfoProvider.getSignInUrl(oauthType);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(signInUrl));
-        return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+        return ResponseEntity.ok(new OAuthServiceUrlResponse(signInUrl));
     }
 
     @GetMapping("/oauth/sign-in/{oauthType}")
