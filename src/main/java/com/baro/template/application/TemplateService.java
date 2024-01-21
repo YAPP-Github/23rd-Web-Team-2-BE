@@ -57,7 +57,6 @@ public class TemplateService {
     }
 
     public void copyTemplate(CopyTemplateCommand command) {
-        Member member = memberRepository.getById(command.memberId());
         Template template = templateRepository.getById(command.templateId());
         template.increaseCopiedCount();
     }

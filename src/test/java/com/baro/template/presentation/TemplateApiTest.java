@@ -238,21 +238,6 @@ class TemplateApiTest extends RestApiTest {
         응답값을_검증한다(응답, 존재하지_않음);
     }
 
-    @Test
-    void 존재하지_않는_멤버가_템플릿을_복사할시_예외를_반환한다() {
-        // given
-        var 토큰 = 로그인(유빈());
-        멤버는_존재하지_않는다(토큰);
-        var 템플릿 = 보고하기();
-        템플릿_데이터_준비(List.of(템플릿));
-
-        // when
-        var 응답 = 템플릿_복사_요청_실패(토큰, 템플릿.getId());
-
-        // then
-        응답값을_검증한다(응답, 잘못된_요청);
-    }
-
     private void 템플릿_데이터_준비(List<Template> templates) {
         templates.forEach(templateRepository::save);
     }

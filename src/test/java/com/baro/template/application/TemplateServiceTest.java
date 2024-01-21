@@ -269,18 +269,4 @@ class TemplateServiceTest {
                 .extracting("exceptionType")
                 .isEqualTo(TemplateExceptionType.INVALID_TEMPLATE);
     }
-
-    @Test
-    void 존재하지_않는_멤버가_템플릿_복사_시도시_예외_발생() {
-        // given
-        var invalidMemberId = 9999L;
-        var template = templateRepository.save(보고하기());
-        var command = new CopyTemplateCommand(invalidMemberId, template.getId());
-
-        // when & then
-        assertThatThrownBy(() -> service.copyTemplate(command))
-                .isInstanceOf(MemberException.class)
-                .extracting("exceptionType")
-                .isEqualTo(MemberExceptionType.NOT_EXIST_MEMBER);
-    }
 }
