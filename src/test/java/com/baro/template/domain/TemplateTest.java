@@ -23,4 +23,19 @@ class TemplateTest {
         // then
         assertThat(template.getSavedCount()).isEqualTo(savedCount + 1);
     }
+
+    @Test
+    void 템플릿_저장_취소시_저장횟수_감소() {
+        // given
+        var savedCount = 1;
+        var template = Template.instanceForTest(1L, TemplateCategory.REPORT, "subCategory",
+                "content", 0, savedCount);
+        var expected = 0;
+
+        // when
+        template.decreaseSavedCount();
+
+        // then
+        assertThat(template.getSavedCount()).isEqualTo(expected);
+    }
 }
