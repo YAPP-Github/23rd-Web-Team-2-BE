@@ -23,4 +23,18 @@ class TemplateTest {
         // then
         assertThat(template.getSavedCount()).isEqualTo(savedCount + 1);
     }
+
+    @Test
+    void 템플릿_복사시_복사횟수_증가() {
+        // given
+        var copiedCount = 0;
+        var template = Template.instanceForTest(1L, TemplateCategory.REPORT, "subCategory",
+                "content", copiedCount, 0);
+
+        // when
+        template.increaseCopiedCount();
+
+        // then
+        assertThat(template.getCopiedCount()).isEqualTo(copiedCount + 1);
+    }
 }

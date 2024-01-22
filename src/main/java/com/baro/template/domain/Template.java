@@ -36,6 +36,10 @@ public class Template extends BaseEntity {
 
     private int savedCount;
 
+    public void increaseCopiedCount() {
+        this.copiedCount++;
+    }
+
     public Template(TemplateCategory category, String subCategory, String content) {
         this.category = category;
         this.subCategory = subCategory;
