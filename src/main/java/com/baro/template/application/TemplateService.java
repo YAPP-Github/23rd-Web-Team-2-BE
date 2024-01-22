@@ -8,6 +8,7 @@ import com.baro.template.application.dto.ArchiveTemplateCommand;
 import com.baro.template.application.dto.ArchiveTemplateResult;
 import com.baro.template.application.dto.FindTemplateQuery;
 import com.baro.template.application.dto.FindTemplateResult;
+import com.baro.template.application.dto.UnArchiveTemplateCommand;
 import com.baro.template.domain.Template;
 import com.baro.template.domain.TemplateMember;
 import com.baro.template.domain.TemplateMemberRepository;
@@ -53,5 +54,16 @@ public class TemplateService {
         template.increaseSavedCount();
 
         return ArchiveTemplateResult.from(templateMember);
+    }
+
+    public void unarchiveTemplate(UnArchiveTemplateCommand command) {
+        Member member = memberRepository.getById(command.memberId());
+        Template template = templateRepository.getById(command.templateId());
+
+        TemplateMember templateMember = templateMemberRepository.getByMemberIdAndTemplateId(
+                member.getId(), template.getId());
+
+        templateMemberRepository.delete(templateMember);
+        template.decreaseSavedCount();
     }
 }

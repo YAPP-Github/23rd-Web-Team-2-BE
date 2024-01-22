@@ -6,6 +6,7 @@ import com.baro.template.application.dto.ArchiveTemplateCommand;
 import com.baro.template.application.dto.ArchiveTemplateResult;
 import com.baro.template.application.dto.FindTemplateQuery;
 import com.baro.template.application.dto.FindTemplateResult;
+import com.baro.template.application.dto.UnArchiveTemplateCommand;
 import com.baro.template.domain.TemplateCategory;
 import com.baro.template.presentation.dto.ArchiveTemplateRequest;
 import java.net.URI;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,5 +59,15 @@ public class TemplateController {
                 .buildAndExpand(result.id())
                 .toUri();
         return ResponseEntity.created(location).build();
+    }
+
+    @DeleteMapping("/{templateId}/archive")
+    ResponseEntity<Void> unarchiveTemplate(
+            AuthMember authMember,
+            @PathVariable("templateId") Long templateId
+    ) {
+        UnArchiveTemplateCommand command = new UnArchiveTemplateCommand(authMember.id(), templateId);
+        templateService.unarchiveTemplate(command);
+        return ResponseEntity.noContent().build();
     }
 }
