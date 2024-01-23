@@ -64,7 +64,7 @@ public class TemplateController {
     @DeleteMapping("/{templateId}/archive")
     ResponseEntity<Void> unarchiveTemplate(
             AuthMember authMember,
-            @PathVariable("templateId") Long templateId
+            @PathVariable Long templateId
     ) {
         UnArchiveTemplateCommand command = new UnArchiveTemplateCommand(authMember.id(), templateId);
         templateService.unarchiveTemplate(command);
