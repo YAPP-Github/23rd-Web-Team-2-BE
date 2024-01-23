@@ -43,7 +43,7 @@ public class TemporalMemoRepositoryImpl implements TemporalMemoRepository {
     }
 
     @Override
-    public void deleteAllByCreatedAtLessThanEqual(final LocalDateTime localDateTime) {
-        temporalMemoJpaRepository.deleteAllByCreatedAtLessThanEqual(localDateTime);
+    public void deleteAllByCreatedAtLessThanEqual(LocalDateTime weekBefore) {
+        temporalMemoJpaRepository.deleteAllByCreatedAtLessThanEqual(weekBefore);
     }
 }
