@@ -66,4 +66,13 @@ public class FakeTemporalMemoRepository implements TemporalMemoRepository {
                         temporalMemo.getCreatedAt().isBefore(end) || temporalMemo.getCreatedAt().isEqual(end))
                 .toList();
     }
+
+    @Override
+    public void deleteAllByCreatedAtLessThanEqual(LocalDateTime weekBefore) {
+        temporalMemos.values().stream()
+                .filter(temporalMemo -> temporalMemo.getCreatedAt().isBefore(weekBefore) || temporalMemo.getCreatedAt()
+                        .isEqual(weekBefore))
+                .map(TemporalMemo::getId)
+                .forEach(temporalMemos::remove);
+    }
 }

@@ -14,4 +14,6 @@ public interface TemporalMemoRepository {
     void delete(TemporalMemo temporalMemo);
 
     List<TemporalMemo> findAllByMemberIdAndCreatedAtBetween(Long memberId, LocalDateTime start, LocalDateTime end);
+
+    void deleteAllByCreatedAtLessThanEqual(LocalDateTime weekBefore);
 }
