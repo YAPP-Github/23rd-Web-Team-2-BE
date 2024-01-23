@@ -1,6 +1,7 @@
 package com.baro.template.presentation;
 
 import static com.baro.auth.fixture.OAuthMemberInfoFixture.동균;
+import static com.baro.auth.fixture.OAuthMemberInfoFixture.아현;
 import static com.baro.auth.fixture.OAuthMemberInfoFixture.유빈;
 import static com.baro.auth.fixture.OAuthMemberInfoFixture.태연;
 import static com.baro.common.acceptance.AcceptanceSteps.권한_없음;
@@ -17,6 +18,8 @@ import static com.baro.common.acceptance.template.TemplateAcceptanceSteps.템플
 import static com.baro.common.acceptance.template.TemplateAcceptanceSteps.템플릿_복사_요청_실패;
 import static com.baro.common.acceptance.template.TemplateAcceptanceSteps.템플릿_아카이브_요청_성공;
 import static com.baro.common.acceptance.template.TemplateAcceptanceSteps.템플릿_아카이브_요청_실패;
+import static com.baro.common.acceptance.template.TemplateAcceptanceSteps.템플릿_아카이브_취소_요청_성공;
+import static com.baro.common.acceptance.template.TemplateAcceptanceSteps.템플릿_아카이브_취소_요청_실패;
 import static com.baro.common.acceptance.template.TemplateAcceptanceSteps.템플릿_조회_요청_성공;
 import static com.baro.common.acceptance.template.TemplateAcceptanceSteps.템플릿_조회_요청_실패;
 import static com.baro.common.acceptance.template.TemplateAcceptanceSteps.템플릿_조회시_응답값이_없는_요청;
@@ -236,6 +239,67 @@ class TemplateApiTest extends RestApiTest {
 
         // then
         응답값을_검증한다(응답, 존재하지_않음);
+    }
+
+    @Test
+    void 템플릿_아카이브를_취소한다() {
+        // given
+        var 토큰 = 로그인(아현());
+        var 폴더 = 메모_폴더를_생성_하고_ID를_반환한다(토큰, new SaveMemoFolderRequest("폴더"));
+        var 바디 = new ArchiveTemplateRequest(폴더);
+        var 템플릿 = 보고하기();
+        템플릿_데이터_준비(List.of(템플릿));
+        템플릿_아카이브_요청_성공(토큰, 템플릿.getId(), 바디);
+
+        // when
+        var 응답 = 템플릿_아카이브_취소_요청_성공(토큰, 템플릿.getId());
+
+        // then
+        응답값을_검증한다(응답, 응답값_없음);
+    }
+
+    @Test
+    void 존재하지_않는_멤버가_템플릿_아카이브를_취소할시_예외를_반환한다() {
+        // given
+        var 토큰 = 로그인(아현());
+        var 폴더 = 메모_폴더를_생성_하고_ID를_반환한다(토큰, new SaveMemoFolderRequest("폴더"));
+        var 바디 = new ArchiveTemplateRequest(폴더);
+        var 템플릿 = 보고하기();
+        템플릿_데이터_준비(List.of(템플릿));
+        템플릿_아카이브_요청_성공(토큰, 템플릿.getId(), 바디);
+        멤버는_존재하지_않는다(토큰);
+
+        // when
+        var 응답 = 템플릿_아카이브_취소_요청_실패(토큰, 템플릿.getId());
+
+        // then
+        응답값을_검증한다(응답, 잘못된_요청);
+    }
+
+    @Test
+    void 존재하지_않는_템플릿을_아카이브_취소할시_예외를_반환한다() {
+        // given
+        var 토큰 = 로그인(아현());
+
+        // when
+        var 응답 = 템플릿_아카이브_취소_요청_실패(토큰, 999L);
+
+        // then
+        응답값을_검증한다(응답, 존재하지_않음);
+    }
+
+    @Test
+    void 아카이브하지_않은_템플릿을_아카이브_취소할시_예외를_반환한다() {
+        // given
+        var 토큰 = 로그인(아현());
+        var 템플릿 = 보고하기();
+        템플릿_데이터_준비(List.of(템플릿));
+
+        // when
+        var 응답 = 템플릿_아카이브_취소_요청_실패(토큰, 템플릿.getId());
+
+        // then
+        응답값을_검증한다(응답, 잘못된_요청);
     }
 
     private void 템플릿_데이터_준비(List<Template> templates) {

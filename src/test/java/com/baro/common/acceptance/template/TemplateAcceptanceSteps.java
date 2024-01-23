@@ -170,6 +170,47 @@ public class TemplateAcceptanceSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 템플릿_아카이브_취소_요청_성공(Token 토큰, Long 템플릿_ID) {
+        var url = "/templates/{templateId}/archive";
+
+        return given(requestSpec).log().all()
+                .filter(document(DEFAULT_REST_DOCS_PATH,
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
+                        ),
+                        pathParameters(
+                                parameterWithName("templateId").description("템플릿 ID")
+                        )
+                ))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken())
+                .pathParam("templateId", 템플릿_ID)
+                .when().delete(url)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 템플릿_아카이브_취소_요청_실패(Token 토큰, Long 템플릿_ID) {
+        var url = "/templates/{templateId}/archive";
+
+        return given(requestSpec).log().all()
+                .filter(document(DEFAULT_REST_DOCS_PATH,
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
+                        ),
+                        pathParameters(
+                                parameterWithName("templateId").description("템플릿 ID")
+                        ),
+                        responseFields(예외_응답())
+                ))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken())
+                .pathParam("templateId", 템플릿_ID)
+                .when().delete(url)
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 템플릿_복사_요청_성공(Token 토큰, Long 템플릿_ID) {
         var url = "/templates/{templateId}/copy";
 

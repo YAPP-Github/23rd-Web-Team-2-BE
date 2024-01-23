@@ -20,7 +20,9 @@ import com.baro.template.application.dto.ArchiveTemplateCommand;
 import com.baro.template.application.dto.CopyTemplateCommand;
 import com.baro.template.application.dto.FindTemplateQuery;
 import com.baro.template.application.dto.FindTemplateResult;
+import com.baro.template.application.dto.UnArchiveTemplateCommand;
 import com.baro.template.domain.TemplateCategory;
+import com.baro.template.domain.TemplateMember;
 import com.baro.template.domain.TemplateMemberRepository;
 import com.baro.template.domain.TemplateRepository;
 import com.baro.template.exception.TemplateException;
@@ -268,5 +270,83 @@ class TemplateServiceTest {
                 .isInstanceOf(TemplateException.class)
                 .extracting("exceptionType")
                 .isEqualTo(TemplateExceptionType.INVALID_TEMPLATE);
+    }
+
+    @Test
+    void 템플릿_아카이브_취소() {
+        // given
+        var member = memberRepository.save(MemberFixture.memberWithNickname("바로"));
+        var template = templateRepository.save(보고하기());
+        var memoFolder = memoFolderRepository.save(MemoFolder.defaultFolder(member));
+        var templateMember = TemplateMember.instanceForTest(1L, member, memoFolder, template);
+        templateMemberRepository.save(templateMember);
+        var command = new UnArchiveTemplateCommand(member.getId(), template.getId());
+
+        // when
+        service.unarchiveTemplate(command);
+
+        // then
+        var templateMembers = templateMemberRepository.findAll();
+        assertThat(templateMembers).hasSize(0);
+    }
+
+    @Test
+    void 템플릿_아카이브_취소시_템플릿_저장횟수_감소() {
+        // given
+        var member = memberRepository.save(MemberFixture.memberWithNickname("바로"));
+        var template = templateRepository.save(보고하기());
+        var memoFolder = memoFolderRepository.save(MemoFolder.defaultFolder(member));
+        var templateMember = TemplateMember.instanceForTest(1L, member, memoFolder, template);
+        templateMemberRepository.save(templateMember);
+        var saveCount = template.getSavedCount();
+        var command = new UnArchiveTemplateCommand(member.getId(), template.getId());
+
+        // when
+        service.unarchiveTemplate(command);
+
+        // then
+        assertThat(template.getSavedCount()).isEqualTo(saveCount - 1);
+    }
+
+    @Test
+    void 존재하지_않는_템플릿_아카이브_취소시_예외_발생() {
+        // given
+        var member = memberRepository.save(MemberFixture.memberWithNickname("바로"));
+        var invalidTemplateId = 9999L;
+        var command = new UnArchiveTemplateCommand(member.getId(), invalidTemplateId);
+
+        // when & then
+        assertThatThrownBy(() -> service.unarchiveTemplate(command))
+                .isInstanceOf(TemplateException.class)
+                .extracting("exceptionType")
+                .isEqualTo(TemplateExceptionType.INVALID_TEMPLATE);
+    }
+
+    @Test
+    void 존재하지_않는_멤버가_템플릿_아카이브_취소시도시_예외_발생() {
+        // given
+        var invalidMemberId = 9999L;
+        var template = templateRepository.save(보고하기());
+        var command = new UnArchiveTemplateCommand(invalidMemberId, template.getId());
+
+        // when & then
+        assertThatThrownBy(() -> service.unarchiveTemplate(command))
+                .isInstanceOf(MemberException.class)
+                .extracting("exceptionType")
+                .isEqualTo(MemberExceptionType.NOT_EXIST_MEMBER);
+    }
+
+    @Test
+    void 템플릿_아카이브_요청전_아카이브_취소_요청시_예외_발생() {
+        // given
+        var member = memberRepository.save(MemberFixture.memberWithNickname("바로"));
+        var template = templateRepository.save(보고하기());
+        var command = new UnArchiveTemplateCommand(member.getId(), template.getId());
+
+        // when & then
+        assertThatThrownBy(() -> service.unarchiveTemplate(command))
+                .isInstanceOf(TemplateException.class)
+                .extracting("exceptionType")
+                .isEqualTo(TemplateExceptionType.NOT_ARCHIVED_TEMPLATE);
     }
 }

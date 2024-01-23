@@ -9,4 +9,8 @@ public interface TemplateMemberRepository {
     TemplateMember save(TemplateMember templateMember);
 
     List<TemplateMember> findAll();
+
+    TemplateMember getByMemberIdAndTemplateId(Long memberId, Long templateId);
+
+    void delete(TemplateMember templateMember);
 }
