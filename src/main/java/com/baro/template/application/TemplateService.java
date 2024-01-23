@@ -6,6 +6,7 @@ import com.baro.memofolder.domain.MemoFolder;
 import com.baro.memofolder.domain.MemoFolderRepository;
 import com.baro.template.application.dto.ArchiveTemplateCommand;
 import com.baro.template.application.dto.ArchiveTemplateResult;
+import com.baro.template.application.dto.CopyTemplateCommand;
 import com.baro.template.application.dto.FindTemplateQuery;
 import com.baro.template.application.dto.FindTemplateResult;
 import com.baro.template.application.dto.UnArchiveTemplateCommand;
@@ -54,6 +55,11 @@ public class TemplateService {
         template.increaseSavedCount();
 
         return ArchiveTemplateResult.from(templateMember);
+    }
+
+    public void copyTemplate(CopyTemplateCommand command) {
+        Template template = templateRepository.getById(command.templateId());
+        template.increaseCopiedCount();
     }
 
     public void unarchiveTemplate(UnArchiveTemplateCommand command) {

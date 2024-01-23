@@ -17,6 +17,7 @@ import com.baro.memofolder.exception.MemoFolderException;
 import com.baro.memofolder.exception.MemoFolderExceptionType;
 import com.baro.memofolder.fake.FakeMemoFolderRepository;
 import com.baro.template.application.dto.ArchiveTemplateCommand;
+import com.baro.template.application.dto.CopyTemplateCommand;
 import com.baro.template.application.dto.FindTemplateQuery;
 import com.baro.template.application.dto.FindTemplateResult;
 import com.baro.template.application.dto.UnArchiveTemplateCommand;
@@ -240,6 +241,35 @@ class TemplateServiceTest {
                 .isInstanceOf(MemoFolderException.class)
                 .extracting("exceptionType")
                 .isEqualTo(MemoFolderExceptionType.NOT_EXIST_MEMO_FOLDER);
+    }
+
+    @Test
+    void 템플릿_복사() {
+        // given
+        var member = memberRepository.save(MemberFixture.memberWithNickname("바로"));
+        var template = templateRepository.save(보고하기());
+        var countBeforeCopy = template.getCopiedCount();
+        var command = new CopyTemplateCommand(member.getId(), template.getId());
+
+        // when
+        service.copyTemplate(command);
+
+        // then
+        assertThat(template.getCopiedCount()).isEqualTo(countBeforeCopy + 1);
+    }
+
+    @Test
+    void 존재하지_않는_템플릿_복사시_예외_발생() {
+        // given
+        var member = memberRepository.save(MemberFixture.memberWithNickname("바로"));
+        var invalidTemplateId = 9999L;
+        var command = new CopyTemplateCommand(member.getId(), invalidTemplateId);
+
+        // when & then
+        assertThatThrownBy(() -> service.copyTemplate(command))
+                .isInstanceOf(TemplateException.class)
+                .extracting("exceptionType")
+                .isEqualTo(TemplateExceptionType.INVALID_TEMPLATE);
     }
 
     @Test

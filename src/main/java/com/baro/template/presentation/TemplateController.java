@@ -4,6 +4,7 @@ import com.baro.auth.domain.AuthMember;
 import com.baro.template.application.TemplateService;
 import com.baro.template.application.dto.ArchiveTemplateCommand;
 import com.baro.template.application.dto.ArchiveTemplateResult;
+import com.baro.template.application.dto.CopyTemplateCommand;
 import com.baro.template.application.dto.FindTemplateQuery;
 import com.baro.template.application.dto.FindTemplateResult;
 import com.baro.template.application.dto.UnArchiveTemplateCommand;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -59,6 +61,16 @@ public class TemplateController {
                 .buildAndExpand(result.id())
                 .toUri();
         return ResponseEntity.created(location).build();
+    }
+
+    @PatchMapping("/{templateId}/copy")
+    ResponseEntity<Void> copyTemplate(
+            AuthMember authMember,
+            @PathVariable("templateId") Long templateId
+    ) {
+        CopyTemplateCommand command = new CopyTemplateCommand(authMember.id(), templateId);
+        templateService.copyTemplate(command);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{templateId}/archive")
