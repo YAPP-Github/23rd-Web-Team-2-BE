@@ -41,4 +41,9 @@ public class TemporalMemoRepositoryImpl implements TemporalMemoRepository {
                                                                    LocalDateTime end) {
         return temporalMemoJpaRepository.findAllByMemberIdAndCreatedAtBetween(memberId, start, end);
     }
+
+    @Override
+    public void deleteAllByCreatedAtLessThanEqual(final LocalDateTime localDateTime) {
+        temporalMemoJpaRepository.deleteAllByCreatedAtLessThanEqual(localDateTime);
+    }
 }
