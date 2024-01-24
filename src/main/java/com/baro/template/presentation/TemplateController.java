@@ -46,23 +46,6 @@ public class TemplateController {
         return ResponseEntity.ok().body(result);
     }
 
-    @PostMapping("/{templateId}/archive")
-    ResponseEntity<Void> archiveTemplate(
-            AuthMember authMember,
-            @RequestBody ArchiveTemplateRequest request,
-            @PathVariable("templateId") Long templateId
-    ) {
-        ArchiveTemplateCommand command = new ArchiveTemplateCommand(authMember.id(), templateId,
-                request.memoFolderId());
-        ArchiveTemplateResult result = templateService.archiveTemplate(command);
-
-        URI location = ServletUriComponentsBuilder.fromPath("/memos/templates")
-                .path("/{id}")
-                .buildAndExpand(result.id())
-                .toUri();
-        return ResponseEntity.created(location).build();
-    }
-
     @PatchMapping("/{templateId}/copy")
     ResponseEntity<Void> copyTemplate(
             AuthMember authMember,
@@ -70,16 +53,6 @@ public class TemplateController {
     ) {
         CopyTemplateCommand command = new CopyTemplateCommand(authMember.id(), templateId);
         templateService.copyTemplate(command);
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/{templateId}/archive")
-    ResponseEntity<Void> unarchiveTemplate(
-            AuthMember authMember,
-            @PathVariable Long templateId
-    ) {
-        UnArchiveTemplateCommand command = new UnArchiveTemplateCommand(authMember.id(), templateId);
-        templateService.unarchiveTemplate(command);
         return ResponseEntity.noContent().build();
     }
 }

@@ -125,49 +125,6 @@ public class TemporalMemoAcceptanceSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 끄적이는메모_아카이빙_요청(Token 토큰, Long 끄적이는_메모_ID,
-                                                               ArchiveTemporalMemoRequest 바디) {
-        return RestAssured.given(requestSpec).log().all()
-                .filter(document(DEFAULT_REST_DOCS_PATH,
-                        pathParameters(
-                                parameterWithName("temporalMemoId").description("끄적이는 메모 ID")
-                        ),
-                        requestHeaders(
-                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
-                        ),
-                        requestFields(
-                                fieldWithPath("memoFolderId").description("메모 폴더 ID")
-                        ),
-                        responseHeaders(
-                                headerWithName(HttpHeaders.LOCATION).description("아카이브된 메모 경로")
-                        ))
-                ).contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken()).body(바디)
-                .when().post("/temporal-memos/{temporalMemoId}/archive", 끄적이는_메모_ID)
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 잘못된_끄적이는메모_아카이빙_요청(Token 토큰, Long 끄적이는_메모_ID,
-                                                                   ArchiveTemporalMemoRequest 바디) {
-        return RestAssured.given(requestSpec).log().all()
-                .filter(document(DEFAULT_REST_DOCS_PATH,
-                        pathParameters(
-                                parameterWithName("temporalMemoId").description("끄적이는 메모 ID")
-                        ),
-                        requestHeaders(
-                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
-                        ),
-                        requestFields(
-                                fieldWithPath("memoFolderId").description("메모 폴더 ID")
-                        ),
-                        responseFields(예외_응답()))
-                ).contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken()).body(바디)
-                .when().post("/temporal-memos/{temporalMemoId}/archive", 끄적이는_메모_ID)
-                .then().log().all()
-                .extract();
-    }
 
     public static ExtractableResponse<Response> 끄적이는메모_삭제_요청(Token 토큰, Long 끄적이는_메모_ID) {
         return RestAssured.given(requestSpec).log().all()

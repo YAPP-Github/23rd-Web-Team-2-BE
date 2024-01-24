@@ -20,21 +20,16 @@ import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는메모_삭제_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는메모_생성_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는메모_수정_요청;
-import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는메모_아카이빙_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는메모를_생성하고_ID를_반환한다;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.맞춤법_검사_결과_반영_바디;
-import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.메모_아카이브_요청_바디;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.잘못된_끄적이는_메모_맞춤법_검사_결과_반영_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.잘못된_끄적이는_메모_생성_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.잘못된_끄적이는_메모_조회_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.잘못된_끄적이는메모_삭제_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.잘못된_끄적이는메모_수정_요청;
-import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.잘못된_끄적이는메모_아카이빙_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.크기_초과_끄적이는_메모_수정_바디;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.크기_초과_끄적이는_메모_작성_바디;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.크기_초과_맞춤법_검사_결과_반영_바디;
-import static com.baro.common.acceptance.memofolder.MemoFolderAcceptanceSteps.메모_폴더를_생성_하고_ID를_반환한다;
-import static com.baro.common.acceptance.memofolder.MemoFolderAcceptanceSteps.폴더_이름_바디;
 
 import com.baro.common.RestApiTest;
 import java.time.LocalDate;
@@ -115,86 +110,6 @@ public class TemproalMemoApiTest extends RestApiTest {
 
         // then
         응답값을_검증한다(응답, 권한_없음);
-    }
-
-    @Test
-    void 끄적이는_메모를_아카이브_한다() {
-        // given
-        var 유빈 = 로그인(유빈());
-        var 유빈의_끄적이는_메모_ID = 끄적이는메모를_생성하고_ID를_반환한다(유빈, 끄적이는_메모_바디);
-        var 메모_폴더_ID = 메모_폴더를_생성_하고_ID를_반환한다(유빈, 폴더_이름_바디);
-        var 메모_아카이브_요청_바디 = 메모_아카이브_요청_바디(메모_폴더_ID);
-
-        // when
-        var 응답 = 끄적이는메모_아카이빙_요청(유빈, 유빈의_끄적이는_메모_ID, 메모_아카이브_요청_바디);
-
-        // then
-        응답값을_검증한다(응답, 생성됨);
-    }
-
-    @Test
-    void 다른사람의_끄적이는_메모_아카이브_시_예외_발생() {
-        // given
-        var 유빈 = 로그인(유빈());
-        var 유빈의_끄적이는_메모_ID = 끄적이는메모를_생성하고_ID를_반환한다(유빈, 끄적이는_메모_바디);
-        var 메모_폴더_ID = 메모_폴더를_생성_하고_ID를_반환한다(유빈, 폴더_이름_바디);
-        var 메모_아카이브_요청_바디 = 메모_아카이브_요청_바디(메모_폴더_ID);
-        var 태연 = 로그인(태연());
-
-        // when
-        var 응답 = 잘못된_끄적이는메모_아카이빙_요청(태연, 유빈의_끄적이는_메모_ID, 메모_아카이브_요청_바디);
-
-        // then
-        응답값을_검증한다(응답, 권한_없음);
-    }
-
-    @Test
-    void 다른사람의_메모_폴더에_아카이브_시_예외_발생() {
-        // given
-        var 유빈 = 로그인(유빈());
-        var 유빈의_끄적이는_메모_ID = 끄적이는메모를_생성하고_ID를_반환한다(유빈, 끄적이는_메모_바디);
-
-        var 태연 = 로그인(태연());
-        var 메모_폴더_ID = 메모_폴더를_생성_하고_ID를_반환한다(태연, 폴더_이름_바디);
-        var 메모_아카이브_요청_바디 = 메모_아카이브_요청_바디(메모_폴더_ID);
-
-        // when
-        var 응답 = 잘못된_끄적이는메모_아카이빙_요청(유빈, 유빈의_끄적이는_메모_ID, 메모_아카이브_요청_바디);
-
-        // then
-        응답값을_검증한다(응답, 권한_없음);
-    }
-
-    @Test
-    void 존재_하지_않는_끄적이는메모_아카이브_시_예외_발생() {
-        // given
-        var 유빈 = 로그인(유빈());
-        var 존재_하지_않는_끄적이는메모 = 999L;
-
-        var 메모_폴더_ID = 메모_폴더를_생성_하고_ID를_반환한다(유빈, 폴더_이름_바디);
-        var 메모_아카이브_요청_바디 = 메모_아카이브_요청_바디(메모_폴더_ID);
-
-        // when
-        var 응답 = 잘못된_끄적이는메모_아카이빙_요청(유빈, 존재_하지_않는_끄적이는메모, 메모_아카이브_요청_바디);
-
-        // then
-        응답값을_검증한다(응답, 존재하지_않음);
-    }
-
-    @Test
-    void 존재_하지_않는_메모_폴더에_아카이브_시_예외_발생() {
-        // given
-        var 유빈 = 로그인(유빈());
-        var 유빈의_끄적이는_메모_ID = 끄적이는메모를_생성하고_ID를_반환한다(유빈, 끄적이는_메모_바디);
-
-        var 존재_하지_않는_메모_폴더_ID = 999L;
-        var 메모_아카이브_요청_바디 = 메모_아카이브_요청_바디(존재_하지_않는_메모_폴더_ID);
-
-        // when
-        var 응답 = 잘못된_끄적이는메모_아카이빙_요청(유빈, 유빈의_끄적이는_메모_ID, 메모_아카이브_요청_바디);
-
-        // then
-        응답값을_검증한다(응답, 존재하지_않음);
     }
 
     @Test
