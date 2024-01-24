@@ -46,4 +46,16 @@ class MemoFolderNameTest {
                 .extracting("exceptionType")
                 .isEqualTo(MemoFolderExceptionType.OVER_MAX_SIZE_NAME);
     }
+
+    @Test
+    void 메모_폴더_이름_길이_검증_빈_문자열() {
+        // given
+        String emptyName = "";
+
+        // when & then
+        assertThatThrownBy(() -> MemoFolderName.from(emptyName))
+                .isInstanceOf(MemoFolderException.class)
+                .extracting("exceptionType")
+                .isEqualTo(MemoFolderExceptionType.EMPTY_NAME);
+    }
 }
