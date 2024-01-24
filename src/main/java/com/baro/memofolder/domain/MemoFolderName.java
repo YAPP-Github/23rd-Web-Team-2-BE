@@ -26,6 +26,9 @@ public class MemoFolderName {
     }
 
     private void validate(String name) {
+        if (name.isEmpty()) {
+            throw new MemoFolderException(MemoFolderExceptionType.EMPTY_NAME);
+        }
         if (EmojiUtils.calculateLengthWithEmojis(name) > MAX_FOLDER_SIZE) {
             throw new MemoFolderException(MemoFolderExceptionType.OVER_MAX_SIZE_NAME);
         }
