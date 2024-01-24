@@ -32,7 +32,7 @@ public class MemberAcceptanceSteps {
                         ))
                 )
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken())
-                .when().get("/members/profile/my")
+                .when().get("/members/profile/me")
                 .then().log().all()
                 .extract();
     }

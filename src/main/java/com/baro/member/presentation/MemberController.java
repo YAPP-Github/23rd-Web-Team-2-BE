@@ -16,7 +16,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @GetMapping("/profile/my")
+    @GetMapping("/profile/me")
     public ResponseEntity<GetMemberProfileResult> getMyProfile(
             AuthMember authMember
     ) {
