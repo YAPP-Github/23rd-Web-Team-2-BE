@@ -41,7 +41,7 @@ class MemberServiceTest {
     }
 
     @Test
-    void 존재하지_않는_사용자_조회시_예외_발상() {
+    void 존재하지_않는_사용자_조회시_예외_발생() {
         // given
         Long nonExistMemberId = 1L;
 
