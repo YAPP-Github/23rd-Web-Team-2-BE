@@ -16,7 +16,7 @@ import org.springframework.http.MediaType;
 
 public class OAuthAcceptanceSteps {
 
-    public static ExtractableResponse<Response> 리다이렉트_URI_요청(String oauthServiceType) {
+    public static ExtractableResponse<Response> 리다이렉트_URI_요청(String oauthServiceType, String 요청_호스트) {
         var url = "/auth/oauth/{oauthType}";
 
         return given(requestSpec).log().all()
@@ -29,6 +29,7 @@ public class OAuthAcceptanceSteps {
                         )
                 ))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Origin", 요청_호스트)
                 .when().get(url, oauthServiceType)
                 .then().log().all()
                 .extract();

@@ -6,7 +6,6 @@ import static java.util.stream.Collectors.toMap;
 import com.baro.auth.application.oauth.dto.OAuthMemberInfo;
 import com.baro.auth.application.oauth.dto.OAuthTokenInfo;
 import com.baro.auth.domain.oauth.OAuthServiceType;
-
 import java.util.Map;
 import java.util.Set;
 import org.springframework.stereotype.Component;
@@ -23,9 +22,9 @@ public class OAuthInfoProvider {
                 .collect(toMap(OAuthClient::getOAuthService, identity()));
     }
 
-    public String getSignInUrl(String oAuthService) {
+    public String getSignInUrl(String oAuthService, String host) {
         OAuthClient client = getClient(oAuthService);
-        return client.getSignInUrl();
+        return client.getSignInUrl(host);
     }
 
     public OAuthMemberInfo getMemberInfo(String oAuthService, String code) {

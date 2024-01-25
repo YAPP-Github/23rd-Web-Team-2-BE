@@ -6,7 +6,7 @@ import com.baro.auth.domain.oauth.OAuthServiceType;
 
 public interface OAuthClient {
 
-    String getSignInUrl();
+    String getSignInUrl(String host);
 
     OAuthServiceType getOAuthService();
 
