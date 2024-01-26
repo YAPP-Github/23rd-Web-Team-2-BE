@@ -13,6 +13,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 
 import com.baro.auth.domain.Token;
+import com.baro.memofolder.presentation.dto.DeleteMemoFolderRequest;
 import com.baro.memofolder.presentation.dto.RenameMemoFolderRequest;
 import com.baro.memofolder.presentation.dto.SaveMemoFolderRequest;
 import io.restassured.response.ExtractableResponse;
@@ -138,6 +139,47 @@ public class MemoFolderAcceptanceSteps {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken()).body(바디)
                 .when().patch(url)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 폴더_삭제_요청_성공(Token 토큰, DeleteMemoFolderRequest 바디) {
+        var url = "/memo-folders";
+
+        return given(requestSpec).log().all()
+                .filter(document(DEFAULT_REST_DOCS_PATH,
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("memoFolderId").description("폴더 id"),
+                                fieldWithPath("deleteAllMemo").description("폴더에 있는 메모를 모두 삭제할지 여부")
+                        )
+                ))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken()).body(바디)
+                .when().delete(url)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 폴더_삭제_요청_실패(Token 토큰, DeleteMemoFolderRequest 바디) {
+        var url = "/memo-folders";
+
+        return given(requestSpec).log().all()
+                .filter(document(DEFAULT_REST_DOCS_PATH,
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("memoFolderId").description("폴더 id"),
+                                fieldWithPath("deleteAllMemo").description("폴더에 있는 메모를 모두 삭제할지 여부")
+                        ),
+                        responseFields(예외_응답())
+                ))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken()).body(바디)
+                .when().delete(url)
                 .then().log().all()
                 .extract();
     }
