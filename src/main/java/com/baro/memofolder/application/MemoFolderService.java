@@ -65,14 +65,20 @@ public class MemoFolderService {
         memoFolder.isNotDefaultFolder();
 
         if (command.deleteAllMemo()) {
-            archiveRepository.deleteAllByMemberIdAndMemoFolderId(command.memberId(), command.memoFolderId());
-            memoFolderRepository.delete(memoFolder);
+            deleteAllMemoInFolder(command.memberId(), memoFolder);
             return;
         }
+        replaceAllMemoToDefaultFolder(command.memberId(), memoFolder);
+    }
 
-        MemoFolder defaultFolder = memoFolderRepository.getByMemberIdAndIsDefaultTrue(command.memberId());
-        List<Archive> archives = archiveRepository.findAllByMemberIdAndMemoFolderId(command.memberId(),
-                command.memoFolderId());
+    private void deleteAllMemoInFolder(Long memberId, MemoFolder memoFolder) {
+        archiveRepository.deleteAllByMemberIdAndMemoFolderId(memberId, memoFolder.getId());
+        memoFolderRepository.delete(memoFolder);
+    }
+
+    private void replaceAllMemoToDefaultFolder(Long memberId, MemoFolder memoFolder) {
+        MemoFolder defaultFolder = memoFolderRepository.getByMemberIdAndIsDefaultTrue(memberId);
+        List<Archive> archives = archiveRepository.findAllByMemberIdAndMemoFolderId(memberId, memoFolder.getId());
         archives.forEach(archive -> archive.changeMemoFolder(defaultFolder));
         memoFolderRepository.delete(memoFolder);
     }
