@@ -17,7 +17,7 @@ public class FakeNaverOAuthClient implements OAuthClient {
     }
 
     @Override
-    public OAuthTokenInfo requestAccessToken(String code) {
+    public OAuthTokenInfo requestAccessToken(String host, String code) {
         return new OAuthTokenInfo("accessToken", "refreshToken", 1000);
     }
 

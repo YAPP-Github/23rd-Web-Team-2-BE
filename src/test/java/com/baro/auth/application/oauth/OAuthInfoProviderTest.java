@@ -72,10 +72,11 @@ class OAuthInfoProviderTest {
     void 카카오의_멤버_정보를_가져온다() {
         // given
         String oAuthService = OAuthServiceType.KAKAO.name();
-        OAuthTokenInfo oAuthTokenInfo = fakeKakaoOAuthClient.requestAccessToken("code");
+        String host = "http://localhost:3000";
+        OAuthTokenInfo oAuthTokenInfo = fakeKakaoOAuthClient.requestAccessToken(host, "code");
 
         // when
-        OAuthMemberInfo memberInfo = oAuthInfoProvider.getMemberInfo(oAuthService, oAuthTokenInfo.accessToken());
+        OAuthMemberInfo memberInfo = oAuthInfoProvider.getMemberInfo(oAuthService, oAuthTokenInfo.accessToken(), host);
 
         // then
         assertThat(memberInfo).isEqualTo(fakeKakaoOAuthClient.requestMemberInfo(oAuthTokenInfo));
@@ -85,10 +86,11 @@ class OAuthInfoProviderTest {
     void 네이버의_멤버_정보를_가져온다() {
         // given
         String oAuthService = OAuthServiceType.NAVER.name();
-        OAuthTokenInfo oAuthTokenInfo = fakeNaverOAuthClient.requestAccessToken("code");
+        String host = "http://localhost:3000";
+        OAuthTokenInfo oAuthTokenInfo = fakeNaverOAuthClient.requestAccessToken(host, "code");
 
         // when
-        OAuthMemberInfo memberInfo = oAuthInfoProvider.getMemberInfo(oAuthService, oAuthTokenInfo.accessToken());
+        OAuthMemberInfo memberInfo = oAuthInfoProvider.getMemberInfo(oAuthService, oAuthTokenInfo.accessToken(), host);
 
         // then
         assertThat(memberInfo).isEqualTo(fakeNaverOAuthClient.requestMemberInfo(oAuthTokenInfo));
@@ -98,10 +100,11 @@ class OAuthInfoProviderTest {
     void 구글의_멤버_정보를_가져온다() {
         // given
         String oAuthService = OAuthServiceType.GOOGLE.name();
-        OAuthTokenInfo oAuthTokenInfo = fakeGoogleOAuthClient.requestAccessToken("code");
+        String host = "http://localhost:3000";
+        OAuthTokenInfo oAuthTokenInfo = fakeGoogleOAuthClient.requestAccessToken(host, "code");
 
         // when
-        OAuthMemberInfo memberInfo = oAuthInfoProvider.getMemberInfo(oAuthService, oAuthTokenInfo.accessToken());
+        OAuthMemberInfo memberInfo = oAuthInfoProvider.getMemberInfo(oAuthService, oAuthTokenInfo.accessToken(), host);
 
         // then
         assertThat(memberInfo).isEqualTo(fakeGoogleOAuthClient.requestMemberInfo(oAuthTokenInfo));

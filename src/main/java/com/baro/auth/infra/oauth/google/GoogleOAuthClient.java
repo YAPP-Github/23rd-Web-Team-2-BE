@@ -27,7 +27,7 @@ public class GoogleOAuthClient implements OAuthClient {
                 .queryParam("client_id", googleOAuthProperty.clientId())
                 .queryParam("response_type", googleOAuthProperty.responseType())
                 .queryParam("redirect_uri", host + googleOAuthProperty.redirectUri())
-                .queryParam("scope", String.join(",", googleOAuthProperty.scope()))
+                .queryParam("scope", String.join(" ", googleOAuthProperty.scope()))
                 .toUriString();
     }
 
@@ -37,11 +37,11 @@ public class GoogleOAuthClient implements OAuthClient {
     }
 
     @Override
-    public OAuthTokenInfo requestAccessToken(String code) {
+    public OAuthTokenInfo requestAccessToken(String host, String code) {
         Map<String, String> params = new LinkedHashMap<>();
         params.put("grant_type", "authorization_code");
         params.put("client_id", googleOAuthProperty.clientId());
-        params.put("redirect_uri", googleOAuthProperty.redirectUri());
+        params.put("redirect_uri", host + googleOAuthProperty.redirectUri());
         params.put("code", code);
         params.put("client_secret", googleOAuthProperty.clientSecret());
         GoogleTokenResponse googleTokenResponse = googleRequestApi.requestToken(params);

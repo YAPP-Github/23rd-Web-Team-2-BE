@@ -65,6 +65,6 @@ public abstract class RestApiTest {
     }
 
     protected void OAuth_서버로부터_멤버_정보를_불러온다(OAuthMemberInfo memberInfo) {
-        doReturn(memberInfo).when(oAuthInfoProvider).getMemberInfo(anyString(), anyString());
+        doReturn(memberInfo).when(oAuthInfoProvider).getMemberInfo(anyString(), anyString(), anyString());
     }
 }

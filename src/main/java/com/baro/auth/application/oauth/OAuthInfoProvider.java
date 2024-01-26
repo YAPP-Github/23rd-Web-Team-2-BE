@@ -27,9 +27,9 @@ public class OAuthInfoProvider {
         return client.getSignInUrl(host);
     }
 
-    public OAuthMemberInfo getMemberInfo(String oAuthService, String code) {
+    public OAuthMemberInfo getMemberInfo(String oAuthService, String code, String host) {
         OAuthClient client = getClient(oAuthService);
-        OAuthTokenInfo oAuthTokenInfo = client.requestAccessToken(code);
+        OAuthTokenInfo oAuthTokenInfo = client.requestAccessToken(host, code);
         return client.requestMemberInfo(oAuthTokenInfo);
     }
 

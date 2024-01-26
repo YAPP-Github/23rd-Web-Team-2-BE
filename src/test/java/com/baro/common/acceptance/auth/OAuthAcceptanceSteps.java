@@ -48,6 +48,7 @@ public class OAuthAcceptanceSteps {
                         )
                 ))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Origin", "http://localhost:3000")
                 .queryParam("authCode", "authCode")
                 .when().get(url, "kakao")
                 .then().log().all()

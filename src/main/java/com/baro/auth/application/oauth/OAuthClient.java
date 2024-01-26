@@ -10,7 +10,7 @@ public interface OAuthClient {
 
     OAuthServiceType getOAuthService();
 
-    OAuthTokenInfo requestAccessToken(String code);
+    OAuthTokenInfo requestAccessToken(String host, String code);
 
     OAuthMemberInfo requestMemberInfo(OAuthTokenInfo oAuthTokenInfo);
 }

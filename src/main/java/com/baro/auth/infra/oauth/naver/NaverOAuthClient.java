@@ -37,7 +37,7 @@ public class NaverOAuthClient implements OAuthClient {
     }
 
     @Override
-    public OAuthTokenInfo requestAccessToken(String code) {
+    public OAuthTokenInfo requestAccessToken(String host, String code) {
         Map<String, String> params = new LinkedHashMap<>();
         params.put("grant_type", naverOAuthProperty.grantType());
         params.put("client_id", naverOAuthProperty.clientId());

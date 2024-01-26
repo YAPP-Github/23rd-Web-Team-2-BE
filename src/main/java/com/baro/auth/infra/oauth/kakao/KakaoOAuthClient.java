@@ -32,11 +32,11 @@ public class KakaoOAuthClient implements OAuthClient {
     }
 
     @Override
-    public OAuthTokenInfo requestAccessToken(String authCode) {
+    public OAuthTokenInfo requestAccessToken(String host, String authCode) {
         Map<String, String> params = new LinkedHashMap<>();
         params.put("grant_type", "authorization_code");
         params.put("client_id", kakaoOAuthProperty.clientId());
-        params.put("redirect_uri", kakaoOAuthProperty.redirectUri());
+        params.put("redirect_uri", host + kakaoOAuthProperty.redirectUri());
         params.put("code", authCode);
         params.put("client_secret", kakaoOAuthProperty.clientSecret());
         KakaoTokenResponse kakaoTokenResponse = kakaoRequestApi.requestToken(params);

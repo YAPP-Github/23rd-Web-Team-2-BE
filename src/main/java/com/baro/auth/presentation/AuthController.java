@@ -31,8 +31,9 @@ public class AuthController {
     }
 
     @GetMapping("/oauth/sign-in/{oauthType}")
-    ResponseEntity<Token> signIn(@PathVariable String oauthType, @RequestParam String authCode) {
-        OAuthMemberInfo memberInfo = oAuthInfoProvider.getMemberInfo(oauthType, authCode);
+    ResponseEntity<Token> signIn(@PathVariable String oauthType, @RequestParam String authCode,
+                                 @RequestHost String host) {
+        OAuthMemberInfo memberInfo = oAuthInfoProvider.getMemberInfo(oauthType, authCode, host);
         Token token = authService.signIn(
                 new SignInDto(memberInfo.name(), memberInfo.email(), memberInfo.oAuthId(), oauthType));
         return ResponseEntity.ok().body(token);
