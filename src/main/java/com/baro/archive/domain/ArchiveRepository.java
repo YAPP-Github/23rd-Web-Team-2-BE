@@ -15,4 +15,8 @@ public interface ArchiveRepository {
     Archive save(Archive archive);
 
     void delete(Archive archive);
+
+    void deleteAllByMemberIdAndMemoFolderId(Long memberId, Long memoFolderId);
+
+    List<Archive> findAllByMemberIdAndMemoFolderId(Long memberId, Long memoFolderId);
 }
