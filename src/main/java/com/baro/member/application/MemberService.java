@@ -2,7 +2,6 @@ package com.baro.member.application;
 
 import com.baro.member.application.dto.GetMemberProfileResult;
 import com.baro.member.application.dto.UpdateMemberProfileCommand;
-import com.baro.member.application.dto.UpdateMemberProfileResult;
 import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
 import com.baro.member.exception.MemberException;
@@ -24,12 +23,10 @@ public class MemberService {
         return GetMemberProfileResult.from(member);
     }
 
-    public UpdateMemberProfileResult updateProfile(UpdateMemberProfileCommand command) {
+    public void updateProfile(UpdateMemberProfileCommand command) {
         Member member = memberRepository.getById(command.id());
         validateDuplicatedNickname(command.nickname());
         member.updateProfile(command.name(), command.nickname());
-
-        return UpdateMemberProfileResult.from(member);
     }
 
     private void validateDuplicatedNickname(String nickName) {

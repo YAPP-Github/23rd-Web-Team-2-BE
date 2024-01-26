@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.baro.member.application.dto.GetMemberProfileResult;
 import com.baro.member.application.dto.UpdateMemberProfileCommand;
-import com.baro.member.application.dto.UpdateMemberProfileResult;
 import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
 import com.baro.member.exception.MemberException;
@@ -65,10 +64,11 @@ class MemberServiceTest {
         );
 
         // when
-        UpdateMemberProfileResult result = memberService.updateProfile(command);
+        memberService.updateProfile(command);
 
         // then
-        assertThat(result.nickname()).isEqualTo("바로닉네임");
+
+        assertThat(savedMember.getNickname().value()).isEqualTo("바로닉네임");
     }
 
     @Test

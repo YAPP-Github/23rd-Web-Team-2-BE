@@ -1,8 +1,6 @@
 package com.baro.member.domain;
 
 import com.baro.common.entity.BaseEntity;
-import com.baro.member.exception.MemberException;
-import com.baro.member.exception.MemberExceptionType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -11,7 +9,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -69,11 +66,5 @@ public class Member extends BaseEntity {
     public void updateProfile(String name, String nickname) {
         this.name = name;
         this.nickname = MemberNickname.from(nickname);
-    }
-
-    public void matchOwner(Long id) {
-        if (!Objects.equals(this.id, id)) {
-            throw new MemberException(MemberExceptionType.NOT_MATCH_MEMBER);
-        }
     }
 }
