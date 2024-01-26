@@ -17,8 +17,11 @@ class OAuthApiTest extends RestApiTest {
 
     @Test
     void OAuth_로그인시_필요한_url을_반환한다() {
+        // givne
+        var 요청_호스트 = "http://localhost:3000";
+
         // when
-        var 응답 = 리다이렉트_URI_요청("kakao");
+        var 응답 = 리다이렉트_URI_요청("kakao", 요청_호스트);
 
         // then
         응답값을_검증한다(응답, 성공);

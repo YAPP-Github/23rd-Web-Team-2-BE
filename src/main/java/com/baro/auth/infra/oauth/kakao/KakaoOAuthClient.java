@@ -1,16 +1,14 @@
 package com.baro.auth.infra.oauth.kakao;
 
+import com.baro.auth.application.oauth.OAuthClient;
 import com.baro.auth.application.oauth.dto.OAuthMemberInfo;
 import com.baro.auth.application.oauth.dto.OAuthTokenInfo;
 import com.baro.auth.domain.oauth.OAuthServiceType;
 import com.baro.auth.infra.oauth.kakao.config.KakaoOAuthProperty;
 import com.baro.auth.infra.oauth.kakao.dto.KakaoMemberResponse;
 import com.baro.auth.infra.oauth.kakao.dto.KakaoTokenResponse;
-import com.baro.auth.application.oauth.OAuthClient;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -23,12 +21,12 @@ public class KakaoOAuthClient implements OAuthClient {
     private final KakaoRequestApi kakaoRequestApi;
 
     @Override
-    public String getSignInUrl() {
+    public String getSignInUrl(String host) {
         return UriComponentsBuilder
                 .fromUriString(kakaoOAuthProperty.signInAuthorizeUrl())
                 .queryParam("response_type", kakaoOAuthProperty.responseType())
                 .queryParam("client_id", kakaoOAuthProperty.clientId())
-                .queryParam("redirect_uri", kakaoOAuthProperty.redirectUrl())
+                .queryParam("redirect_uri", host + kakaoOAuthProperty.redirectUri())
                 .queryParam("scope", String.join(",", kakaoOAuthProperty.scope()))
                 .toUriString();
     }
@@ -38,7 +36,7 @@ public class KakaoOAuthClient implements OAuthClient {
         Map<String, String> params = new LinkedHashMap<>();
         params.put("grant_type", "authorization_code");
         params.put("client_id", kakaoOAuthProperty.clientId());
-        params.put("redirect_uri", kakaoOAuthProperty.redirectUrl());
+        params.put("redirect_uri", kakaoOAuthProperty.redirectUri());
         params.put("code", authCode);
         params.put("client_secret", kakaoOAuthProperty.clientSecret());
         KakaoTokenResponse kakaoTokenResponse = kakaoRequestApi.requestToken(params);

@@ -7,6 +7,7 @@ import com.baro.auth.application.oauth.dto.OAuthMemberInfo;
 import com.baro.auth.domain.AuthMember;
 import com.baro.auth.domain.Token;
 import com.baro.auth.presentation.dto.OAuthServiceUrlResponse;
+import com.baro.common.presentation.RequestHost;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +25,8 @@ public class AuthController {
     private final OAuthInfoProvider oAuthInfoProvider;
 
     @GetMapping("/oauth/{oauthType}")
-    ResponseEntity<OAuthServiceUrlResponse> signInRequestUrl(@PathVariable String oauthType) {
-        String signInUrl = oAuthInfoProvider.getSignInUrl(oauthType);
+    ResponseEntity<OAuthServiceUrlResponse> signInRequestUrl(@PathVariable String oauthType, @RequestHost String host) {
+        String signInUrl = oAuthInfoProvider.getSignInUrl(oauthType, host);
         return ResponseEntity.ok(new OAuthServiceUrlResponse(signInUrl));
     }
 

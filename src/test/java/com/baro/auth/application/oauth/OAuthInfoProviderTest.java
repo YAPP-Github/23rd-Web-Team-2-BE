@@ -33,36 +33,39 @@ class OAuthInfoProviderTest {
     void 카카오의_SignInUrl을_가져온다() {
         // given
         String oAuthService = OAuthServiceType.KAKAO.name();
+        String host = "http://localhost:3000";
 
         // when
-        String signInUrl = oAuthInfoProvider.getSignInUrl(oAuthService);
+        String signInUrl = oAuthInfoProvider.getSignInUrl(oAuthService, host);
 
         // then
-        assertThat(signInUrl).isEqualTo(fakeKakaoOAuthClient.getSignInUrl());
+        assertThat(signInUrl).isEqualTo(fakeKakaoOAuthClient.getSignInUrl(host));
     }
 
     @Test
     void 네이버의_SignInUrl을_가져온다() {
         // given
         String oAuthService = OAuthServiceType.NAVER.name();
+        String host = "http://localhost:3000";
 
         // when
-        String signInUrl = oAuthInfoProvider.getSignInUrl(oAuthService);
+        String signInUrl = oAuthInfoProvider.getSignInUrl(oAuthService, host);
 
         // then
-        assertThat(signInUrl).isEqualTo(fakeNaverOAuthClient.getSignInUrl());
+        assertThat(signInUrl).isEqualTo(fakeNaverOAuthClient.getSignInUrl(host));
     }
 
     @Test
     void 구글의_SignInUrl을_가져온다() {
         // given
         String oAuthService = OAuthServiceType.GOOGLE.name();
+        String host = "http://localhost:3000";
 
         // when
-        String signInUrl = oAuthInfoProvider.getSignInUrl(oAuthService);
+        String signInUrl = oAuthInfoProvider.getSignInUrl(oAuthService, host);
 
         // then
-        assertThat(signInUrl).isEqualTo(fakeGoogleOAuthClient.getSignInUrl());
+        assertThat(signInUrl).isEqualTo(fakeGoogleOAuthClient.getSignInUrl(host));
     }
 
     @Test

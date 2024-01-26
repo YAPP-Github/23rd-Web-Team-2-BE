@@ -21,12 +21,12 @@ public class NaverOAuthClient implements OAuthClient {
     private final NaverRequestApi naverRequestApi;
 
     @Override
-    public String getSignInUrl() {
+    public String getSignInUrl(String host) {
         return UriComponentsBuilder
                 .fromUriString(naverOAuthProperty.signInAuthorizeUrl())
                 .queryParam("response_type", naverOAuthProperty.responseType())
                 .queryParam("client_id", naverOAuthProperty.clientId())
-                .queryParam("redirect_uri", naverOAuthProperty.redirectUri())
+                .queryParam("redirect_uri", host + naverOAuthProperty.redirectUri())
                 .queryParam("state", naverOAuthProperty.state())
                 .toUriString();
     }
