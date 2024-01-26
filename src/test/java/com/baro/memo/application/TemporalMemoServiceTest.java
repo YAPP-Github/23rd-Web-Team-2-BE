@@ -4,11 +4,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.baro.archive.domain.Archive;
+import com.baro.archive.domain.ArchiveRepository;
+import com.baro.archive.fake.FakeArchiveRepository;
 import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
 import com.baro.member.fake.FakeMemberRepository;
 import com.baro.member.fixture.MemberFixture;
 import com.baro.memo.application.dto.ApplyCorrectionCommand;
+import com.baro.memo.application.dto.ArchiveTemporalMemoCommand;
 import com.baro.memo.application.dto.DeleteTemporalMemoCommand;
 import com.baro.memo.application.dto.FindTemporalMemoHistoriesQuery;
 import com.baro.memo.application.dto.FindTemporalMemoHistoriesResult;
@@ -22,6 +26,11 @@ import com.baro.memo.exception.MemoExceptionType;
 import com.baro.memo.exception.TemporalMemoException;
 import com.baro.memo.exception.TemporalMemoExceptionType;
 import com.baro.memo.fake.FakeTemporalMemoRepository;
+import com.baro.memofolder.domain.MemoFolder;
+import com.baro.memofolder.domain.MemoFolderRepository;
+import com.baro.memofolder.exception.MemoFolderException;
+import com.baro.memofolder.exception.MemoFolderExceptionType;
+import com.baro.memofolder.fake.FakeMemoFolderRepository;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
@@ -37,12 +46,17 @@ class TemporalMemoServiceTest {
     private TemporalMemoService temporalMemoService;
     private MemberRepository memberRepository;
     private TemporalMemoRepository temporalMemoRepository;
+    private MemoFolderRepository memoFolderRepository;
+    private ArchiveRepository archiveRepository;
 
     @BeforeEach
     void setUp() {
         memberRepository = new FakeMemberRepository();
         temporalMemoRepository = new FakeTemporalMemoRepository();
-        temporalMemoService = new TemporalMemoService(temporalMemoRepository, memberRepository);
+        memoFolderRepository = new FakeMemoFolderRepository();
+        archiveRepository = new FakeArchiveRepository();
+        temporalMemoService = new TemporalMemoService(temporalMemoRepository, memberRepository, memoFolderRepository,
+                archiveRepository);
     }
 
     @Test
@@ -324,5 +338,81 @@ class TemporalMemoServiceTest {
                 .isInstanceOf(TemporalMemoException.class)
                 .extracting("exceptionType")
                 .isEqualTo(TemporalMemoExceptionType.NON_SEQUENTIAL_DATES_EXCEPTION);
+    }
+
+    @Test
+    void 끄적이는_메모_아카이브() {
+        // given
+        Member member = memberRepository.save(MemberFixture.memberWithNickname("nickname1"));
+        TemporalMemo temporalMemo = temporalMemoRepository.save(TemporalMemo.of(member, "testContent"));
+        Long memoFolderId = memoFolderRepository.save(MemoFolder.defaultFolder(member)).getId();
+
+        ArchiveTemporalMemoCommand command = new ArchiveTemporalMemoCommand(member.getId(), temporalMemo.getId(),
+                memoFolderId);
+
+        // when
+        temporalMemoService.archiveTemporalMemo(command);
+
+        // then
+        List<Archive> archives = archiveRepository.findAll();
+        Archive archive = archives.get(0);
+        assertAll(
+                () -> assertThat(archives).hasSize(1),
+                () -> assertThat(archive.getContent()).isEqualTo(temporalMemo.getArchivingContent()),
+                () -> assertThat(temporalMemo.getArchive()).isEqualTo(archive)
+        );
+    }
+
+    @Test
+    void 다른_사람의_끄적이는_메모_아카이브시_예외_발생() {
+        // given
+        Member member = memberRepository.save(MemberFixture.memberWithNickname("nickname1"));
+        Member otherMember = memberRepository.save(MemberFixture.memberWithNickname("nickname2"));
+        TemporalMemo temporalMemo = temporalMemoRepository.save(TemporalMemo.of(member, "testContent"));
+        Long memoFolderId = memoFolderRepository.save(MemoFolder.defaultFolder(otherMember)).getId();
+
+        ArchiveTemporalMemoCommand command = new ArchiveTemporalMemoCommand(otherMember.getId(), temporalMemo.getId(),
+                memoFolderId);
+
+        // when & then
+        assertThatThrownBy(() -> temporalMemoService.archiveTemporalMemo(command))
+                .isInstanceOf(TemporalMemoException.class)
+                .extracting("exceptionType")
+                .isEqualTo(TemporalMemoExceptionType.NOT_MATCH_OWNER);
+    }
+
+    @Test
+    void 존재하지_않는_메모_폴더에_아카이브시_예외_발생() {
+        // given
+        Member member = memberRepository.save(MemberFixture.memberWithNickname("nickname1"));
+        TemporalMemo temporalMemo = temporalMemoRepository.save(TemporalMemo.of(member, "testContent"));
+        Long notExistMemoFolderId = 1L;
+
+        ArchiveTemporalMemoCommand command = new ArchiveTemporalMemoCommand(member.getId(), temporalMemo.getId(),
+                notExistMemoFolderId);
+
+        // when & then
+        assertThatThrownBy(() -> temporalMemoService.archiveTemporalMemo(command))
+                .isInstanceOf(MemoFolderException.class)
+                .extracting("exceptionType")
+                .isEqualTo(MemoFolderExceptionType.NOT_EXIST_MEMO_FOLDER);
+    }
+
+    @Test
+    void 다른_사람의_메모_폴더에_아카이브시_예외_발생() {
+        // given
+        Member member = memberRepository.save(MemberFixture.memberWithNickname("nickname1"));
+        Member otherMember = memberRepository.save(MemberFixture.memberWithNickname("nickname2"));
+        TemporalMemo temporalMemo = temporalMemoRepository.save(TemporalMemo.of(otherMember, "testContent"));
+        Long memoFolderId = memoFolderRepository.save(MemoFolder.defaultFolder(member)).getId();
+
+        ArchiveTemporalMemoCommand command = new ArchiveTemporalMemoCommand(otherMember.getId(), temporalMemo.getId(),
+                memoFolderId);
+
+        // when & then
+        assertThatThrownBy(() -> temporalMemoService.archiveTemporalMemo(command))
+                .isInstanceOf(MemoFolderException.class)
+                .extracting("exceptionType")
+                .isEqualTo(MemoFolderExceptionType.NOT_MATCH_OWNER);
     }
 }

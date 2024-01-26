@@ -95,4 +95,21 @@ public class TemporalMemoController {
         List<FindTemporalMemoHistoriesResult> results = temporalMemoService.findTemporalMemos(query);
         return ResponseEntity.ok(results);
     }
+
+    @PostMapping("/{temporalMemoId}/archive")
+    public ResponseEntity<Void> archiveAsMemo(
+            AuthMember authMember,
+            @RequestBody ArchiveTemporalMemoRequest request,
+            @PathVariable Long temporalMemoId
+    ) {
+        ArchiveTemporalMemoCommand command = new ArchiveTemporalMemoCommand(authMember.id(), temporalMemoId,
+                request.memoFolderId());
+        ArchiveTemporalMemoResult result = temporalMemoService.archiveTemporalMemo(command);
+
+        URI location = ServletUriComponentsBuilder.fromPath("/memos")
+                .path("/{id}")
+                .buildAndExpand(result.id())
+                .toUri();
+        return ResponseEntity.created(location).build();
+    }
 }
