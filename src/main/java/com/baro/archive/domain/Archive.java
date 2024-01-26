@@ -1,8 +1,10 @@
-package com.baro.memo.domain;
+package com.baro.archive.domain;
 
 import com.baro.common.entity.BaseEntity;
 import com.baro.member.domain.Member;
+import com.baro.memo.domain.MemoContent;
 import com.baro.memofolder.domain.MemoFolder;
+import com.baro.template.domain.Template;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
@@ -16,15 +18,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Memo extends BaseEntity {
+public class Archive extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,13 +43,28 @@ public class Memo extends BaseEntity {
     @AttributeOverride(name = "content", column = @Column(name = "content", nullable = false))
     private MemoContent content;
 
-    private Memo(Member member, MemoFolder memoFolder, MemoContent content) {
+    @ManyToOne
+    @JoinColumn(name = "template_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private Template template;
+
+    public Archive(Member member, MemoFolder memoFolder, MemoContent content, Template template) {
+        this.member = member;
+        this.memoFolder = memoFolder;
+        this.content = content;
+        this.template = template;
+    }
+
+    public Archive(Member member, MemoFolder memoFolder, MemoContent content) {
         this.member = member;
         this.memoFolder = memoFolder;
         this.content = content;
     }
 
-    public static Memo of(Member member, MemoFolder memoFolder, MemoContent content) {
-        return new Memo(member, memoFolder, content);
+    public Archive(Long id, Member member, MemoFolder memoFolder, MemoContent content, Template template) {
+        this.id = id;
+        this.member = member;
+        this.memoFolder = memoFolder;
+        this.content = content;
+        this.template = template;
     }
 }

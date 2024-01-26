@@ -6,11 +6,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.baro.archive.domain.Archive;
+import com.baro.archive.domain.ArchiveRepository;
+import com.baro.archive.exception.ArchiveException;
+import com.baro.archive.exception.ArchiveExceptionType;
+import com.baro.archive.fake.FakeArchiveRepository;
 import com.baro.member.domain.MemberRepository;
 import com.baro.member.exception.MemberException;
 import com.baro.member.exception.MemberExceptionType;
 import com.baro.member.fake.FakeMemberRepository;
 import com.baro.member.fixture.MemberFixture;
+import com.baro.memo.domain.MemoContent;
 import com.baro.memofolder.domain.MemoFolder;
 import com.baro.memofolder.domain.MemoFolderRepository;
 import com.baro.memofolder.exception.MemoFolderException;
@@ -22,12 +28,9 @@ import com.baro.template.application.dto.FindTemplateQuery;
 import com.baro.template.application.dto.FindTemplateResult;
 import com.baro.template.application.dto.UnArchiveTemplateCommand;
 import com.baro.template.domain.TemplateCategory;
-import com.baro.template.domain.TemplateMember;
-import com.baro.template.domain.TemplateMemberRepository;
 import com.baro.template.domain.TemplateRepository;
 import com.baro.template.exception.TemplateException;
 import com.baro.template.exception.TemplateExceptionType;
-import com.baro.template.fake.FakeTemplateMemberRepository;
 import com.baro.template.fake.FakeTemplateRepository;
 import com.baro.template.presentation.SortType;
 import java.util.Comparator;
@@ -44,16 +47,15 @@ class TemplateServiceTest {
     private TemplateRepository templateRepository;
     private MemberRepository memberRepository;
     private MemoFolderRepository memoFolderRepository;
-    private TemplateMemberRepository templateMemberRepository;
+    private ArchiveRepository archiveRepository;
 
     @BeforeEach
     void setUp() {
         templateRepository = new FakeTemplateRepository();
         memberRepository = new FakeMemberRepository();
         memoFolderRepository = new FakeMemoFolderRepository();
-        templateMemberRepository = new FakeTemplateMemberRepository();
-        service = new TemplateService(templateRepository, memberRepository, memoFolderRepository,
-                templateMemberRepository);
+        archiveRepository = new FakeArchiveRepository();
+        service = new TemplateService(templateRepository, memberRepository, memoFolderRepository, archiveRepository);
     }
 
     @Test
@@ -128,6 +130,35 @@ class TemplateServiceTest {
     }
 
     @Test
+    void 템플릿_복사() {
+        // given
+        var member = memberRepository.save(MemberFixture.memberWithNickname("바로"));
+        var template = templateRepository.save(보고하기());
+        var countBeforeCopy = template.getCopiedCount();
+        var command = new CopyTemplateCommand(member.getId(), template.getId());
+
+        // when
+        service.copyTemplate(command);
+
+        // then
+        assertThat(template.getCopiedCount()).isEqualTo(countBeforeCopy + 1);
+    }
+
+    @Test
+    void 존재하지_않는_템플릿_복사시_예외_발생() {
+        // given
+        var member = memberRepository.save(MemberFixture.memberWithNickname("바로"));
+        var invalidTemplateId = 9999L;
+        var command = new CopyTemplateCommand(member.getId(), invalidTemplateId);
+
+        // when & then
+        assertThatThrownBy(() -> service.copyTemplate(command))
+                .isInstanceOf(TemplateException.class)
+                .extracting("exceptionType")
+                .isEqualTo(TemplateExceptionType.INVALID_TEMPLATE);
+    }
+
+    @Test
     void 템플릿_아카이브() {
         // given
         var member = memberRepository.save(MemberFixture.memberWithNickname("바로"));
@@ -139,13 +170,12 @@ class TemplateServiceTest {
         service.archiveTemplate(command);
 
         // then
-        var templateMembers = templateMemberRepository.findAll();
-        var savedTemplateMember = templateMembers.get(0);
+        var archives = archiveRepository.findAll();
         assertAll(
-                () -> assertThat(templateMembers).hasSize(1),
-                () -> assertThat(savedTemplateMember.getMember()).isEqualTo(member),
-                () -> assertThat(savedTemplateMember.getTemplate()).isEqualTo(template),
-                () -> assertThat(savedTemplateMember.getMemoFolder()).isEqualTo(memoFolder)
+                () -> assertThat(archives).hasSize(1),
+                () -> assertThat(archives.get(0).getMemoFolder()).isEqualTo(memoFolder),
+                () -> assertThat(archives.get(0).getMember()).isEqualTo(member),
+                () -> assertThat(archives.get(0).getTemplate()).isEqualTo(template)
         );
     }
 
@@ -223,9 +253,9 @@ class TemplateServiceTest {
 
         // when & then
         assertThatThrownBy(() -> service.archiveTemplate(command))
-                .isInstanceOf(TemplateException.class)
+                .isInstanceOf(ArchiveException.class)
                 .extracting("exceptionType")
-                .isEqualTo(TemplateExceptionType.ARCHIVED_TEMPLATE);
+                .isEqualTo(ArchiveExceptionType.ARCHIVED_TEMPLATE);
     }
 
     @Test
@@ -244,50 +274,21 @@ class TemplateServiceTest {
     }
 
     @Test
-    void 템플릿_복사() {
-        // given
-        var member = memberRepository.save(MemberFixture.memberWithNickname("바로"));
-        var template = templateRepository.save(보고하기());
-        var countBeforeCopy = template.getCopiedCount();
-        var command = new CopyTemplateCommand(member.getId(), template.getId());
-
-        // when
-        service.copyTemplate(command);
-
-        // then
-        assertThat(template.getCopiedCount()).isEqualTo(countBeforeCopy + 1);
-    }
-
-    @Test
-    void 존재하지_않는_템플릿_복사시_예외_발생() {
-        // given
-        var member = memberRepository.save(MemberFixture.memberWithNickname("바로"));
-        var invalidTemplateId = 9999L;
-        var command = new CopyTemplateCommand(member.getId(), invalidTemplateId);
-
-        // when & then
-        assertThatThrownBy(() -> service.copyTemplate(command))
-                .isInstanceOf(TemplateException.class)
-                .extracting("exceptionType")
-                .isEqualTo(TemplateExceptionType.INVALID_TEMPLATE);
-    }
-
-    @Test
     void 템플릿_아카이브_취소() {
         // given
         var member = memberRepository.save(MemberFixture.memberWithNickname("바로"));
         var template = templateRepository.save(보고하기());
         var memoFolder = memoFolderRepository.save(MemoFolder.defaultFolder(member));
-        var templateMember = TemplateMember.instanceForTest(1L, member, memoFolder, template);
-        templateMemberRepository.save(templateMember);
+        var archive = new Archive(member, memoFolder, MemoContent.from(template.getContent()), template);
+        archiveRepository.save(archive);
         var command = new UnArchiveTemplateCommand(member.getId(), template.getId());
 
         // when
         service.unarchiveTemplate(command);
 
         // then
-        var templateMembers = templateMemberRepository.findAll();
-        assertThat(templateMembers).hasSize(0);
+        var archives = archiveRepository.findAll();
+        assertThat(archives).hasSize(0);
     }
 
     @Test
@@ -296,8 +297,8 @@ class TemplateServiceTest {
         var member = memberRepository.save(MemberFixture.memberWithNickname("바로"));
         var template = templateRepository.save(보고하기());
         var memoFolder = memoFolderRepository.save(MemoFolder.defaultFolder(member));
-        var templateMember = TemplateMember.instanceForTest(1L, member, memoFolder, template);
-        templateMemberRepository.save(templateMember);
+        var archive = new Archive(member, memoFolder, MemoContent.from(template.getContent()), template);
+        archiveRepository.save(archive);
         var saveCount = template.getSavedCount();
         var command = new UnArchiveTemplateCommand(member.getId(), template.getId());
 
@@ -345,8 +346,8 @@ class TemplateServiceTest {
 
         // when & then
         assertThatThrownBy(() -> service.unarchiveTemplate(command))
-                .isInstanceOf(TemplateException.class)
+                .isInstanceOf(ArchiveException.class)
                 .extracting("exceptionType")
-                .isEqualTo(TemplateExceptionType.NOT_ARCHIVED_TEMPLATE);
+                .isEqualTo(ArchiveExceptionType.NOT_ARCHIVED_TEMPLATE);
     }
 }

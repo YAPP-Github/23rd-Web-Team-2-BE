@@ -24,7 +24,7 @@ public class FakeTemporalMemoRepository implements TemporalMemoRepository {
                     temporalMemo.getMember(),
                     temporalMemo.getContent(),
                     temporalMemo.getCorrectionContent(),
-                    temporalMemo.getMemo()
+                    temporalMemo.getArchive()
             );
             if (Objects.nonNull(temporalMemo.getCreatedAt())) {
                 newTemporalMemo.setCreatedAtForTest(temporalMemo.getCreatedAt());

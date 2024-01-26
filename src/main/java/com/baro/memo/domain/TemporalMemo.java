@@ -1,5 +1,6 @@
 package com.baro.memo.domain;
 
+import com.baro.archive.domain.Archive;
 import com.baro.common.entity.BaseEntity;
 import com.baro.member.domain.Member;
 import com.baro.memo.exception.TemporalMemoException;
@@ -40,23 +41,24 @@ public class TemporalMemo extends BaseEntity {
     private MemoContent content;
 
     @Embedded
+    @Column(columnDefinition = "TEXT")
     @AttributeOverride(name = "content", column = @Column(name = "correction_content"))
     private MemoContent correctionContent;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memo_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private Memo memo;
+    @JoinColumn(name = "archive_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private Archive archive;
 
-    public TemporalMemo(Long id, Member member, MemoContent content, MemoContent correctionContent, Memo memo) {
+    public TemporalMemo(Long id, Member member, MemoContent content, MemoContent correctionContent, Archive archive) {
         this.id = id;
         this.member = member;
         this.content = content;
         this.correctionContent = correctionContent;
-        this.memo = memo;
+        this.archive = archive;
     }
 
-    public TemporalMemo(Member member, MemoContent content, MemoContent correctionContent, Memo memo) {
-        this(null, member, content, correctionContent, memo);
+    public TemporalMemo(Member member, MemoContent content, MemoContent correctionContent, Archive archive) {
+        this(null, member, content, correctionContent, archive);
     }
 
     public static TemporalMemo of(Member member, String content) {
@@ -84,8 +86,8 @@ public class TemporalMemo extends BaseEntity {
         return this.content;
     }
 
-    public void archivedAsMemo(Memo memo) {
-        this.memo = memo;
+    public void archived(Archive archive) {
+        this.archive = archive;
     }
 
     public void applyCorrection(MemoContent correctionContent) {
@@ -96,6 +98,6 @@ public class TemporalMemo extends BaseEntity {
     }
 
     public boolean isArchived() {
-        return Objects.nonNull(this.memo);
+        return Objects.nonNull(this.archive);
     }
 }

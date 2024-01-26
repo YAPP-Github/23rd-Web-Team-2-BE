@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.baro.archive.domain.Archive;
 import com.baro.member.domain.Member;
 import com.baro.member.fixture.MemberFixture;
 import com.baro.memo.exception.TemporalMemoException;
@@ -80,14 +81,14 @@ class TemporalMemoTest {
                 "oAuthServiceType"
         );
         TemporalMemo temporalMemo = TemporalMemo.of(MemberFixture.memberWithNickname("바로"), "메모");
-        Memo memo = Memo.of(MemberFixture.memberWithNickname("바로"), MemoFolder.defaultFolder(memberWithId),
-                MemoContent.from("메모"));
+        MemoFolder memoFolder = MemoFolder.defaultFolder(memberWithId);
+        Archive archive = new Archive(memberWithId, memoFolder, MemoContent.from("메모"));
 
         // when
-        temporalMemo.archivedAsMemo(memo);
+        temporalMemo.archived(archive);
 
         // then
-        assertThat(temporalMemo.getMemo()).isEqualTo(memo);
+        assertThat(temporalMemo.getArchive()).isEqualTo(archive);
     }
 
     @Test

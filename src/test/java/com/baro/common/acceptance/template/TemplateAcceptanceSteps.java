@@ -120,6 +120,84 @@ public class TemplateAcceptanceSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 템플릿_복사_요청_성공(Token 토큰, Long 템플릿_ID) {
+        var url = "/templates/{templateId}/copy";
+
+        return given(requestSpec).log().all()
+                .filter(document(DEFAULT_REST_DOCS_PATH,
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
+                        ),
+                        pathParameters(
+                                parameterWithName("templateId").description("템플릿 ID")
+                        )
+                ))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken())
+                .pathParam("templateId", 템플릿_ID)
+                .when().patch(url)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 템플릿_복사_요청_실패(Token 토큰, Long 템플릿_ID) {
+        var url = "/templates/{templateId}/copy";
+
+        return given(requestSpec).log().all()
+                .filter(document(DEFAULT_REST_DOCS_PATH,
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
+                        ),
+                        pathParameters(
+                                parameterWithName("templateId").description("템플릿 ID")
+                        ),
+                        responseFields(예외_응답())
+                ))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken())
+                .pathParam("templateId", 템플릿_ID)
+                .when().patch(url)
+                .then().log().all()
+                .extract();
+    }
+
+    private static List<FieldDescriptor> 페이지네이션_조회_필드() {
+        return List.of(
+                fieldWithPath("content").description("템플릿 데이터"),
+                fieldWithPath("pageable").description("페이지 정보"),
+                fieldWithPath("pageable.pageNumber").description("현재 페이지 번호"),
+                fieldWithPath("pageable.pageSize").description("한 페이지에 표시될 항목 수"),
+                fieldWithPath("pageable.sort").description("정렬에 관한 정보"),
+                fieldWithPath("pageable.sort.empty").description("정렬이 비어있는지 여부"),
+                fieldWithPath("pageable.sort.sorted").description("정렬 여부"),
+                fieldWithPath("pageable.sort.unsorted").description("정렬 여부"),
+                fieldWithPath("pageable.offset").description("현재 페이지의 오프셋"),
+                fieldWithPath("pageable.paged").description("페이징이 적용되었는지 여부"),
+                fieldWithPath("pageable.unpaged").description("페이징이 적용되지 않았는지 여부"),
+                fieldWithPath("size").description("현재 페이지의 항목 사이즈"),
+                fieldWithPath("number").description("현재 페이지 번호"),
+                fieldWithPath("sort").description("정렬에 관한 정보"),
+                fieldWithPath("sort.empty").description("정렬 유무"),
+                fieldWithPath("sort.sorted").description("정렬 여부"),
+                fieldWithPath("sort.unsorted").description("정렬 여부"),
+                fieldWithPath("last").description("현재 페이지가 마지막 페이지인지 여부"),
+                fieldWithPath("first").description("현재 페이지가 첫 페이지인지 여부"),
+                fieldWithPath("numberOfElements").description("현재 페이지의 항목 수"),
+                fieldWithPath("empty").description("현재 페이지가 비어있는지 여부")
+        );
+    }
+
+    private static List<FieldDescriptor> 템플릿_content() {
+        return List.of(
+                fieldWithPath("content[].templateId").description("템플릿 id"),
+                fieldWithPath("content[].category").description("템플릿 카테고리"),
+                fieldWithPath("content[].subCategory").description("템플릿 서브 카테고리"),
+                fieldWithPath("content[].content").description("템플릿 내용"),
+                fieldWithPath("content[].savedCount").description("템플릿 저장 횟수"),
+                fieldWithPath("content[].copiedCount").description("템플릿 복사 횟수")
+        );
+    }
+
     public static ExtractableResponse<Response> 템플릿_아카이브_요청_성공(Token 토큰, Long 템플릿_ID, ArchiveTemplateRequest 바디) {
         var url = "/templates/{templateId}/archive";
 
@@ -209,83 +287,5 @@ public class TemplateAcceptanceSteps {
                 .when().delete(url)
                 .then().log().all()
                 .extract();
-    }
-
-    public static ExtractableResponse<Response> 템플릿_복사_요청_성공(Token 토큰, Long 템플릿_ID) {
-        var url = "/templates/{templateId}/copy";
-
-        return given(requestSpec).log().all()
-                .filter(document(DEFAULT_REST_DOCS_PATH,
-                        requestHeaders(
-                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
-                        ),
-                        pathParameters(
-                                parameterWithName("templateId").description("템플릿 ID")
-                        )
-                ))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken())
-                .pathParam("templateId", 템플릿_ID)
-                .when().patch(url)
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 템플릿_복사_요청_실패(Token 토큰, Long 템플릿_ID) {
-        var url = "/templates/{templateId}/copy";
-
-        return given(requestSpec).log().all()
-                .filter(document(DEFAULT_REST_DOCS_PATH,
-                        requestHeaders(
-                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
-                        ),
-                        pathParameters(
-                                parameterWithName("templateId").description("템플릿 ID")
-                        ),
-                        responseFields(예외_응답())
-                ))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken())
-                .pathParam("templateId", 템플릿_ID)
-                .when().patch(url)
-                .then().log().all()
-                .extract();
-    }
-
-    private static List<FieldDescriptor> 페이지네이션_조회_필드() {
-        return List.of(
-                fieldWithPath("content").description("템플릿 데이터"),
-                fieldWithPath("pageable").description("페이지 정보"),
-                fieldWithPath("pageable.pageNumber").description("현재 페이지 번호"),
-                fieldWithPath("pageable.pageSize").description("한 페이지에 표시될 항목 수"),
-                fieldWithPath("pageable.sort").description("정렬에 관한 정보"),
-                fieldWithPath("pageable.sort.empty").description("정렬이 비어있는지 여부"),
-                fieldWithPath("pageable.sort.sorted").description("정렬 여부"),
-                fieldWithPath("pageable.sort.unsorted").description("정렬 여부"),
-                fieldWithPath("pageable.offset").description("현재 페이지의 오프셋"),
-                fieldWithPath("pageable.paged").description("페이징이 적용되었는지 여부"),
-                fieldWithPath("pageable.unpaged").description("페이징이 적용되지 않았는지 여부"),
-                fieldWithPath("size").description("현재 페이지의 항목 사이즈"),
-                fieldWithPath("number").description("현재 페이지 번호"),
-                fieldWithPath("sort").description("정렬에 관한 정보"),
-                fieldWithPath("sort.empty").description("정렬 유무"),
-                fieldWithPath("sort.sorted").description("정렬 여부"),
-                fieldWithPath("sort.unsorted").description("정렬 여부"),
-                fieldWithPath("last").description("현재 페이지가 마지막 페이지인지 여부"),
-                fieldWithPath("first").description("현재 페이지가 첫 페이지인지 여부"),
-                fieldWithPath("numberOfElements").description("현재 페이지의 항목 수"),
-                fieldWithPath("empty").description("현재 페이지가 비어있는지 여부")
-        );
-    }
-
-    private static List<FieldDescriptor> 템플릿_content() {
-        return List.of(
-                fieldWithPath("content[].templateId").description("템플릿 id"),
-                fieldWithPath("content[].category").description("템플릿 카테고리"),
-                fieldWithPath("content[].subCategory").description("템플릿 서브 카테고리"),
-                fieldWithPath("content[].content").description("템플릿 내용"),
-                fieldWithPath("content[].savedCount").description("템플릿 저장 횟수"),
-                fieldWithPath("content[].copiedCount").description("템플릿 복사 횟수")
-        );
     }
 }
