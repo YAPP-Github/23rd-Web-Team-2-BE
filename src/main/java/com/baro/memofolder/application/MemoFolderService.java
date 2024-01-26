@@ -3,6 +3,7 @@ package com.baro.memofolder.application;
 import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
 import com.baro.memofolder.application.dto.GetMemoFolderResult;
+import com.baro.memofolder.application.dto.RenameMemoFolderCommand;
 import com.baro.memofolder.application.dto.SaveMemoFolderCommand;
 import com.baro.memofolder.application.dto.SaveMemoFolderResult;
 import com.baro.memofolder.domain.MemoFolder;
@@ -44,5 +45,13 @@ public class MemoFolderService {
         return memoFolders.stream()
                 .map(GetMemoFolderResult::from)
                 .toList();
+    }
+
+    public void renameMemoFolder(RenameMemoFolderCommand command) {
+        MemoFolder memoFolder = memoFolderRepository.getById(command.memoFolderId());
+        memoFolder.matchOwner(command.memberId());
+        validateDuplicatedFolderName(memoFolder.getMember(), command.folderName());
+
+        memoFolder.rename(command.folderName());
     }
 }

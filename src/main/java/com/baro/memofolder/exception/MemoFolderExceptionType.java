@@ -11,7 +11,7 @@ public enum MemoFolderExceptionType implements RequestExceptionType {
     OVER_MAX_SIZE_NAME("MF02", "폴더 이름은 최대 20자까지 가능합니다.", HttpStatus.BAD_REQUEST),
     NOT_EXIST_MEMO_FOLDER("MF03", "존재하지 않는 폴더입니다.", HttpStatus.NOT_FOUND),
     NOT_MATCH_OWNER("MF04", "폴더의 소유자가 아닙니다.", HttpStatus.FORBIDDEN),
-    ;
+    EMPTY_NAME("MF05", "폴더 이름이 공백입니다.", HttpStatus.BAD_REQUEST);
 
     private final String errorCode;
     private final String errorMessage;

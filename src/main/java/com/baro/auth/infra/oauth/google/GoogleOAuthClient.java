@@ -1,18 +1,17 @@
 package com.baro.auth.infra.oauth.google;
 
+import com.baro.auth.application.oauth.OAuthClient;
 import com.baro.auth.application.oauth.dto.OAuthMemberInfo;
 import com.baro.auth.application.oauth.dto.OAuthTokenInfo;
 import com.baro.auth.domain.oauth.OAuthServiceType;
 import com.baro.auth.infra.oauth.google.config.GoogleOAuthProperty;
 import com.baro.auth.infra.oauth.google.dto.GoogleMemberResponse;
 import com.baro.auth.infra.oauth.google.dto.GoogleTokenResponse;
-import com.baro.auth.application.oauth.OAuthClient;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @Component
@@ -22,12 +21,12 @@ public class GoogleOAuthClient implements OAuthClient {
     private final GoogleRequestApi googleRequestApi;
 
     @Override
-    public String getSignInUrl() {
+    public String getSignInUrl(String host) {
         return UriComponentsBuilder
                 .fromUriString(googleOAuthProperty.signInAuthorizeUrl())
                 .queryParam("client_id", googleOAuthProperty.clientId())
-                .queryParam("redirect_uri", googleOAuthProperty.redirectUri())
                 .queryParam("response_type", googleOAuthProperty.responseType())
+                .queryParam("redirect_uri", host + googleOAuthProperty.redirectUri())
                 .queryParam("scope", String.join(",", googleOAuthProperty.scope()))
                 .toUriString();
     }

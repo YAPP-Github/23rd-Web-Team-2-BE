@@ -58,4 +58,8 @@ public class MemoFolder extends BaseEntity {
             throw new MemoFolderException(MemoFolderExceptionType.NOT_MATCH_OWNER);
         }
     }
+
+    public void rename(String name) {
+        this.name = MemoFolderName.from(name);
+    }
 }

@@ -8,7 +8,7 @@ import com.baro.auth.domain.oauth.OAuthServiceType;
 public class FakeKakaoOAuthClient implements OAuthClient {
 
     @Override
-    public String getSignInUrl() {
+    public String getSignInUrl(String host) {
         return null;
     }
 

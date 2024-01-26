@@ -44,7 +44,7 @@ import org.junit.jupiter.api.Test;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
-public class TemproalMemoApiTest extends RestApiTest {
+public class TemporalMemoApiTest extends RestApiTest {
 
     @Test
     void 끄적이는_메모를_작성_한다() {

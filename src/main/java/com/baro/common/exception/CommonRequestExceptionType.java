@@ -8,6 +8,7 @@ public enum CommonRequestExceptionType implements RequestExceptionType {
 
     MISSING_PARAMETER_EXCEPTION("CM01", "Request parameter is empty", HttpStatus.BAD_REQUEST),
     INVALID_TYPE_REQUEST_EXCEPTION("CM02", "Request type is invalid", HttpStatus.BAD_REQUEST),
+    REQUIRED_HEADER_EXCEPTION("CM03", "Request header is empty", HttpStatus.BAD_REQUEST),
     ;
 
     private final String errorCode;
