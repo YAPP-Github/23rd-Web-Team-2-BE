@@ -4,6 +4,7 @@ import com.baro.common.utils.EmojiUtils;
 import com.baro.member.exception.MemberException;
 import com.baro.member.exception.MemberExceptionType;
 import jakarta.persistence.Embeddable;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,10 @@ public class MemberNickname {
     }
 
     private void validate(String content) {
+        if (Objects.isNull(content)) {
+            return;
+        }
+        
         if (EmojiUtils.calculateLengthWithEmojis(content) > MAX_NICKNAME_SIZE) {
             throw new MemberException(MemberExceptionType.OVER_MAX_SIZE_NICKNAME);
         }

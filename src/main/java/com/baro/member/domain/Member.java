@@ -66,9 +66,9 @@ public class Member extends BaseEntity {
         this.oAuthServiceType = oAuthServiceType;
     }
 
-    public void updateProfile(String nickname, String profileImageUrl) {
+    public void updateProfile(String name, String nickname) {
+        this.name = name;
         this.nickname = MemberNickname.from(nickname);
-        this.profileImageUrl = profileImageUrl;
     }
 
     public void matchOwner(Long id) {
