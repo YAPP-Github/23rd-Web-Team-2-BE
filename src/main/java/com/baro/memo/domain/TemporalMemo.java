@@ -41,6 +41,7 @@ public class TemporalMemo extends BaseEntity {
     private MemoContent content;
 
     @Embedded
+    @Column(columnDefinition = "TEXT")
     @AttributeOverride(name = "content", column = @Column(name = "correction_content"))
     private MemoContent correctionContent;
 
