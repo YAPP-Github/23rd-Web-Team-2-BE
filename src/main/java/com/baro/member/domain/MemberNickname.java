@@ -27,7 +27,11 @@ public class MemberNickname {
         if (Objects.isNull(content)) {
             return;
         }
-        
+
+        if (content.isEmpty()) {
+            throw new MemberException(MemberExceptionType.EMPTY_NICKNAME);
+        }
+
         if (EmojiUtils.calculateLengthWithEmojis(content) > MAX_NICKNAME_SIZE) {
             throw new MemberException(MemberExceptionType.OVER_MAX_SIZE_NICKNAME);
         }

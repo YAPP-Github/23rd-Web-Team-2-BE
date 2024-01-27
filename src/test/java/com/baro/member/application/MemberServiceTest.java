@@ -122,4 +122,21 @@ class MemberServiceTest {
                 .extracting("exceptionType")
                 .isEqualTo(MemberExceptionType.OVER_MAX_SIZE_NICKNAME);
     }
+
+    @Test
+    void 사용자_프로필_수정시_닉네임이_비어있으면_예외_발생() {
+        // given
+        Member savedMember = memberRepository.save(MemberFixture.memberWithNickname("바로"));
+        UpdateMemberProfileCommand command = new UpdateMemberProfileCommand(
+                savedMember.getId(),
+                "바로",
+                ""
+        );
+
+        // when & then
+        assertThatThrownBy(() -> memberService.updateProfile(command))
+                .isInstanceOf(MemberException.class)
+                .extracting("exceptionType")
+                .isEqualTo(MemberExceptionType.EMPTY_NICKNAME);
+    }
 }

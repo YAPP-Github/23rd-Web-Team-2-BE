@@ -9,6 +9,8 @@ import static com.baro.common.acceptance.AcceptanceSteps.잘못된_요청;
 import static com.baro.common.acceptance.member.MemberAcceptanceSteps.길이가_초과된_프로필_수정_바디;
 import static com.baro.common.acceptance.member.MemberAcceptanceSteps.내_프로필_수정_요청;
 import static com.baro.common.acceptance.member.MemberAcceptanceSteps.내_프로필_조회_요청;
+import static com.baro.common.acceptance.member.MemberAcceptanceSteps.빈_닉네임_프로필_수정_바디;
+import static com.baro.common.acceptance.member.MemberAcceptanceSteps.잘못된_내_프로필_수정_요청;
 import static com.baro.common.acceptance.member.MemberAcceptanceSteps.잘못된_프로필_조회_요청;
 import static com.baro.common.acceptance.member.MemberAcceptanceSteps.프로필_수정_바디;
 import static org.mockito.BDDMockito.given;
@@ -72,7 +74,7 @@ public class MemberApiTest extends RestApiTest {
         멤버가_존재하지_않는다(토큰);
 
         // when
-        var 응답 = 내_프로필_수정_요청(토큰, 프로필_수정_바디);
+        var 응답 = 잘못된_내_프로필_수정_요청(토큰, 프로필_수정_바디);
 
         // then
         응답값을_검증한다(응답, 잘못된_요청);
@@ -86,7 +88,7 @@ public class MemberApiTest extends RestApiTest {
         var 토큰 = 로그인(태연());
 
         // when
-        var 응답 = 내_프로필_수정_요청(토큰, 프로필_수정_바디);
+        var 응답 = 잘못된_내_프로필_수정_요청(토큰, 프로필_수정_바디);
 
         // then
         응답값을_검증한다(응답, 잘못된_요청);
@@ -98,7 +100,19 @@ public class MemberApiTest extends RestApiTest {
         var 토큰 = 로그인(태연());
 
         // when
-        var 응답 = 내_프로필_수정_요청(토큰, 길이가_초과된_프로필_수정_바디);
+        var 응답 = 잘못된_내_프로필_수정_요청(토큰, 길이가_초과된_프로필_수정_바디);
+
+        // then
+        응답값을_검증한다(응답, 잘못된_요청);
+    }
+
+    @Test
+    void 빈_닉네임으로_수정시_예외를_반환_한다() {
+        // given
+        var 토큰 = 로그인(태연());
+
+        // when
+        var 응답 = 잘못된_내_프로필_수정_요청(토큰, 빈_닉네임_프로필_수정_바디);
 
         // then
         응답값을_검증한다(응답, 잘못된_요청);

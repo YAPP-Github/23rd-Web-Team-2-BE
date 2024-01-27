@@ -30,4 +30,16 @@ class MemberNicknameTest {
                 .extracting("exceptionType")
                 .isEqualTo(MemberExceptionType.OVER_MAX_SIZE_NICKNAME);
     }
+
+    @Test
+    void 닉네임_생성_빈_닉네임() {
+        // given
+        String nickname = "";
+
+        // when & then
+        assertThatThrownBy(() -> MemberNickname.from(nickname))
+                .isInstanceOf(MemberException.class)
+                .extracting("exceptionType")
+                .isEqualTo(MemberExceptionType.EMPTY_NICKNAME);
+    }
 }

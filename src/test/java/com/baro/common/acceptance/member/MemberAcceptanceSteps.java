@@ -22,6 +22,7 @@ public class MemberAcceptanceSteps {
     public static final UpdateMemberProfileRequest 프로필_수정_바디 = new UpdateMemberProfileRequest("바로", "닉네임");
     public static final UpdateMemberProfileRequest 길이가_초과된_프로필_수정_바디 = new UpdateMemberProfileRequest("바로",
             "닉네임".repeat(11));
+    public static final UpdateMemberProfileRequest 빈_닉네임_프로필_수정_바디 = new UpdateMemberProfileRequest("바로", "");
 
     public static ExtractableResponse<Response> 내_프로필_조회_요청(Token 토큰) {
         return RestAssured.given(requestSpec).log().all()
