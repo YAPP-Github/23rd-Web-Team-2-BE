@@ -7,6 +7,7 @@ import com.baro.common.fake.FakeImageStorageClient;
 import com.baro.common.image.ImageStorageClient;
 import com.baro.member.application.dto.GetMemberProfileResult;
 import com.baro.member.application.dto.UpdateMemberProfileCommand;
+import com.baro.member.application.dto.UpdateProfileImageCommand;
 import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
 import com.baro.member.exception.MemberException;
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockMultipartFile;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -25,12 +27,10 @@ class MemberServiceTest {
     private MemberService memberService;
     private MemberRepository memberRepository;
 
-    private ImageStorageClient imageStorageClient;
-
     @BeforeEach
     void setUp() {
         memberRepository = new FakeMemberRepository();
-        imageStorageClient = new FakeImageStorageClient();
+        ImageStorageClient imageStorageClient = new FakeImageStorageClient();
         memberService = new MemberService(memberRepository, imageStorageClient);
     }
 
@@ -169,5 +169,39 @@ class MemberServiceTest {
                 .isInstanceOf(MemberException.class)
                 .extracting("exceptionType")
                 .isEqualTo(MemberExceptionType.NOT_EXIST_PROFILE_IMAGE);
+    }
+
+    @Test
+    void 사용자_프로필_이미지_수정() {
+        // given
+        Member savedMember = memberRepository.save(MemberFixture.memberWithNickname("바로"));
+        UpdateProfileImageCommand command = new UpdateProfileImageCommand(
+                savedMember.getId(),
+                new MockMultipartFile("profile-image", "profile-image.png", "image/png", "profile-image".getBytes())
+        );
+
+        // when
+        memberService.updateProfileImage(command);
+
+        // then
+        assertThat(savedMember.getProfileImageUrl()).isEqualTo("profile-image.png");
+    }
+
+    @Test
+    void 사용자_프로필_이미지_수정시_기본_이미지가_아닌_경우_이전_이미지_삭제() {
+        // given
+        String profileImageUrl = "profile-image-path";
+        Member member = MemberFixture.memberWithNicknameAndProfileImage("바로", profileImageUrl);
+        Member savedMember = memberRepository.save(member);
+        UpdateProfileImageCommand command = new UpdateProfileImageCommand(
+                savedMember.getId(),
+                new MockMultipartFile("profile-image", "profile-image.png", "image/png", "profile-image".getBytes())
+        );
+
+        // when
+        memberService.updateProfileImage(command);
+
+        // then
+        assertThat(savedMember.getProfileImageUrl()).isEqualTo("profile-image.png");
     }
 }
