@@ -18,6 +18,7 @@ import static com.baro.common.acceptance.member.MemberAcceptanceSteps.프로필_
 import static com.baro.common.acceptance.member.MemberAcceptanceSteps.프로필_이미지_수정_요청;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 
 import com.baro.auth.application.TokenTranslator;
 import com.baro.auth.domain.Token;
@@ -133,7 +134,20 @@ public class MemberApiTest extends RestApiTest {
         given(tokenTranslator.decodeAccessToken("Bearer " + 토큰.accessToken())).willReturn(999L);
     }
 
-    //TODO : 프로필 이미지 등록 API 개발 후 추가
+    @Test
+    void 프로필_이미지를_삭제한다() {
+        // given
+        var 토큰 = 로그인(태연());
+        이미지가_등록된다(프로필_이미지);
+        프로필_이미지_수정_요청(토큰, 프로필_이미지);
+        이미지가_삭제된다();
+
+        // when
+        var 응답 = 프로필_이미지_삭제_요청(토큰);
+
+        // then
+        응답값을_검증한다(응답, 응답값_없음);
+    }
 
     @Test
     void 프로필_이미지가_없는_경우_이미지_삭제시_예외_발생() {
@@ -151,7 +165,7 @@ public class MemberApiTest extends RestApiTest {
     void 프로필_이미지를_수정한다() {
         // given
         var 토큰 = 로그인(태연());
-        이미지를_등록한다(프로필_이미지);
+        이미지가_등록된다(프로필_이미지);
 
         // when
         var 응답 = 프로필_이미지_수정_요청(토큰, 프로필_이미지);
@@ -160,7 +174,11 @@ public class MemberApiTest extends RestApiTest {
         응답값을_검증한다(응답, 응답값_없음);
     }
 
-    private void 이미지를_등록한다(MultipartFile 이미지) {
+    private void 이미지가_등록된다(MultipartFile 이미지) {
         given(imageStorageClient.upload(any())).willReturn(new ImageUploadResult(이미지.getOriginalFilename()));
+    }
+
+    private void 이미지가_삭제된다() {
+        doNothing().when(imageStorageClient).delete(any());
     }
 }
