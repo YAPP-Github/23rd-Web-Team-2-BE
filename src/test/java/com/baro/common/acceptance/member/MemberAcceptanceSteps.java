@@ -93,4 +93,18 @@ public class MemberAcceptanceSteps {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 프로필_이미지_삭제_요청(Token 토큰) {
+        return RestAssured.given(requestSpec).log().all()
+                .filter(document(DEFAULT_REST_DOCS_PATH,
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
+                        )
+                ))
+                .contentType("application/json")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken())
+                .when().delete("/members/image")
+                .then().log().all()
+                .extract();
+    }
 }

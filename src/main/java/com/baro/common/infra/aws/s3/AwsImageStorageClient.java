@@ -1,7 +1,7 @@
 package com.baro.common.infra.aws.s3;
 
+import com.baro.common.image.ImageStorageClient;
 import com.baro.common.image.ImageUploadException;
-import com.baro.common.image.ImageUploader;
 import com.baro.common.image.dto.ImageUploadResult;
 import com.baro.common.utils.ImageExtensionConverter;
 import java.io.ByteArrayInputStream;
@@ -13,11 +13,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 @RequiredArgsConstructor
 @Component
-public class AwsImageUploader implements ImageUploader {
+public class AwsImageStorageClient implements ImageStorageClient {
 
     private final S3Client s3Client;
     private final AwsS3Property awsS3Property;
@@ -42,6 +43,15 @@ public class AwsImageUploader implements ImageUploader {
         } catch (IOException ioException) {
             throw new ImageUploadException("Error on converting or uploading image", ioException);
         }
+    }
+
+    @Override
+    public void delete(String key) {
+        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                .bucket(awsS3Property.bucket())
+                .key(awsS3Property.key() + key)
+                .build();
+        s3Client.deleteObject(deleteObjectRequest);
     }
 
     private String changeToUrlSafetyKey(MultipartFile file) {

@@ -1,5 +1,6 @@
 package com.baro.member.application;
 
+import com.baro.common.image.ImageStorageClient;
 import com.baro.member.application.dto.GetMemberProfileResult;
 import com.baro.member.application.dto.UpdateMemberProfileCommand;
 import com.baro.member.domain.Member;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final ImageStorageClient imageStorageClient;
 
     @Transactional(readOnly = true)
     public GetMemberProfileResult getMyProfile(Long id) {
@@ -33,5 +35,12 @@ public class MemberService {
         if (memberRepository.existByNickname(nickName)) {
             throw new MemberException(MemberExceptionType.NICKNAME_DUPLICATION);
         }
+    }
+
+    public void deleteProfileImage(Long id) {
+        Member member = memberRepository.getById(id);
+        String profileImageKey = member.getProfileImageUrl();
+        member.deleteProfileImage();
+        imageStorageClient.delete(profileImageKey);
     }
 }

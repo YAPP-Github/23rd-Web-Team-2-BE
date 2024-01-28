@@ -3,6 +3,8 @@ package com.baro.member.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.baro.common.fake.FakeImageStorageClient;
+import com.baro.common.image.ImageStorageClient;
 import com.baro.member.application.dto.GetMemberProfileResult;
 import com.baro.member.application.dto.UpdateMemberProfileCommand;
 import com.baro.member.domain.Member;
@@ -23,10 +25,13 @@ class MemberServiceTest {
     private MemberService memberService;
     private MemberRepository memberRepository;
 
+    private ImageStorageClient imageStorageClient;
+
     @BeforeEach
     void setUp() {
         memberRepository = new FakeMemberRepository();
-        memberService = new MemberService(memberRepository);
+        imageStorageClient = new FakeImageStorageClient();
+        memberService = new MemberService(memberRepository, imageStorageClient);
     }
 
     @Test
@@ -138,5 +143,31 @@ class MemberServiceTest {
                 .isInstanceOf(MemberException.class)
                 .extracting("exceptionType")
                 .isEqualTo(MemberExceptionType.EMPTY_NICKNAME);
+    }
+
+    @Test
+    void 사용자_프로필_이미지_삭제() {
+        // given
+        String profileImageUrl = "profile-image-path";
+        Member member = MemberFixture.memberWithNicknameAndProfileImage("바로", profileImageUrl);
+        Member savedMember = memberRepository.save(member);
+
+        // when
+        memberService.deleteProfileImage(savedMember.getId());
+
+        // then
+        assertThat(savedMember.getProfileImageUrl()).isNull();
+    }
+
+    @Test
+    void 사용자_프로필_이미지_삭제시_기본_이미지인_경우_예외_발생() {
+        // given
+        Member savedMember = memberRepository.save(MemberFixture.memberWithNickname("바로"));
+
+        // when & then
+        assertThatThrownBy(() -> memberService.deleteProfileImage(savedMember.getId()))
+                .isInstanceOf(MemberException.class)
+                .extracting("exceptionType")
+                .isEqualTo(MemberExceptionType.NOT_EXIST_PROFILE_IMAGE);
     }
 }
