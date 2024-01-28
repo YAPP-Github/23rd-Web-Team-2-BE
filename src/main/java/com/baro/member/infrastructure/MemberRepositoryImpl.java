@@ -1,6 +1,7 @@
 package com.baro.member.infrastructure;
 
 import com.baro.member.domain.Member;
+import com.baro.member.domain.MemberNickname;
 import com.baro.member.domain.MemberRepository;
 import com.baro.member.exception.MemberException;
 import com.baro.member.exception.MemberExceptionType;
@@ -32,7 +33,7 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     @Override
     public boolean existByNickname(String nickname) {
-        return memberJpaRepository.existsByNickname(nickname);
+        return memberJpaRepository.existsByNickname(MemberNickname.from(nickname));
     }
 
     @Override

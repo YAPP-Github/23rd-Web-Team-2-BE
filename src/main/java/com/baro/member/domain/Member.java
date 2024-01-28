@@ -1,7 +1,14 @@
 package com.baro.member.domain;
 
 import com.baro.common.entity.BaseEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,7 +34,8 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String email;
 
-    private String nickname;
+    @Embedded
+    private MemberNickname nickname;
 
     private String profileImageUrl;
 
@@ -41,7 +49,7 @@ public class Member extends BaseEntity {
     public Member(String name, String email, String nickname, String oAuthId, String oAuthServiceType) {
         this.name = name;
         this.email = email;
-        this.nickname = nickname;
+        this.nickname = MemberNickname.from(nickname);
         this.oAuthId = oAuthId;
         this.oAuthServiceType = oAuthServiceType;
     }
@@ -50,8 +58,13 @@ public class Member extends BaseEntity {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.nickname = nickname;
+        this.nickname = MemberNickname.from(nickname);
         this.oAuthId = oAuthId;
         this.oAuthServiceType = oAuthServiceType;
+    }
+
+    public void updateProfile(String name, String nickname) {
+        this.name = name;
+        this.nickname = MemberNickname.from(nickname);
     }
 }

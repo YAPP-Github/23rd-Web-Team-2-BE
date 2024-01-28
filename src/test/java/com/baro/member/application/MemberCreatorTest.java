@@ -47,7 +47,7 @@ class MemberCreatorTest {
 
         // then
         Optional<Member> savedMember = memberRepository.findByOAuthIdAndOAuthServiceType(oauthId, oauthType);
-        assertThat(savedMember.get().getNickname()).isEqualTo(createdNickname);
+        assertThat(savedMember.get().getNickname().value()).isEqualTo(createdNickname);
     }
 
     @Test
@@ -67,6 +67,6 @@ class MemberCreatorTest {
         Member member = memberCreator.create(name, email, oauthId, oauthType);
 
         // then
-        assertThat(member.getNickname()).isEqualTo(createdNickname);
+        assertThat(member.getNickname().value()).isEqualTo(createdNickname);
     }
 }
