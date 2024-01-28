@@ -13,6 +13,7 @@ import static com.baro.common.acceptance.member.MemberAcceptanceSteps.빈_닉네
 import static com.baro.common.acceptance.member.MemberAcceptanceSteps.잘못된_내_프로필_수정_요청;
 import static com.baro.common.acceptance.member.MemberAcceptanceSteps.잘못된_프로필_조회_요청;
 import static com.baro.common.acceptance.member.MemberAcceptanceSteps.프로필_수정_바디;
+import static com.baro.common.acceptance.member.MemberAcceptanceSteps.프로필_이미지_삭제_요청;
 import static org.mockito.BDDMockito.given;
 
 import com.baro.auth.application.TokenTranslator;
@@ -120,5 +121,19 @@ public class MemberApiTest extends RestApiTest {
 
     private void 멤버가_존재하지_않는다(Token 토큰) {
         given(tokenTranslator.decodeAccessToken("Bearer " + 토큰.accessToken())).willReturn(999L);
+    }
+
+    //TODO : 프로필 이미지 등록 API 개발 후 추가
+
+    @Test
+    void 프로필_이미지가_없는_경우_이미지_삭제시_예외_발생() {
+        // given
+        var 토큰 = 로그인(태연());
+
+        // when
+        var 응답 = 프로필_이미지_삭제_요청(토큰);
+
+        // then
+        응답값을_검증한다(응답, 잘못된_요청);
     }
 }
