@@ -7,6 +7,7 @@ import com.baro.member.application.dto.UpdateMemberProfileCommand;
 import com.baro.member.presentation.dto.UpdateMemberProfileRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,4 +40,11 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/image")
+    public ResponseEntity<Void> deleteProfileImage(
+            AuthMember authMember
+    ) {
+        memberService.deleteProfileImage(authMember.id());
+        return ResponseEntity.noContent().build();
+    }
 }
