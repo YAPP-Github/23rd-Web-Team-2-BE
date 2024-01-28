@@ -13,16 +13,23 @@ import static com.baro.common.acceptance.member.MemberAcceptanceSteps.빈_닉네
 import static com.baro.common.acceptance.member.MemberAcceptanceSteps.잘못된_내_프로필_수정_요청;
 import static com.baro.common.acceptance.member.MemberAcceptanceSteps.잘못된_프로필_조회_요청;
 import static com.baro.common.acceptance.member.MemberAcceptanceSteps.프로필_수정_바디;
+import static com.baro.common.acceptance.member.MemberAcceptanceSteps.프로필_이미지;
 import static com.baro.common.acceptance.member.MemberAcceptanceSteps.프로필_이미지_삭제_요청;
+import static com.baro.common.acceptance.member.MemberAcceptanceSteps.프로필_이미지_수정_요청;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import com.baro.auth.application.TokenTranslator;
 import com.baro.auth.domain.Token;
 import com.baro.common.RestApiTest;
+import com.baro.common.image.ImageStorageClient;
+import com.baro.common.image.dto.ImageUploadResult;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.web.multipart.MultipartFile;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -30,6 +37,9 @@ public class MemberApiTest extends RestApiTest {
 
     @SpyBean
     private TokenTranslator tokenTranslator;
+
+    @MockBean
+    private ImageStorageClient imageStorageClient;
 
     @Test
     void 내_프로필_정보를_조회_한다() {
@@ -135,5 +145,22 @@ public class MemberApiTest extends RestApiTest {
 
         // then
         응답값을_검증한다(응답, 잘못된_요청);
+    }
+
+    @Test
+    void 프로필_이미지를_수정한다() {
+        // given
+        var 토큰 = 로그인(태연());
+        이미지를_등록한다(프로필_이미지);
+
+        // when
+        var 응답 = 프로필_이미지_수정_요청(토큰, 프로필_이미지);
+
+        // then
+        응답값을_검증한다(응답, 응답값_없음);
+    }
+
+    private void 이미지를_등록한다(MultipartFile 이미지) {
+        given(imageStorageClient.upload(any())).willReturn(new ImageUploadResult(이미지.getOriginalFilename()));
     }
 }
