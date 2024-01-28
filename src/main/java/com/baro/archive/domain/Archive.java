@@ -67,4 +67,8 @@ public class Archive extends BaseEntity {
         this.content = content;
         this.template = template;
     }
+
+    public void changeMemoFolder(MemoFolder memoFolder) {
+        this.memoFolder = memoFolder;
+    }
 }

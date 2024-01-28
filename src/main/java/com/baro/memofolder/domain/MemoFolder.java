@@ -40,17 +40,20 @@ public class MemoFolder extends BaseEntity {
     @Embedded
     private MemoFolderName name;
 
-    private MemoFolder(Member member, MemoFolderName name) {
+    private boolean isDefault;
+
+    private MemoFolder(Member member, MemoFolderName name, boolean isDefault) {
         this.member = member;
         this.name = name;
+        this.isDefault = isDefault;
     }
 
     public static MemoFolder defaultFolder(Member member) {
-        return new MemoFolder(member, MemoFolderName.getDefault());
+        return new MemoFolder(member, MemoFolderName.getDefault(), true);
     }
 
     public static MemoFolder of(Member member, String name) {
-        return new MemoFolder(member, MemoFolderName.from(name));
+        return new MemoFolder(member, MemoFolderName.from(name), false);
     }
 
     public void matchOwner(Long memberId) {
@@ -61,5 +64,11 @@ public class MemoFolder extends BaseEntity {
 
     public void rename(String name) {
         this.name = MemoFolderName.from(name);
+    }
+
+    public void isNotDefaultFolder() {
+        if (this.isDefault) {
+            throw new MemoFolderException(MemoFolderExceptionType.DEFAULT_FOLDER_CANNOT_BE_DELETED);
+        }
     }
 }

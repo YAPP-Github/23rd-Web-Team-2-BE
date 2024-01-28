@@ -23,7 +23,8 @@ public class FakeMemoFolderRepository implements MemoFolderRepository {
             MemoFolder newMemoFolder = new MemoFolder(
                     id.getAndIncrement(),
                     memoFolder.getMember(),
-                    memoFolder.getName()
+                    memoFolder.getName(),
+                    memoFolder.isDefault()
             );
             memoFolders.put(newMemoFolder.getId(), newMemoFolder);
             return newMemoFolder;
@@ -57,5 +58,19 @@ public class FakeMemoFolderRepository implements MemoFolderRepository {
                 .filter(memoFolder -> memoFolder.getId().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new MemoFolderException(MemoFolderExceptionType.NOT_EXIST_MEMO_FOLDER));
+    }
+
+    @Override
+    public void delete(MemoFolder memoFolder) {
+        memoFolders.remove(memoFolder.getId());
+    }
+
+    @Override
+    public MemoFolder getByMemberIdAndIsDefaultTrue(Long memberId) {
+        return memoFolders.values().stream()
+                .filter(memoFolder -> memoFolder.getMember().getId().equals(memberId)
+                        && memoFolder.isDefault())
+                .findFirst()
+                .orElseThrow(() -> new MemoFolderException(MemoFolderExceptionType.DEFAULT_FOLDER_NOT_FOUND));
     }
 }
