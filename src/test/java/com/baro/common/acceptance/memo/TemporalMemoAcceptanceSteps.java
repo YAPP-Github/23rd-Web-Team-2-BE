@@ -171,7 +171,7 @@ public class TemporalMemoAcceptanceSteps {
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
                         ),
                         requestFields(
-                                fieldWithPath("correctionContent").description("맞춤법 검사 결과"),
+                                fieldWithPath("styledCorrectionContent").description("맞춤법 검사 결과"),
                                 fieldWithPath("styledCorrectionContent").description("스타일 포함 맞춤법 검사 결과")
                         ))
                 ).contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -192,7 +192,7 @@ public class TemporalMemoAcceptanceSteps {
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
                         ),
                         requestFields(
-                                fieldWithPath("correctionContent").description("맞춤법 검사 결과"),
+                                fieldWithPath("styledCorrectionContent").description("맞춤법 검사 결과"),
                                 fieldWithPath("styledCorrectionContent").description("스타일 포함 맞춤법 검사 결과")
                         ),
                         responseFields(예외_응답()))
@@ -218,7 +218,8 @@ public class TemporalMemoAcceptanceSteps {
                                 fieldWithPath("[].temporalMemos").description("끄적이는 메모 목록"),
                                 fieldWithPath("[].temporalMemos[].id").description("끄적이는 메모 ID"),
                                 fieldWithPath("[].temporalMemos[].content").description("끄적이는 메모 내용"),
-                                fieldWithPath("[].temporalMemos[].correctionContent").description("끄적이는 메모 맞춤법 검사 결과"),
+                                fieldWithPath("[].temporalMemos[].styledCorrectionContent").description(
+                                        "끄적이는 메모 맞춤법 검사 결과"),
                                 fieldWithPath("[].temporalMemos[].isCorrected").description("끄적이는 메모 맞춤법 검사 결과 반영 여부"),
                                 fieldWithPath("[].temporalMemos[].isArchived").description("끄적이는 메모 아카이브 여부"),
                                 fieldWithPath("[].temporalMemos[].createdAt").description("끄적이는 메모 생성 시간")

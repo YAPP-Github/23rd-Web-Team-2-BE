@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 public record FindTemporalMemoResult(
         Long id,
         String content,
-        String correctionContent,
+        String styledCorrectionContent,
         Boolean isCorrected,
         Boolean isArchived,
         LocalDateTime createdAt
@@ -16,7 +16,7 @@ public record FindTemporalMemoResult(
         return new FindTemporalMemoResult(
                 temporalMemo.getId(),
                 temporalMemo.getContent().value(),
-                temporalMemo.getCorrectionContent() == null ? null : temporalMemo.getCorrectionContent().value(),
+                temporalMemo.getStyledCorrectionContent() == null ? null : temporalMemo.getStyledCorrectionContent(),
                 temporalMemo.isCorrected(),
                 temporalMemo.isArchived(),
                 temporalMemo.getCreatedAt()
