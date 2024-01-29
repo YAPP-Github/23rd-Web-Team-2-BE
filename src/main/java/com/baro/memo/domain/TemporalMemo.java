@@ -41,9 +41,11 @@ public class TemporalMemo extends BaseEntity {
     private MemoContent content;
 
     @Embedded
-    @Column(columnDefinition = "TEXT")
     @AttributeOverride(name = "content", column = @Column(name = "correction_content"))
     private MemoContent correctionContent;
+
+    @Column(columnDefinition = "TEXT")
+    private String styledCorrectionContent;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "archive_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
@@ -90,11 +92,12 @@ public class TemporalMemo extends BaseEntity {
         this.archive = archive;
     }
 
-    public void applyCorrection(MemoContent correctionContent) {
+    public void applyCorrection(MemoContent correctionContent, String styledCorrectionContent) {
         if (isCorrected()) {
             throw new TemporalMemoException(TemporalMemoExceptionType.ALREADY_CORRECTED);
         }
         this.correctionContent = correctionContent;
+        this.styledCorrectionContent = styledCorrectionContent;
     }
 
     public boolean isArchived() {
