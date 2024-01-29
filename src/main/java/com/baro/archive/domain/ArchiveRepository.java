@@ -15,4 +15,10 @@ public interface ArchiveRepository {
     Archive save(Archive archive);
 
     void delete(Archive archive);
+
+    List<Archive> findAllArchives(Long memberId, Long folderId);
+
+    List<Archive> findAllArchivedMemos(Long memberId, Long folderId);
+
+    List<Archive> findAllArchivedTemplates(Long memberId, Long folderId);
 }
