@@ -20,6 +20,7 @@ import com.baro.member.fixture.MemberFixture;
 import com.baro.memofolder.domain.MemoFolder;
 import com.baro.memofolder.domain.MemoFolderRepository;
 import com.baro.memofolder.fake.FakeMemoFolderRepository;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -51,7 +52,12 @@ class ArchiveServiceTest {
         var archive2 = archiveRepository.save(끄적이는_아카이브2(member, memoFolder));
         var archive3 = archiveRepository.save(참고하는_아카이브1(member, memoFolder, 보고하기()));
         var archive4 = archiveRepository.save(참고하는_아카이브2(member, memoFolder, 감사전하기()));
+        archive1.setCreatedAtForTest(LocalDateTime.of(2024, 1, 1, 0, 0));
+        archive2.setCreatedAtForTest(LocalDateTime.of(2024, 1, 1, 5, 0));
+        archive3.setCreatedAtForTest(LocalDateTime.of(2024, 1, 1, 10, 0));
+        archive4.setCreatedAtForTest(LocalDateTime.of(2024, 1, 1, 15, 0));
         var query = new GetArchiveQuery(member.getId(), memoFolder.getId(), ArchiveTab.ALL);
+        System.out.println(archive1.getCreatedAt());
 
         // when
         var archives = archiveService.getArchive(query);
@@ -60,10 +66,10 @@ class ArchiveServiceTest {
         assertAll(
                 () -> assertThat(archives).hasSize(4),
                 () -> assertThat(archives).containsExactly(
-                        ArchiveUnitResult.of(archive1),
-                        ArchiveUnitResult.of(archive2),
+                        ArchiveUnitResult.of(archive4),
                         ArchiveUnitResult.of(archive3),
-                        ArchiveUnitResult.of(archive4)
+                        ArchiveUnitResult.of(archive2),
+                        ArchiveUnitResult.of(archive1)
                 )
         );
     }
@@ -77,6 +83,10 @@ class ArchiveServiceTest {
         var archive2 = archiveRepository.save(끄적이는_아카이브2(member, memoFolder));
         var archive3 = archiveRepository.save(참고하는_아카이브1(member, memoFolder, 보고하기()));
         var archive4 = archiveRepository.save(참고하는_아카이브2(member, memoFolder, 감사전하기()));
+        archive1.setCreatedAtForTest(LocalDateTime.of(2024, 1, 1, 0, 0));
+        archive2.setCreatedAtForTest(LocalDateTime.of(2024, 1, 1, 5, 0));
+        archive3.setCreatedAtForTest(LocalDateTime.of(2024, 1, 1, 10, 0));
+        archive4.setCreatedAtForTest(LocalDateTime.of(2024, 1, 1, 15, 0));
         var query = new GetArchiveQuery(member.getId(), memoFolder.getId(), ArchiveTab.MEMO);
 
         // when
@@ -86,8 +96,8 @@ class ArchiveServiceTest {
         assertAll(
                 () -> assertThat(archives).hasSize(2),
                 () -> assertThat(archives).containsExactly(
-                        ArchiveUnitResult.of(archive1),
-                        ArchiveUnitResult.of(archive2)
+                        ArchiveUnitResult.of(archive2),
+                        ArchiveUnitResult.of(archive1)
                 )
         );
     }
@@ -101,6 +111,10 @@ class ArchiveServiceTest {
         var archive2 = archiveRepository.save(끄적이는_아카이브2(member, memoFolder));
         var archive3 = archiveRepository.save(참고하는_아카이브1(member, memoFolder, 보고하기()));
         var archive4 = archiveRepository.save(참고하는_아카이브2(member, memoFolder, 감사전하기()));
+        archive1.setCreatedAtForTest(LocalDateTime.of(2024, 1, 1, 0, 0));
+        archive2.setCreatedAtForTest(LocalDateTime.of(2024, 1, 1, 5, 0));
+        archive3.setCreatedAtForTest(LocalDateTime.of(2024, 1, 1, 10, 0));
+        archive4.setCreatedAtForTest(LocalDateTime.of(2024, 1, 1, 15, 0));
         var query = new GetArchiveQuery(member.getId(), memoFolder.getId(), ArchiveTab.TEMPLATE);
 
         // when
@@ -110,8 +124,8 @@ class ArchiveServiceTest {
         assertAll(
                 () -> assertThat(archives).hasSize(2),
                 () -> assertThat(archives).containsExactly(
-                        ArchiveUnitResult.of(archive3),
-                        ArchiveUnitResult.of(archive4)
+                        ArchiveUnitResult.of(archive4),
+                        ArchiveUnitResult.of(archive3)
                 )
         );
     }
