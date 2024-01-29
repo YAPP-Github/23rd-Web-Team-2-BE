@@ -1,8 +1,10 @@
 package com.baro.member.application;
 
 import com.baro.common.image.ImageStorageClient;
+import com.baro.common.image.dto.ImageUploadResult;
 import com.baro.member.application.dto.GetMemberProfileResult;
 import com.baro.member.application.dto.UpdateMemberProfileCommand;
+import com.baro.member.application.dto.UpdateProfileImageCommand;
 import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
 import com.baro.member.exception.MemberException;
@@ -42,5 +44,14 @@ public class MemberService {
         String profileImageKey = member.getProfileImageUrl();
         member.deleteProfileImage();
         imageStorageClient.delete(profileImageKey);
+    }
+
+    public void updateProfileImage(UpdateProfileImageCommand command) {
+        Member member = memberRepository.getById(command.id());
+        if (!member.isDefaultImage()) {
+            imageStorageClient.delete(member.getProfileImageUrl());
+        }
+        ImageUploadResult imageUploadResult = imageStorageClient.upload(command.image());
+        member.updateProfileImage(imageUploadResult.key());
     }
 }

@@ -4,6 +4,7 @@ import com.baro.auth.domain.AuthMember;
 import com.baro.member.application.MemberService;
 import com.baro.member.application.dto.GetMemberProfileResult;
 import com.baro.member.application.dto.UpdateMemberProfileCommand;
+import com.baro.member.application.dto.UpdateProfileImageCommand;
 import com.baro.member.presentation.dto.UpdateMemberProfileRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @RequestMapping("/members")
@@ -45,6 +47,16 @@ public class MemberController {
             AuthMember authMember
     ) {
         memberService.deleteProfileImage(authMember.id());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/image")
+    public ResponseEntity<Void> updateProfileImage(
+            AuthMember authMember,
+            @RequestBody MultipartFile profileImage
+    ) {
+        UpdateProfileImageCommand command = new UpdateProfileImageCommand(authMember.id(), profileImage);
+        memberService.updateProfileImage(command);
         return ResponseEntity.noContent().build();
     }
 }

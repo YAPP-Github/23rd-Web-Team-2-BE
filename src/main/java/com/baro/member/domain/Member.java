@@ -85,9 +85,17 @@ public class Member extends BaseEntity {
     }
 
     public void deleteProfileImage() {
-        if (Objects.isNull(this.profileImageUrl)) {
+        if (isDefaultImage()) {
             throw new MemberException(MemberExceptionType.NOT_EXIST_PROFILE_IMAGE);
         }
         this.profileImageUrl = null;
+    }
+
+    public boolean isDefaultImage() {
+        return Objects.isNull(this.profileImageUrl);
+    }
+
+    public void updateProfileImage(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
     }
 }
