@@ -10,6 +10,7 @@ public enum ArchiveExceptionType implements RequestExceptionType {
     NOT_EXIST_ARCHIVE("AR01", "존재하지 않는 아카이브 입니다.", HttpStatus.NOT_FOUND),
     ARCHIVED_TEMPLATE("AR02", "이미 저장한 템플릿입니다.", HttpStatus.BAD_REQUEST),
     NOT_ARCHIVED_TEMPLATE("AR03", "저장하지 않은 템플릿입니다.", HttpStatus.BAD_REQUEST),
+    NOT_EXIST_TAB("AR04", "존재하지 않는 탭입니다.", HttpStatus.BAD_REQUEST),
     ;
 
     private final String errorCode;

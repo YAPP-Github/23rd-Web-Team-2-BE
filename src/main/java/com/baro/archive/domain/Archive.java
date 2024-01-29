@@ -47,24 +47,23 @@ public class Archive extends BaseEntity {
     @JoinColumn(name = "template_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Template template;
 
-    public Archive(Member member, MemoFolder memoFolder, MemoContent content, Template template) {
-        this.member = member;
-        this.memoFolder = memoFolder;
-        this.content = content;
-        this.template = template;
-    }
-
-    public Archive(Member member, MemoFolder memoFolder, MemoContent content) {
-        this.member = member;
-        this.memoFolder = memoFolder;
-        this.content = content;
-    }
-
     public Archive(Long id, Member member, MemoFolder memoFolder, MemoContent content, Template template) {
         this.id = id;
         this.member = member;
         this.memoFolder = memoFolder;
         this.content = content;
         this.template = template;
+    }
+
+    public Archive(Long id, Member member, MemoFolder memoFolder, MemoContent memoContent) {
+        this(id, member, memoFolder, memoContent, null);
+    }
+
+    public Archive(Member member, MemoFolder memoFolder, MemoContent content, Template template) {
+        this(null, member, memoFolder, content, template);
+    }
+
+    public Archive(Member member, MemoFolder memoFolder, MemoContent content) {
+        this(null, member, memoFolder, content, null);
     }
 }
