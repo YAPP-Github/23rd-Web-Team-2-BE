@@ -63,7 +63,7 @@ public class TemporalMemoService {
     public void applyCorrection(ApplyCorrectionCommand command) {
         TemporalMemo temporalMemo = temporalMemoRepository.getById(command.temporalMemoId());
         temporalMemo.matchOwner(command.memberId());
-        temporalMemo.applyCorrection(MemoContent.from(command.contents()));
+        temporalMemo.applyCorrection(MemoContent.from(command.correctionContent()), command.styledCorrectionContent());
     }
 
     @Transactional(readOnly = true)

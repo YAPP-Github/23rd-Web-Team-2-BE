@@ -80,7 +80,7 @@ public class TemporalMemoController {
             @PathVariable Long temporalMemoId
     ) {
         ApplyCorrectionCommand command = new ApplyCorrectionCommand(authMember.id(), temporalMemoId,
-                request.content());
+                request.correctionContent(), request.styledCorrectionContent());
         temporalMemoService.applyCorrection(command);
         return ResponseEntity.noContent().build();
     }
