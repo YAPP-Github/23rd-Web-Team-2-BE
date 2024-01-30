@@ -196,8 +196,9 @@ class TemporalMemoServiceTest {
         Member member = memberRepository.save(MemberFixture.memberWithNickname("nickname1"));
         TemporalMemo temporalMemo = temporalMemoRepository.save(TemporalMemo.of(member, "testContent"));
         String correctionContent = "correctedContent";
+        String styledCorrectionContent = "<span>correctedContent</span>";
         ApplyCorrectionCommand command = new ApplyCorrectionCommand(member.getId(), temporalMemo.getId(),
-                correctionContent);
+                correctionContent, styledCorrectionContent);
 
         // when
         temporalMemoService.applyCorrection(command);
@@ -218,8 +219,9 @@ class TemporalMemoServiceTest {
         Member otherMember = memberRepository.save(MemberFixture.memberWithNickname("nickname2"));
         TemporalMemo temporalMemo = temporalMemoRepository.save(TemporalMemo.of(member, "testContent"));
         String correctionContent = "correctedContent";
+        String styledCorrectionContent = "<span>correctedContent</span>";
         ApplyCorrectionCommand command = new ApplyCorrectionCommand(otherMember.getId(), temporalMemo.getId(),
-                correctionContent);
+                correctionContent, styledCorrectionContent);
 
         // when & then
         assertThatThrownBy(() -> temporalMemoService.applyCorrection(command))
@@ -234,8 +236,9 @@ class TemporalMemoServiceTest {
         Member member = memberRepository.save(MemberFixture.memberWithNickname("nickname1"));
         Long notExistTemporalMemoId = 999L;
         String correctionContent = "correctedContent";
+        String styledCorrectionContent = "<span>correctedContent</span>";
         ApplyCorrectionCommand command = new ApplyCorrectionCommand(member.getId(), notExistTemporalMemoId,
-                correctionContent);
+                correctionContent, styledCorrectionContent);
 
         // when & then
         assertThatThrownBy(() -> temporalMemoService.applyCorrection(command))
@@ -249,10 +252,11 @@ class TemporalMemoServiceTest {
         // given
         Member member = memberRepository.save(MemberFixture.memberWithNickname("nickname1"));
         TemporalMemo temporalMemo = temporalMemoRepository.save(TemporalMemo.of(member, "testContent"));
-        temporalMemo.applyCorrection(MemoContent.from("correctedContent"));
+        String styledCorrectionContent = "<span>correctedContent</span>";
+        temporalMemo.applyCorrection(MemoContent.from("correctedContent"), styledCorrectionContent);
         String correctionContent = "correctedContent";
         ApplyCorrectionCommand command = new ApplyCorrectionCommand(member.getId(), temporalMemo.getId(),
-                correctionContent);
+                correctionContent, styledCorrectionContent);
 
         // when & then
         assertThatThrownBy(() -> temporalMemoService.applyCorrection(command))
