@@ -171,7 +171,7 @@ public class TemporalMemoAcceptanceSteps {
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
                         ),
                         requestFields(
-                                fieldWithPath("styledCorrectionContent").description("맞춤법 검사 결과"),
+                                fieldWithPath("correctionContent").description("맞춤법 검사 결과"),
                                 fieldWithPath("styledCorrectionContent").description("스타일 포함 맞춤법 검사 결과")
                         ))
                 ).contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -192,7 +192,7 @@ public class TemporalMemoAcceptanceSteps {
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
                         ),
                         requestFields(
-                                fieldWithPath("styledCorrectionContent").description("맞춤법 검사 결과"),
+                                fieldWithPath("correctionContent").description("맞춤법 검사 결과"),
                                 fieldWithPath("styledCorrectionContent").description("스타일 포함 맞춤법 검사 결과")
                         ),
                         responseFields(예외_응답()))
