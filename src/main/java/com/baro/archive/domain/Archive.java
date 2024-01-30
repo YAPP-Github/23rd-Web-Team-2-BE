@@ -17,6 +17,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -65,5 +66,9 @@ public class Archive extends BaseEntity {
 
     public Archive(Member member, MemoFolder memoFolder, MemoContent content) {
         this(null, member, memoFolder, content, null);
+    }
+
+    public boolean isMemo() {
+        return Objects.isNull(this.template);
     }
 }

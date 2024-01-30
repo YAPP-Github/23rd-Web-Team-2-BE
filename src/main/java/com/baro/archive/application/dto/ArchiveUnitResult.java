@@ -13,7 +13,7 @@ public record ArchiveUnitResult(
 ) {
 
     public static ArchiveUnitResult of(Archive archive) {
-        if (archive.getTemplate() == null) {
+        if (archive.isMemo()) {
             return memoToArchiveUnit(archive);
         }
         return templateToArchiveUnit(archive);

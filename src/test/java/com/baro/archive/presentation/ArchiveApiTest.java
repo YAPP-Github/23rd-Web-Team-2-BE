@@ -17,7 +17,6 @@ import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.메모
 import static com.baro.common.acceptance.memofolder.MemoFolderAcceptanceSteps.메모_폴더를_생성_하고_ID를_반환한다;
 import static com.baro.common.acceptance.template.TemplateAcceptanceSteps.템플릿_아카이브_요청_성공;
 
-import com.baro.archive.presentation.dto.GetArchiveRequest;
 import com.baro.auth.domain.Token;
 import com.baro.common.RestApiTest;
 import com.baro.memofolder.presentation.dto.SaveMemoFolderRequest;
@@ -43,10 +42,10 @@ public class ArchiveApiTest extends RestApiTest {
         var 폴더 = 메모_폴더를_생성_하고_ID를_반환한다(토큰, new SaveMemoFolderRequest("폴더"));
         끄적이는을_아카이빙한다(토큰, 폴더);
         참고하는을_아카이빙한다(토큰, 폴더);
-        var 바디 = new GetArchiveRequest(폴더, "all");
+        var 탭이름 = "all";
 
         // when
-        var 응답 = 아카이브_탭_조회_요청_성공(토큰, 바디);
+        var 응답 = 아카이브_탭_조회_요청_성공(토큰, 폴더, 탭이름);
 
         // then
         응답값을_검증한다(응답, 성공);
@@ -60,10 +59,10 @@ public class ArchiveApiTest extends RestApiTest {
         var 폴더 = 메모_폴더를_생성_하고_ID를_반환한다(토큰, new SaveMemoFolderRequest("폴더"));
         끄적이는을_아카이빙한다(토큰, 폴더);
         참고하는을_아카이빙한다(토큰, 폴더);
-        var 바디 = new GetArchiveRequest(폴더, "memo");
+        var 탭이름 = "memo";
 
         // when
-        var 응답 = 아카이브_탭_조회_요청_성공(토큰, 바디);
+        var 응답 = 아카이브_탭_조회_요청_성공(토큰, 폴더, 탭이름);
 
         // then
         응답값을_검증한다(응답, 성공);
@@ -77,10 +76,10 @@ public class ArchiveApiTest extends RestApiTest {
         var 폴더 = 메모_폴더를_생성_하고_ID를_반환한다(토큰, new SaveMemoFolderRequest("폴더"));
         끄적이는을_아카이빙한다(토큰, 폴더);
         참고하는을_아카이빙한다(토큰, 폴더);
-        var 바디 = new GetArchiveRequest(폴더, "template");
+        var 탭이름 = "template";
 
         // when
-        var 응답 = 아카이브_탭_조회_요청_성공(토큰, 바디);
+        var 응답 = 아카이브_탭_조회_요청_성공(토큰, 폴더, 탭이름);
 
         // then
         응답값을_검증한다(응답, 성공);
@@ -94,10 +93,10 @@ public class ArchiveApiTest extends RestApiTest {
         var 폴더 = 메모_폴더를_생성_하고_ID를_반환한다(토큰, new SaveMemoFolderRequest("폴더"));
         끄적이는을_아카이빙한다(토큰, 폴더);
         참고하는을_아카이빙한다(토큰, 폴더);
-        var 바디 = new GetArchiveRequest(폴더, "non-exist-tab");
+        var 탭이름 = "non-exist-tab";
 
         // when
-        var 응답 = 아카이브_탭_조회_요청_실패(토큰, 바디);
+        var 응답 = 아카이브_탭_조회_요청_실패(토큰, 폴더, 탭이름);
 
         // then
         응답값을_검증한다(응답, 잘못된_요청);
@@ -107,10 +106,11 @@ public class ArchiveApiTest extends RestApiTest {
     void 존재하지않는_폴더에대한_조회_요청의_경우_예외를_반환한다() {
         // given
         var 토큰 = 로그인(아현());
-        var 바디 = new GetArchiveRequest(999L, "all");
+        var 존재하지_않는_폴더ID = 999L;
+        var 탭이름 = "all";
 
         // when
-        var 응답 = 아카이브_탭_조회_요청_실패(토큰, 바디);
+        var 응답 = 아카이브_탭_조회_요청_실패(토큰, 존재하지_않는_폴더ID, 탭이름);
 
         // then
         응답값을_검증한다(응답, 존재하지_않음);
@@ -122,10 +122,10 @@ public class ArchiveApiTest extends RestApiTest {
         var 아현_토큰 = 로그인(아현());
         var 태연_토큰 = 로그인(태연());
         var 아현_폴더 = 메모_폴더를_생성_하고_ID를_반환한다(아현_토큰, new SaveMemoFolderRequest("폴더"));
-        var 바디 = new GetArchiveRequest(아현_폴더, "all");
+        var 탭이름 = "all";
 
         // when
-        var 응답 = 아카이브_탭_조회_요청_실패(태연_토큰, 바디);
+        var 응답 = 아카이브_탭_조회_요청_실패(태연_토큰, 아현_폴더, 탭이름);
 
         // then
         응답값을_검증한다(응답, 권한_없음);
