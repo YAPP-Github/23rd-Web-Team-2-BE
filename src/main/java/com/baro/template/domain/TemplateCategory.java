@@ -10,14 +10,16 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum TemplateCategory {
 
-    ASK,
-    REPORT,
-    CELEBRATE,
-    THANK,
-    COMFORT,
-    REGARD,
-    ETC,
+    ASK("부탁하기"),
+    REPORT("보고하기"),
+    CELEBRATE("축하하기"),
+    THANK("감사 전하기"),
+    COMFORT("위로하기"),
+    REGARD("안부 전하기"),
+    ETC("기타"),
     ;
+
+    private final String name;
 
     public static TemplateCategory getCategory(String name) {
         return Arrays.stream(TemplateCategory.values())

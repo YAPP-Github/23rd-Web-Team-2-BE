@@ -16,6 +16,12 @@ public interface ArchiveRepository {
 
     void delete(Archive archive);
 
+    List<Archive> findAllArchives(Long memberId, Long folderId);
+
+    List<Archive> findAllArchivedMemos(Long memberId, Long folderId);
+
+    List<Archive> findAllArchivedTemplates(Long memberId, Long folderId);
+
     void deleteAllByMemberIdAndMemoFolderId(Long memberId, Long memoFolderId);
 
     List<Archive> findAllByMemberIdAndMemoFolderId(Long memberId, Long memoFolderId);

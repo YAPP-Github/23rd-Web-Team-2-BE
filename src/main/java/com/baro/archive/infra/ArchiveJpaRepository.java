@@ -14,4 +14,8 @@ public interface ArchiveJpaRepository extends JpaRepository<Archive, Long> {
     void deleteAllByMemberIdAndMemoFolderId(Long memberId, Long memoFolderId);
 
     List<Archive> findAllByMemberIdAndMemoFolderId(Long memberId, Long memoFolderId);
+
+    List<Archive> findAllByMemberIdAndMemoFolderIdAndTemplateIdIsNull(Long memberId, Long folderId);
+
+    List<Archive> findAllByMemberIdAndMemoFolderIdAndTemplateIdIsNotNull(Long memberId, Long folderId);
 }
