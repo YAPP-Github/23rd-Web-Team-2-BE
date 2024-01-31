@@ -33,8 +33,9 @@ public class TemporalMemoAcceptanceSteps {
     public static final SaveTemporalMemoRequest 크기_초과_끄적이는_메모_작성_바디 = new SaveTemporalMemoRequest(크기_초과_컨텐츠);
     public static final UpdateTemporalMemoRequest 끄적이는_메모_수정_바디 = new UpdateTemporalMemoRequest("끄적이는 메모 수정 컨텐츠");
     public static final UpdateTemporalMemoRequest 크기_초과_끄적이는_메모_수정_바디 = new UpdateTemporalMemoRequest(크기_초과_컨텐츠);
-    public static final ApplyCorrectionRequest 맞춤법_검사_결과_반영_바디 = new ApplyCorrectionRequest("맞춤법 검사 결과");
-    public static final ApplyCorrectionRequest 크기_초과_맞춤법_검사_결과_반영_바디 = new ApplyCorrectionRequest(크기_초과_컨텐츠);
+    public static final ApplyCorrectionRequest 맞춤법_검사_결과_반영_바디 = new ApplyCorrectionRequest("맞춤법 검사 결과",
+            "<p>맞춤법 검사 결과</p>");
+    public static final ApplyCorrectionRequest 크기_초과_맞춤법_검사_결과_반영_바디 = new ApplyCorrectionRequest(크기_초과_컨텐츠, 크기_초과_컨텐츠);
 
     public static ArchiveTemporalMemoRequest 메모_아카이브_요청_바디(Long 메모_폴더_ID) {
         return new ArchiveTemporalMemoRequest(메모_폴더_ID);
@@ -170,7 +171,8 @@ public class TemporalMemoAcceptanceSteps {
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
                         ),
                         requestFields(
-                                fieldWithPath("content").description("맞춤법 검사 결과")
+                                fieldWithPath("correctionContent").description("맞춤법 검사 결과"),
+                                fieldWithPath("styledCorrectionContent").description("스타일 포함 맞춤법 검사 결과")
                         ))
                 ).contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken()).body(바디)
@@ -190,7 +192,8 @@ public class TemporalMemoAcceptanceSteps {
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
                         ),
                         requestFields(
-                                fieldWithPath("content").description("맞춤법 검사 결과")
+                                fieldWithPath("correctionContent").description("맞춤법 검사 결과"),
+                                fieldWithPath("styledCorrectionContent").description("스타일 포함 맞춤법 검사 결과")
                         ),
                         responseFields(예외_응답()))
                 ).contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -215,7 +218,8 @@ public class TemporalMemoAcceptanceSteps {
                                 fieldWithPath("[].temporalMemos").description("끄적이는 메모 목록"),
                                 fieldWithPath("[].temporalMemos[].id").description("끄적이는 메모 ID"),
                                 fieldWithPath("[].temporalMemos[].content").description("끄적이는 메모 내용"),
-                                fieldWithPath("[].temporalMemos[].correctionContent").description("끄적이는 메모 맞춤법 검사 결과"),
+                                fieldWithPath("[].temporalMemos[].styledCorrectionContent").description(
+                                        "끄적이는 메모 맞춤법 검사 결과"),
                                 fieldWithPath("[].temporalMemos[].isCorrected").description("끄적이는 메모 맞춤법 검사 결과 반영 여부"),
                                 fieldWithPath("[].temporalMemos[].isArchived").description("끄적이는 메모 아카이브 여부"),
                                 fieldWithPath("[].temporalMemos[].createdAt").description("끄적이는 메모 생성 시간")

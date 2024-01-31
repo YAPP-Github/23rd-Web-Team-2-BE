@@ -2,16 +2,19 @@ package com.baro.memofolder.presentation;
 
 import com.baro.auth.domain.AuthMember;
 import com.baro.memofolder.application.MemoFolderService;
+import com.baro.memofolder.application.dto.DeleteMemoFolderCommand;
 import com.baro.memofolder.application.dto.GetMemoFolderResult;
 import com.baro.memofolder.application.dto.RenameMemoFolderCommand;
 import com.baro.memofolder.application.dto.SaveMemoFolderCommand;
 import com.baro.memofolder.application.dto.SaveMemoFolderResult;
+import com.baro.memofolder.presentation.dto.DeleteMemoFolderRequest;
 import com.baro.memofolder.presentation.dto.RenameMemoFolderRequest;
 import com.baro.memofolder.presentation.dto.SaveMemoFolderRequest;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,6 +53,14 @@ public class MemoFolderController {
         RenameMemoFolderCommand command = new RenameMemoFolderCommand(authMember.id(), request.memoFolderId(),
                 request.folderName());
         memoFolderService.renameMemoFolder(command);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteMemoFolder(AuthMember authMember, @RequestBody DeleteMemoFolderRequest request) {
+        DeleteMemoFolderCommand command = new DeleteMemoFolderCommand(authMember.id(), request.memoFolderId(),
+                request.deleteAllMemo());
+        memoFolderService.deleteMemoFolder(command);
         return ResponseEntity.noContent().build();
     }
 }

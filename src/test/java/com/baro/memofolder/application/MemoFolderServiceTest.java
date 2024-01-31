@@ -4,12 +4,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.baro.archive.domain.Archive;
+import com.baro.archive.domain.ArchiveRepository;
+import com.baro.archive.fake.FakeArchiveRepository;
 import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
 import com.baro.member.exception.MemberException;
 import com.baro.member.exception.MemberExceptionType;
 import com.baro.member.fake.FakeMemberRepository;
 import com.baro.member.fixture.MemberFixture;
+import com.baro.memo.domain.MemoContent;
+import com.baro.memofolder.application.dto.DeleteMemoFolderCommand;
 import com.baro.memofolder.application.dto.GetMemoFolderResult;
 import com.baro.memofolder.application.dto.RenameMemoFolderCommand;
 import com.baro.memofolder.application.dto.SaveMemoFolderCommand;
@@ -32,12 +37,14 @@ class MemoFolderServiceTest {
     private MemoFolderService memoFolderService;
     private MemberRepository memberRepository;
     private MemoFolderRepository memoFolderRepository;
+    private ArchiveRepository archiveRepository;
 
     @BeforeEach
     void setUp() {
         memberRepository = new FakeMemberRepository();
         memoFolderRepository = new FakeMemoFolderRepository();
-        memoFolderService = new MemoFolderService(memberRepository, memoFolderRepository);
+        archiveRepository = new FakeArchiveRepository();
+        memoFolderService = new MemoFolderService(memberRepository, memoFolderRepository, archiveRepository);
     }
 
     @Test
@@ -204,5 +211,92 @@ class MemoFolderServiceTest {
                 .isInstanceOf(MemoFolderException.class)
                 .extracting("exceptionType")
                 .isEqualTo(MemoFolderExceptionType.EMPTY_NAME);
+    }
+
+    @Test
+    void 메모폴더를_삭제할때_내부에있는_모든_아카이브를_함께_삭제한다() {
+        // given
+        var member = memberRepository.save(MemberFixture.memberWithNickname("바로"));
+        var memoFolder = memoFolderRepository.save(MemoFolder.of(member, "폴더이름"));
+        archiveRepository.save(new Archive(member, memoFolder, MemoContent.from("메모내용1")));
+        archiveRepository.save(new Archive(member, memoFolder, MemoContent.from("메모내용2")));
+        var command = new DeleteMemoFolderCommand(member.getId(), memoFolder.getId(), true);
+
+        // when
+        memoFolderService.deleteMemoFolder(command);
+
+        // then
+        List<Archive> archives = archiveRepository.findAll();
+        List<MemoFolder> memoFolders = memoFolderRepository.findAllByMember(member);
+        assertAll(
+                () -> assertThat(archives.size()).isEqualTo(0),
+                () -> assertThat(memoFolders.size()).isEqualTo(0)
+        );
+    }
+
+    @Test
+    void 메모폴더를_삭제할때_내부에있는_모든_아카이브_기본폴더로_이동시킨다() {
+        // given
+        var member = memberRepository.save(MemberFixture.memberWithNickname("바로"));
+        var defaultFolder = memoFolderRepository.save(MemoFolder.defaultFolder(member));
+        var memoFolder = memoFolderRepository.save(MemoFolder.of(member, "폴더이름"));
+        archiveRepository.save(new Archive(member, memoFolder, MemoContent.from("메모내용1")));
+        archiveRepository.save(new Archive(member, memoFolder, MemoContent.from("메모내용2")));
+        var command = new DeleteMemoFolderCommand(member.getId(), memoFolder.getId(), false);
+
+        // when
+        memoFolderService.deleteMemoFolder(command);
+
+        // then
+        List<Archive> archives = archiveRepository.findAll();
+        List<MemoFolder> memoFolders = memoFolderRepository.findAllByMember(member);
+        assertAll(
+                () -> archives.forEach(archive -> assertThat(archive.getMemoFolder()).isEqualTo(defaultFolder)),
+                () -> assertThat(memoFolders.size()).isEqualTo(1),
+                () -> assertThat(memoFolders.get(0)).isEqualTo(defaultFolder)
+        );
+    }
+
+    @Test
+    void 메모폴더_삭제시_해당하는_메모폴더가_없는경우_에러를_반환한다() {
+        // given
+        var member = memberRepository.save(MemberFixture.memberWithNickname("바로"));
+        var memoFolder = memoFolderRepository.save(MemoFolder.of(member, "폴더이름"));
+        var command = new DeleteMemoFolderCommand(member.getId(), memoFolder.getId() + 1, false);
+
+        // when & then
+        assertThatThrownBy(() -> memoFolderService.deleteMemoFolder(command))
+                .isInstanceOf(MemoFolderException.class)
+                .extracting("exceptionType")
+                .isEqualTo(MemoFolderExceptionType.NOT_EXIST_MEMO_FOLDER);
+    }
+
+    @Test
+    void 폴더_삭제시_폴더의_주인이_아닌경우_에러를_반환한다() {
+        // given
+        var memberA = memberRepository.save(MemberFixture.memberWithNickname("바로1"));
+        var memberB = memberRepository.save(MemberFixture.memberWithNickname("바로2"));
+        var memoFolder = memoFolderRepository.save(MemoFolder.of(memberA, "폴더이름"));
+        var command = new DeleteMemoFolderCommand(memberB.getId(), memoFolder.getId(), false);
+
+        // when & then
+        assertThatThrownBy(() -> memoFolderService.deleteMemoFolder(command))
+                .isInstanceOf(MemoFolderException.class)
+                .extracting("exceptionType")
+                .isEqualTo(MemoFolderExceptionType.NOT_MATCH_OWNER);
+    }
+
+    @Test
+    void 삭제하려는_폴더가_기본폴더라면_에러를_반환한다() {
+        // given
+        var member = memberRepository.save(MemberFixture.memberWithNickname("바로"));
+        var defaultFolder = memoFolderRepository.save(MemoFolder.defaultFolder(member));
+        var command = new DeleteMemoFolderCommand(member.getId(), defaultFolder.getId(), false);
+
+        // when & then
+        assertThatThrownBy(() -> memoFolderService.deleteMemoFolder(command))
+                .isInstanceOf(MemoFolderException.class)
+                .extracting("exceptionType")
+                .isEqualTo(MemoFolderExceptionType.DEFAULT_FOLDER_CANNOT_BE_DELETED);
     }
 }

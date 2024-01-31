@@ -71,4 +71,8 @@ public class Archive extends BaseEntity {
     public boolean isMemo() {
         return Objects.isNull(this.template);
     }
+
+    public void changeMemoFolder(MemoFolder memoFolder) {
+        this.memoFolder = memoFolder;
+    }
 }

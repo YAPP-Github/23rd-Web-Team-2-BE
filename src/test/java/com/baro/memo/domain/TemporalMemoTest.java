@@ -108,9 +108,10 @@ class TemporalMemoTest {
         // given
         TemporalMemo temporalMemo = TemporalMemo.of(MemberFixture.memberWithNickname("바로"), "메모");
         MemoContent correctionContent = MemoContent.from("메모");
+        String styledCorrectionContent = "<strong> 메모 </strong>";
 
         // when
-        temporalMemo.applyCorrection(correctionContent);
+        temporalMemo.applyCorrection(correctionContent, styledCorrectionContent);
 
         // then
         assertAll(
@@ -124,10 +125,11 @@ class TemporalMemoTest {
         // given
         TemporalMemo temporalMemo = TemporalMemo.of(MemberFixture.memberWithNickname("바로"), "메모");
         MemoContent correctionContent = MemoContent.from("메모");
-        temporalMemo.applyCorrection(correctionContent);
+        String styledCorrectionContent = "<strong> 메모 </strong>";
+        temporalMemo.applyCorrection(correctionContent, styledCorrectionContent);
 
         // when & then
-        assertThatCode(() -> temporalMemo.applyCorrection(correctionContent))
+        assertThatCode(() -> temporalMemo.applyCorrection(correctionContent, styledCorrectionContent))
                 .isInstanceOf(TemporalMemoException.class)
                 .extracting("exceptionType")
                 .isEqualTo(TemporalMemoExceptionType.ALREADY_CORRECTED);

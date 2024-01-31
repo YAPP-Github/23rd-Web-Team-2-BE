@@ -47,6 +47,16 @@ public class ArchiveRepositoryImpl implements ArchiveRepository {
     }
 
     @Override
+    public void deleteAllByMemberIdAndMemoFolderId(Long memberId, Long memoFolderId) {
+        archiveJpaRepository.deleteAllByMemberIdAndMemoFolderId(memberId, memoFolderId);
+    }
+
+    @Override
+    public List<Archive> findAllByMemberIdAndMemoFolderId(Long memberId, Long memoFolderId) {
+        return archiveJpaRepository.findAllByMemberIdAndMemoFolderId(memberId, memoFolderId);
+    }
+
+    @Override
     public List<Archive> findAllArchives(Long memberId, Long folderId) {
         return archiveJpaRepository.findAllByMemberIdAndMemoFolderId(memberId, folderId);
     }

@@ -63,6 +63,20 @@ public class FakeArchiveRepository implements ArchiveRepository {
     }
 
     @Override
+    public void deleteAllByMemberIdAndMemoFolderId(Long memberId, Long memoFolderId) {
+        archives.values().removeIf(archive -> archive.getMember().getId().equals(memberId)
+                && archive.getMemoFolder().getId().equals(memoFolderId));
+    }
+
+    @Override
+    public List<Archive> findAllByMemberIdAndMemoFolderId(Long memberId, Long memoFolderId) {
+        return archives.values().stream()
+                .filter(archive -> archive.getMember().getId().equals(memberId)
+                        && archive.getMemoFolder().getId().equals(memoFolderId))
+                .toList();
+    }
+
+    @Override
     public List<Archive> findAllArchives(Long memberId, Long folderId) {
         return archives.values().stream()
                 .filter(archive -> archive.getMember().getId().equals(memberId)

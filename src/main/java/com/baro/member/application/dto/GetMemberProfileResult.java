@@ -15,7 +15,7 @@ public record GetMemberProfileResult(
         return new GetMemberProfileResult(
                 member.getId(),
                 member.getName(),
-                member.getNickname(),
+                member.getNickname().value(),
                 member.getProfileImageUrl(),
                 member.getEmail(),
                 member.getOAuthServiceType()

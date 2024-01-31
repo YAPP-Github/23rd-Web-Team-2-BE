@@ -13,4 +13,15 @@ public class MemberFixture {
                 .oAuthServiceType("oAuthServiceType")
                 .build();
     }
+
+    public static Member memberWithNicknameAndProfileImage(String nickname, String profileImageUrl) {
+        return Member.builder()
+                .name("name")
+                .email("email")
+                .nickname(nickname)
+                .oAuthId("oAuthId" + nickname)
+                .profileImageUrl(profileImageUrl)
+                .oAuthServiceType("oAuthServiceType")
+                .build();
+    }
 }

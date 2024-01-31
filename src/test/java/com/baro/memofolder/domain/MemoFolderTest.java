@@ -74,4 +74,28 @@ class MemoFolderTest {
                 .extracting("exceptionType")
                 .isEqualTo(MemoFolderExceptionType.EMPTY_NAME);
     }
+
+    @Test
+    void 디폴트_폴더가_아닌경우_에러가_던져지지_않는다() {
+        // given
+        Member member = new Member(1L, "name", "email", "nickname", "oAuthId", "oAuthServiceType");
+        MemoFolder memoFolder = MemoFolder.of(member, "폴더이름");
+
+        // when & then
+        assertThatCode(memoFolder::isNotDefaultFolder)
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void 디폴트_폴더인경우_에러가_던져진다() {
+        // given
+        Member member = new Member(1L, "name", "email", "nickname", "oAuthId", "oAuthServiceType");
+        MemoFolder memoFolder = MemoFolder.defaultFolder(member);
+
+        // when & then
+        assertThatThrownBy(memoFolder::isNotDefaultFolder)
+                .isInstanceOf(MemoFolderException.class)
+                .extracting("exceptionType")
+                .isEqualTo(MemoFolderExceptionType.DEFAULT_FOLDER_CANNOT_BE_DELETED);
+    }
 }
