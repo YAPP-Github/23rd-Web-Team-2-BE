@@ -1,5 +1,7 @@
 package com.baro.archive.domain;
 
+import com.baro.archive.exception.ArchiveException;
+import com.baro.archive.exception.ArchiveExceptionType;
 import com.baro.common.entity.BaseEntity;
 import com.baro.member.domain.Member;
 import com.baro.memo.domain.MemoContent;
@@ -74,5 +76,15 @@ public class Archive extends BaseEntity {
 
     public void changeMemoFolder(MemoFolder memoFolder) {
         this.memoFolder = memoFolder;
+    }
+
+    public void matchOwner(Long memberId) {
+        if (!Objects.equals(this.member.getId(), memberId)) {
+            throw new ArchiveException(ArchiveExceptionType.NOT_MATCH_OWNER);
+        }
+    }
+
+    public void modifyContent(MemoContent memoContent) {
+        this.content = memoContent;
     }
 }
