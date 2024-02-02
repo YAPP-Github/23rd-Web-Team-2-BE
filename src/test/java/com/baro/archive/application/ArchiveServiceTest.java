@@ -215,4 +215,20 @@ class ArchiveServiceTest {
                 .extracting("exceptionType")
                 .isEqualTo(MemoExceptionType.OVER_MAX_SIZE_CONTENT);
     }
+
+    @Test
+    void 템플릿_아카이브_수정시_예외를_반환한다() {
+        // given
+        var member = memberRepository.save(MemberFixture.memberWithNickname("바로"));
+        var memoFolder = memoFolderRepository.save(MemoFolder.defaultFolder(member));
+        var archive = archiveRepository.save(참고하는_아카이브1(member, memoFolder, 감사전하기()));
+        var newContent = "가".repeat(501);
+        var command = new ModifyArchiveCommand(member.getId(), archive.getId(), newContent);
+
+        // when & then
+        assertThatThrownBy(() -> archiveService.modifyArchive(command))
+                .isInstanceOf(ArchiveException.class)
+                .extracting("exceptionType")
+                .isEqualTo(ArchiveExceptionType.CANT_MODIFY_TEMPLATE);
+    }
 }
