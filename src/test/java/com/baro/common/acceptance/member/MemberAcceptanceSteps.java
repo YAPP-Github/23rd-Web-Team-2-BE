@@ -12,6 +12,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 
 import com.baro.auth.domain.Token;
+import com.baro.member.presentation.dto.DeleteMemberRequest;
 import com.baro.member.presentation.dto.UpdateMemberProfileRequest;
 import io.restassured.RestAssured;
 import io.restassured.builder.MultiPartSpecBuilder;
@@ -32,6 +33,8 @@ public class MemberAcceptanceSteps {
 
     public static final MultipartFile 프로필_이미지 = new MockMultipartFile("image", "image", "multipart/form-data",
             "image".getBytes());
+
+    public static final DeleteMemberRequest 회원_탈퇴_요청 = new DeleteMemberRequest("탈퇴 사유");
 
     public static ExtractableResponse<Response> 내_프로필_조회_요청(Token 토큰) {
         return RestAssured.given(requestSpec).log().all()
@@ -144,5 +147,20 @@ public class MemberAcceptanceSteps {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static ExtractableResponse<Response> 회원_탈퇴_요청(Token 토큰, DeleteMemberRequest 요청) {
+        return RestAssured.given(requestSpec).log().all()
+                .filter(document(DEFAULT_REST_DOCS_PATH,
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 토큰")
+                        )
+                ))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken())
+                .body(요청)
+                .contentType("application/json")
+                .when().delete("/members")
+                .then().log().all()
+                .extract();
     }
 }
