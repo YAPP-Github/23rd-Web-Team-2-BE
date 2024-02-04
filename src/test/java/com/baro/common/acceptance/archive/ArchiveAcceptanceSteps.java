@@ -5,12 +5,14 @@ import static com.baro.common.RestApiTest.requestSpec;
 import static com.baro.common.acceptance.AcceptanceSteps.예외_응답;
 import static io.restassured.RestAssured.given;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
+import com.baro.archive.presentation.dto.ModifyArchiveRequest;
 import com.baro.auth.domain.Token;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -61,6 +63,41 @@ public class ArchiveAcceptanceSteps {
                 .pathParam("folderId", 폴더ID)
                 .queryParam("tabName", 탭이름)
                 .when().get(url)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 아카이브_수정_요청_성공(Token token, Long 아카이브ID, ModifyArchiveRequest 수정할내용) {
+        var url = "/archives/{archiveId}";
+
+        return given(requestSpec).log().all()
+                .filter(document(DEFAULT_REST_DOCS_PATH,
+                        requestFields(
+                                fieldWithPath("content").description("아카이브 내용")
+                        )
+                ))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.accessToken()).body(수정할내용)
+                .pathParam("archiveId", 아카이브ID)
+                .when().patch(url)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 아카이브_수정_요청_실패(Token token, Long 아카이브ID, ModifyArchiveRequest 수정할내용) {
+        var url = "/archives/{archiveId}";
+
+        return given(requestSpec).log().all()
+                .filter(document(DEFAULT_REST_DOCS_PATH,
+                        requestFields(
+                                fieldWithPath("content").description("아카이브 내용")
+                        ),
+                        responseFields(예외_응답())
+                ))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.accessToken()).body(수정할내용)
+                .pathParam("archiveId", 아카이브ID)
+                .when().patch(url)
                 .then().log().all()
                 .extract();
     }

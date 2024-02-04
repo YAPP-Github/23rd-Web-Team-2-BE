@@ -18,6 +18,7 @@ import static org.springframework.restdocs.snippet.Attributes.key;
 
 import com.baro.auth.domain.Token;
 import com.baro.template.presentation.dto.ArchiveTemplateRequest;
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
@@ -246,6 +247,20 @@ public class TemplateAcceptanceSteps {
                 .when().post(url)
                 .then().log().all()
                 .extract();
+    }
+
+    public static Long 참고하는메모_아카이빙_요청후_생성된_ID를_반환한다(Token 토큰, Long 템플릿_ID,
+                                                    ArchiveTemplateRequest 바디) {
+        String location = RestAssured.given(requestSpec).log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken()).body(바디)
+                .when().post("/templates/{templateId}/archive", 템플릿_ID)
+                .then().log().all()
+                .extract()
+                .response().header(HttpHeaders.LOCATION);
+
+        String[] split = location.split("/");
+        return Long.parseLong(split[split.length - 1]);
     }
 
     public static ExtractableResponse<Response> 템플릿_아카이브_취소_요청_성공(Token 토큰, Long 템플릿_ID) {

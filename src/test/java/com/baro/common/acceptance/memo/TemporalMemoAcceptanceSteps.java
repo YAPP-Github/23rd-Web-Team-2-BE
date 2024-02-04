@@ -297,4 +297,17 @@ public class TemporalMemoAcceptanceSteps {
                 .extract();
     }
 
+    public static Long 끄적이는메모_아카이빙_요청후_생성된_ID를_반환한다(Token 토큰, Long 끄적이는_메모_ID,
+                                                    ArchiveTemporalMemoRequest 바디) {
+        String location = RestAssured.given(requestSpec).log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰.accessToken()).body(바디)
+                .when().post("/temporal-memos/{temporalMemoId}/archive", 끄적이는_메모_ID)
+                .then().log().all()
+                .extract()
+                .response().header(HttpHeaders.LOCATION);
+
+        String[] split = location.split("/");
+        return Long.parseLong(split[split.length - 1]);
+    }
 }
