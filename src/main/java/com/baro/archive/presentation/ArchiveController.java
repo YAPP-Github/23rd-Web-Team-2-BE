@@ -2,6 +2,7 @@ package com.baro.archive.presentation;
 
 import com.baro.archive.application.ArchiveService;
 import com.baro.archive.application.dto.ArchiveUnitResult;
+import com.baro.archive.application.dto.DeleteArchiveCommand;
 import com.baro.archive.application.dto.GetArchiveQuery;
 import com.baro.archive.application.dto.ModifyArchiveCommand;
 import com.baro.archive.domain.ArchiveTab;
@@ -10,6 +11,7 @@ import com.baro.auth.domain.AuthMember;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,6 +41,13 @@ public class ArchiveController {
                                                                  @RequestBody ModifyArchiveRequest request) {
         ModifyArchiveCommand command = new ModifyArchiveCommand(member.id(), archiveId, request.content());
         archiveService.modifyArchive(command);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{archiveId}")
+    public ResponseEntity<Void> deleteArchive(AuthMember member, @PathVariable("archiveId") Long archiveId) {
+        DeleteArchiveCommand command = new DeleteArchiveCommand(member.id(), archiveId);
+        archiveService.deleteArchive(command);
         return ResponseEntity.noContent().build();
     }
 }
