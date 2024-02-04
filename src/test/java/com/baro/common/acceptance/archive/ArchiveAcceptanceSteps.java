@@ -101,4 +101,39 @@ public class ArchiveAcceptanceSteps {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 아카이브_삭제_요청_성공(Token token, Long 아카이브ID) {
+        var url = "/archives/{archiveId}";
+
+        return given(requestSpec).log().all()
+                .filter(document(DEFAULT_REST_DOCS_PATH,
+                        pathParameters(
+                                parameterWithName("archiveId").description("아카이브 id")
+                        )
+                ))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.accessToken())
+                .pathParam("archiveId", 아카이브ID)
+                .when().delete(url)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 아카이브_삭제_요청_실패(Token token, Long 아카이브ID) {
+        var url = "/archives/{archiveId}";
+
+        return given(requestSpec).log().all()
+                .filter(document(DEFAULT_REST_DOCS_PATH,
+                        pathParameters(
+                                parameterWithName("archiveId").description("아카이브 id")
+                        ),
+                        responseFields(예외_응답())
+                ))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.accessToken())
+                .pathParam("archiveId", 아카이브ID)
+                .when().delete(url)
+                .then().log().all()
+                .extract();
+    }
 }

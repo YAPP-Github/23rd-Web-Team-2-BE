@@ -9,6 +9,8 @@ import static com.baro.common.acceptance.AcceptanceSteps.응답값을_검증한�
 import static com.baro.common.acceptance.AcceptanceSteps.응답의_개수를_검증한다;
 import static com.baro.common.acceptance.AcceptanceSteps.잘못된_요청;
 import static com.baro.common.acceptance.AcceptanceSteps.존재하지_않음;
+import static com.baro.common.acceptance.archive.ArchiveAcceptanceSteps.아카이브_삭제_요청_성공;
+import static com.baro.common.acceptance.archive.ArchiveAcceptanceSteps.아카이브_삭제_요청_실패;
 import static com.baro.common.acceptance.archive.ArchiveAcceptanceSteps.아카이브_수정_요청_성공;
 import static com.baro.common.acceptance.archive.ArchiveAcceptanceSteps.아카이브_수정_요청_실패;
 import static com.baro.common.acceptance.archive.ArchiveAcceptanceSteps.아카이브_탭_조회_요청_성공;
@@ -220,6 +222,52 @@ public class ArchiveApiTest extends RestApiTest {
 
         // then
         응답값을_검증한다(응답, 잘못된_요청);
+    }
+
+    @Test
+    void 아카이브를_삭제한다() {
+        // given
+        var 토큰 = 로그인(아현());
+        var 폴더 = 메모_폴더를_생성_하고_ID를_반환한다(토큰, new SaveMemoFolderRequest("폴더"));
+        var 끄적이는메모_ID = 끄적이는메모를_생성하고_ID를_반환한다(토큰, 끄적이는_메모_바디);
+        var 메모_아카이브_ID = 끄적이는메모_아카이빙_요청후_생성된_ID를_반환한다(토큰, 끄적이는메모_ID, new ArchiveTemporalMemoRequest(폴더));
+
+        // when
+        var 응답 = 아카이브_삭제_요청_성공(토큰, 메모_아카이브_ID);
+
+        // then
+        응답값을_검증한다(응답, 응답값_없음);
+    }
+
+    @Test
+    void 아카이브_삭제시_소유자가_아닌경우_예외를_반환한다() {
+        // given
+        var 아현토큰 = 로그인(아현());
+        var 태연토큰 = 로그인(태연());
+        var 폴더 = 메모_폴더를_생성_하고_ID를_반환한다(아현토큰, new SaveMemoFolderRequest("폴더"));
+        var 끄적이는메모_ID = 끄적이는메모를_생성하고_ID를_반환한다(아현토큰, 끄적이는_메모_바디);
+        var 메모_아카이브_ID = 끄적이는메모_아카이빙_요청후_생성된_ID를_반환한다(아현토큰, 끄적이는메모_ID, new ArchiveTemporalMemoRequest(폴더));
+
+        // when
+        var 응답 = 아카이브_삭제_요청_실패(태연토큰, 메모_아카이브_ID);
+
+        // then
+        응답값을_검증한다(응답, 권한_없음);
+    }
+
+    @Test
+    void 존재하지_않는_아카이브_삭제_요청시_예외를_반환한다() {
+        // given
+        var 토큰 = 로그인(아현());
+        var 폴더 = 메모_폴더를_생성_하고_ID를_반환한다(토큰, new SaveMemoFolderRequest("폴더"));
+        var 끄적이는메모_ID = 끄적이는메모를_생성하고_ID를_반환한다(토큰, 끄적이는_메모_바디);
+        var 존재하지_않는_아카이브_ID = 999L;
+
+        // when
+        var 응답 = 아카이브_삭제_요청_실패(토큰, 존재하지_않는_아카이브_ID);
+
+        // then
+        응답값을_검증한다(응답, 존재하지_않음);
     }
 
     private void 끄적이는을_아카이빙한다(Token 토큰, Long 폴더_ID) {

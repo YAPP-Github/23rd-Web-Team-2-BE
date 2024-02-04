@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.baro.archive.application.dto.ArchiveUnitResult;
+import com.baro.archive.application.dto.DeleteArchiveCommand;
 import com.baro.archive.application.dto.GetArchiveQuery;
 import com.baro.archive.application.dto.ModifyArchiveCommand;
 import com.baro.archive.domain.ArchiveRepository;
@@ -230,5 +231,50 @@ class ArchiveServiceTest {
                 .isInstanceOf(ArchiveException.class)
                 .extracting("exceptionType")
                 .isEqualTo(ArchiveExceptionType.CANT_MODIFY_TEMPLATE);
+    }
+
+    @Test
+    void 아카이브를_삭제한다() {
+        // given
+        var member = memberRepository.save(MemberFixture.memberWithNickname("바로"));
+        var memoFolder = memoFolderRepository.save(MemoFolder.defaultFolder(member));
+        var archive = archiveRepository.save(끄적이는_아카이브1(member, memoFolder));
+        var command = new DeleteArchiveCommand(member.getId(), archive.getId());
+
+        // when
+        archiveService.deleteArchive(command);
+
+        // then
+        assertThat(archiveRepository.findAll()).hasSize(0);
+    }
+
+    @Test
+    void 아카이브_삭제시_소유자가_아닌경우_예외를_반환한다() {
+        // given
+        var member = memberRepository.save(MemberFixture.memberWithNickname("바로1"));
+        var memberB = memberRepository.save(MemberFixture.memberWithNickname("바로2"));
+        var memoFolder = memoFolderRepository.save(MemoFolder.defaultFolder(member));
+        var archive = archiveRepository.save(끄적이는_아카이브1(member, memoFolder));
+        var command = new DeleteArchiveCommand(memberB.getId(), archive.getId());
+
+        // when & then
+        assertThatThrownBy(() -> archiveService.deleteArchive(command))
+                .isInstanceOf(ArchiveException.class)
+                .extracting("exceptionType")
+                .isEqualTo(ArchiveExceptionType.NOT_MATCH_OWNER);
+    }
+
+    @Test
+    void 존재하지_않는_아카이브_삭제_요청시_예외를_반환한다() {
+        // given
+        var member = memberRepository.save(MemberFixture.memberWithNickname("바로"));
+        var invalidArchiveId = 999L;
+        var command = new DeleteArchiveCommand(member.getId(), invalidArchiveId);
+
+        // when & then
+        assertThatThrownBy(() -> archiveService.deleteArchive(command))
+                .isInstanceOf(ArchiveException.class)
+                .extracting("exceptionType")
+                .isEqualTo(ArchiveExceptionType.NOT_EXIST_ARCHIVE);
     }
 }
