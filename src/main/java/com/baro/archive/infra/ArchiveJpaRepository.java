@@ -1,6 +1,7 @@
 package com.baro.archive.infra;
 
 import com.baro.archive.domain.Archive;
+import com.baro.member.domain.Member;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,6 +19,8 @@ public interface ArchiveJpaRepository extends JpaRepository<Archive, Long> {
     List<Archive> findAllByMemberIdAndMemoFolderIdAndTemplateIdIsNull(Long memberId, Long folderId);
 
     List<Archive> findAllByMemberIdAndMemoFolderIdAndTemplateIdIsNotNull(Long memberId, Long folderId);
+
+    void deleteAllByMember(Member member);
 
     List<Archive> findAllByMemberIdAndTemplateIdIsNotNull(Long memberId);
 }

@@ -16,4 +16,6 @@ public interface MemberRepository {
     Optional<Member> findById(Long memberId);
 
     Member getById(Long memberId);
+
+    void deleteById(Long aLong);
 }

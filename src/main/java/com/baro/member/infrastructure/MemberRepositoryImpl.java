@@ -46,4 +46,9 @@ public class MemberRepositoryImpl implements MemberRepository {
         return this.findById(memberId)
                 .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_EXIST_MEMBER));
     }
+
+    @Override
+    public void deleteById(Long memberId) {
+        memberJpaRepository.deleteById(memberId);
+    }
 }

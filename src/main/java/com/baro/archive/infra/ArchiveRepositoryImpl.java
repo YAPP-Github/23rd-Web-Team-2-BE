@@ -4,6 +4,7 @@ import com.baro.archive.domain.Archive;
 import com.baro.archive.domain.ArchiveRepository;
 import com.baro.archive.exception.ArchiveException;
 import com.baro.archive.exception.ArchiveExceptionType;
+import com.baro.member.domain.Member;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -54,6 +55,11 @@ public class ArchiveRepositoryImpl implements ArchiveRepository {
     @Override
     public List<Archive> findAllByMemberIdAndMemoFolderId(Long memberId, Long memoFolderId) {
         return archiveJpaRepository.findAllByMemberIdAndMemoFolderId(memberId, memoFolderId);
+    }
+
+    @Override
+    public void deleteAllByMember(Member member) {
+        archiveJpaRepository.deleteAllByMember(member);
     }
 
     @Override

@@ -52,4 +52,9 @@ public class MemoFolderRepositoryImpl implements MemoFolderRepository {
         return memoFolderJpaRepository.findByMemberIdAndIsDefaultTrue(memberId)
                 .orElseThrow(() -> new MemoFolderException(MemoFolderExceptionType.NOT_EXIST_MEMO_FOLDER));
     }
+
+    @Override
+    public void deleteAllByMember(Member member) {
+        memoFolderJpaRepository.deleteAllByMember(member);
+    }
 }
