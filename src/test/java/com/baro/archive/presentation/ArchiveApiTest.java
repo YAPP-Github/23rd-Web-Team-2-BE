@@ -219,7 +219,7 @@ public class ArchiveApiTest extends RestApiTest {
         var 응답 = 아카이브_수정_요청_실패(토큰, 메모_아카이브_ID, 수정할내용);
 
         // then
-        응답값을_검증한다(응답, 권한_없음);
+        응답값을_검증한다(응답, 잘못된_요청);
     }
 
     private void 끄적이는을_아카이빙한다(Token 토큰, Long 폴더_ID) {

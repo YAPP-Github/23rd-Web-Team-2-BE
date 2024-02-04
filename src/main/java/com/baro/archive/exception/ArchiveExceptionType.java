@@ -12,7 +12,7 @@ public enum ArchiveExceptionType implements RequestExceptionType {
     NOT_ARCHIVED_TEMPLATE("AR03", "저장하지 않은 템플릿입니다.", HttpStatus.BAD_REQUEST),
     NOT_EXIST_TAB("AR04", "존재하지 않는 탭입니다.", HttpStatus.BAD_REQUEST),
     NOT_MATCH_OWNER("AR05", "아카이브의 소유자가 아닙니다.", HttpStatus.FORBIDDEN),
-    CANT_MODIFY_TEMPLATE("AR06", "템플릿은 수정할 수 없습니다.", HttpStatus.FORBIDDEN),
+    CANT_MODIFY_TEMPLATE("AR06", "템플릿은 수정할 수 없습니다.", HttpStatus.BAD_REQUEST),
     ;
 
     private final String errorCode;
