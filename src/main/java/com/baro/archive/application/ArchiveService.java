@@ -1,6 +1,7 @@
 package com.baro.archive.application;
 
 import com.baro.archive.application.dto.ArchiveUnitResult;
+import com.baro.archive.application.dto.DeleteArchiveCommand;
 import com.baro.archive.application.dto.GetArchiveQuery;
 import com.baro.archive.application.dto.ModifyArchiveCommand;
 import com.baro.archive.domain.Archive;
@@ -52,5 +53,14 @@ public class ArchiveService {
         }
         archive.matchOwner(command.memberId());
         archive.modifyContent(MemoContent.from(command.content()));
+    }
+
+    public void deleteArchive(DeleteArchiveCommand command) {
+        Archive archive = archiveRepository.getById(command.archiveId());
+        archive.matchOwner(command.memberId());
+        if (!archive.isMemo()) {
+            archive.getTemplate().decreaseSavedCount();
+        }
+        archiveRepository.delete(archive);
     }
 }
