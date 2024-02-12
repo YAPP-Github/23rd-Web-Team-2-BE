@@ -249,23 +249,6 @@ class ArchiveServiceTest {
     }
 
     @Test
-    void 템플릿_아카이브를_삭제할시_템플릿의_저장수가_줄어든다() {
-        // given
-        var member = memberRepository.save(MemberFixture.memberWithNickname("바로"));
-        var memoFolder = memoFolderRepository.save(MemoFolder.defaultFolder(member));
-        var template = 감사전하기();
-        var archive = archiveRepository.save(참고하는_아카이브1(member, memoFolder, template));
-        var expected = template.getSavedCount() - 1;
-        var command = new DeleteArchiveCommand(member.getId(), archive.getId());
-
-        // when
-        archiveService.deleteArchive(command);
-
-        // then
-        assertThat(archive.getTemplate().getSavedCount()).isEqualTo(expected);
-    }
-
-    @Test
     void 아카이브_삭제시_소유자가_아닌경우_예외를_반환한다() {
         // given
         var member = memberRepository.save(MemberFixture.memberWithNickname("바로1"));

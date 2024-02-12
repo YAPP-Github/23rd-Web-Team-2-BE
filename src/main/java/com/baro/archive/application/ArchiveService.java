@@ -58,9 +58,6 @@ public class ArchiveService {
     public void deleteArchive(DeleteArchiveCommand command) {
         Archive archive = archiveRepository.getById(command.archiveId());
         archive.matchOwner(command.memberId());
-        if (!archive.isMemo()) {
-            archive.getTemplate().decreaseSavedCount();
-        }
         archiveRepository.delete(archive);
     }
 }
