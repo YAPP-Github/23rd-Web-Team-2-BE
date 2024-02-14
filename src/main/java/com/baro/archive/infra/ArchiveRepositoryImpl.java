@@ -57,6 +57,11 @@ public class ArchiveRepositoryImpl implements ArchiveRepository {
     }
 
     @Override
+    public List<Archive> findAllTemplates(Long memberId) {
+        return archiveJpaRepository.findAllByMemberIdAndTemplateIdIsNotNull(memberId);
+    }
+
+    @Override
     public List<Archive> findAllArchives(Long memberId, Long folderId) {
         return archiveJpaRepository.findAllByMemberIdAndMemoFolderId(memberId, folderId);
     }

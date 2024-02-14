@@ -40,7 +40,8 @@ public class TemplateController {
             @RequestParam("sort") String sortName
     ) {
         Sort sort = SortType.getSort(sortName);
-        FindTemplateQuery query = new FindTemplateQuery(TemplateCategory.getCategory(categoryName), sort);
+        FindTemplateQuery query = new FindTemplateQuery(authMember.id(), TemplateCategory.getCategory(categoryName),
+                sort);
         Slice<FindTemplateResult> result = templateService.findTemplates(query);
 
         return ResponseEntity.ok().body(result);

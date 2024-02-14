@@ -11,6 +11,7 @@ import com.baro.archive.domain.ArchiveRepository;
 import com.baro.archive.exception.ArchiveException;
 import com.baro.archive.exception.ArchiveExceptionType;
 import com.baro.archive.fake.FakeArchiveRepository;
+import com.baro.archive.fixture.ArchiveFixture;
 import com.baro.member.domain.MemberRepository;
 import com.baro.member.exception.MemberException;
 import com.baro.member.exception.MemberExceptionType;
@@ -65,9 +66,11 @@ class TemplateServiceTest {
         templateRepository.save(보고하기());
         templateRepository.save(보고하기());
         templateRepository.save(감사전하기());
+        var memberId = 1L;
 
         // when
-        var result = service.findTemplates(new FindTemplateQuery(TemplateCategory.REPORT, SortType.NEW.getSort()));
+        var result = service.findTemplates(
+                new FindTemplateQuery(memberId, TemplateCategory.REPORT, SortType.NEW.getSort()));
 
         // then
         assertAll(
@@ -84,9 +87,11 @@ class TemplateServiceTest {
         templateRepository.save(보고하기(0, 1));
         templateRepository.save(보고하기(0, 2));
         templateRepository.save(감사전하기(0, 3));
+        var memberId = 1L;
 
         // when
-        var result = service.findTemplates(new FindTemplateQuery(TemplateCategory.REPORT, SortType.COPY.getSort()));
+        var result = service.findTemplates(
+                new FindTemplateQuery(memberId, TemplateCategory.REPORT, SortType.COPY.getSort()));
 
         // then
         assertAll(
@@ -103,9 +108,11 @@ class TemplateServiceTest {
         templateRepository.save(보고하기(1, 0));
         templateRepository.save(보고하기(2, 0));
         templateRepository.save(감사전하기(3, 0));
+        var memberId = 1L;
 
         // when
-        var result = service.findTemplates(new FindTemplateQuery(TemplateCategory.REPORT, SortType.SAVE.getSort()));
+        var result = service.findTemplates(
+                new FindTemplateQuery(memberId, TemplateCategory.REPORT, SortType.SAVE.getSort()));
 
         // then
         assertAll(
@@ -118,7 +125,9 @@ class TemplateServiceTest {
     @Test
     void 빈_템플릿_조회() {
         // when
-        var result = service.findTemplates(new FindTemplateQuery(TemplateCategory.REPORT, SortType.NEW.getSort()));
+        var memberId = 1L;
+        var result = service.findTemplates(
+                new FindTemplateQuery(memberId, TemplateCategory.REPORT, SortType.NEW.getSort()));
 
         // then
         assertAll(
@@ -126,6 +135,29 @@ class TemplateServiceTest {
                 () -> assertThat(result.getNumberOfElements()).isEqualTo(0),
                 () -> assertThat(result.isFirst()).isEqualTo(true),
                 () -> assertThat(result.isLast()).isEqualTo(true)
+        );
+    }
+
+    @Test
+    void 템플릿_조회시_아카이브_여부_표시() {
+        // given
+        var member = memberRepository.save(MemberFixture.memberWithNickname("바로"));
+        var template = templateRepository.save(보고하기(0, 0));
+        templateRepository.save(보고하기(0, 1));
+        templateRepository.save(보고하기(0, 2));
+        templateRepository.save(감사전하기(0, 3));
+        archiveRepository.save(ArchiveFixture.참고하는_아카이브1(member, MemoFolder.defaultFolder(member), template));
+
+        // when
+        var result = service.findTemplates(
+                new FindTemplateQuery(member.getId(), TemplateCategory.REPORT, SortType.COPY.getSort()));
+
+        // then
+        assertAll(
+                () -> assertThat(result.getNumberOfElements()).isEqualTo(3),
+                () -> assertThat(result.getContent()).isSortedAccordingTo(
+                        Comparator.comparing(FindTemplateResult::copiedCount).reversed()),
+                () -> assertThat(result.getContent().get(0).isArchived()).isTrue()
         );
     }
 
