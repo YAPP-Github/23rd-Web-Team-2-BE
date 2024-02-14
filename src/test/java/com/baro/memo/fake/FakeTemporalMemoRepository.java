@@ -1,5 +1,6 @@
 package com.baro.memo.fake;
 
+import com.baro.member.domain.Member;
 import com.baro.memo.domain.TemporalMemo;
 import com.baro.memo.domain.TemporalMemoRepository;
 import com.baro.memo.exception.TemporalMemoException;
@@ -74,5 +75,10 @@ public class FakeTemporalMemoRepository implements TemporalMemoRepository {
                         .isEqual(weekBefore))
                 .map(TemporalMemo::getId)
                 .forEach(temporalMemos::remove);
+    }
+
+    @Override
+    public void deleteAllByMember(Member member) {
+        temporalMemos.values().removeIf(temporalMemo -> temporalMemo.getMember().getId().equals(member.getId()));
     }
 }

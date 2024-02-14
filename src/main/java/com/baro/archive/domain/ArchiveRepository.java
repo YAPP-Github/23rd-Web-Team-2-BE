@@ -1,5 +1,6 @@
 package com.baro.archive.domain;
 
+import com.baro.member.domain.Member;
 import java.util.List;
 
 public interface ArchiveRepository {
@@ -25,6 +26,8 @@ public interface ArchiveRepository {
     void deleteAllByMemberIdAndMemoFolderId(Long memberId, Long memoFolderId);
 
     List<Archive> findAllByMemberIdAndMemoFolderId(Long memberId, Long memoFolderId);
+
+    void deleteAllByMember(Member member);
 
     List<Archive> findAllTemplates(Long memberId);
 }

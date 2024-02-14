@@ -1,5 +1,6 @@
 package com.baro.memo.domain;
 
+import com.baro.member.domain.Member;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,4 +17,6 @@ public interface TemporalMemoRepository {
     List<TemporalMemo> findAllByMemberIdAndCreatedAtBetween(Long memberId, LocalDateTime start, LocalDateTime end);
 
     void deleteAllByCreatedAtLessThanEqual(LocalDateTime weekBefore);
+
+    void deleteAllByMember(Member member);
 }

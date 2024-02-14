@@ -2,9 +2,11 @@ package com.baro.member.presentation;
 
 import com.baro.auth.domain.AuthMember;
 import com.baro.member.application.MemberService;
+import com.baro.member.application.dto.DeleteMemberCommand;
 import com.baro.member.application.dto.GetMemberProfileResult;
 import com.baro.member.application.dto.UpdateMemberProfileCommand;
 import com.baro.member.application.dto.UpdateProfileImageCommand;
+import com.baro.member.presentation.dto.DeleteMemberRequest;
 import com.baro.member.presentation.dto.UpdateMemberProfileRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -57,6 +59,16 @@ public class MemberController {
     ) {
         UpdateProfileImageCommand command = new UpdateProfileImageCommand(authMember.id(), profileImage);
         memberService.updateProfileImage(command);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteMember(
+            AuthMember authMember,
+            @RequestBody DeleteMemberRequest request
+    ) {
+        DeleteMemberCommand command = new DeleteMemberCommand(authMember.id(), request.reason());
+        memberService.deleteMember(command);
         return ResponseEntity.noContent().build();
     }
 }

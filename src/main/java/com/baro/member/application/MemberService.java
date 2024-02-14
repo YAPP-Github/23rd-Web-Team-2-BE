@@ -1,14 +1,20 @@
 package com.baro.member.application;
 
+import com.baro.archive.domain.ArchiveRepository;
 import com.baro.common.image.ImageStorageClient;
 import com.baro.common.image.dto.ImageUploadResult;
+import com.baro.member.application.dto.DeleteMemberCommand;
 import com.baro.member.application.dto.GetMemberProfileResult;
 import com.baro.member.application.dto.UpdateMemberProfileCommand;
 import com.baro.member.application.dto.UpdateProfileImageCommand;
 import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
+import com.baro.member.domain.MemberWithdrawalInfo;
+import com.baro.member.domain.MemberWithdrawalInfoRepository;
 import com.baro.member.exception.MemberException;
 import com.baro.member.exception.MemberExceptionType;
+import com.baro.memo.domain.TemporalMemoRepository;
+import com.baro.memofolder.domain.MemoFolderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +26,10 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final ImageStorageClient imageStorageClient;
+    private final TemporalMemoRepository temporalMemoRepository;
+    private final ArchiveRepository archiveRepository;
+    private final MemoFolderRepository memoFolderRepository;
+    private final MemberWithdrawalInfoRepository memberWithdrawalInfoRepository;
 
     @Transactional(readOnly = true)
     public GetMemberProfileResult getMyProfile(Long id) {
@@ -53,5 +63,14 @@ public class MemberService {
         }
         ImageUploadResult imageUploadResult = imageStorageClient.upload(command.image());
         member.updateProfileImage(imageUploadResult.key());
+    }
+
+    public void deleteMember(DeleteMemberCommand command) {
+        Member member = memberRepository.getById(command.memberId());
+        temporalMemoRepository.deleteAllByMember(member);
+        archiveRepository.deleteAllByMember(member);
+        memoFolderRepository.deleteAllByMember(member);
+        memberRepository.deleteById(command.memberId());
+        memberWithdrawalInfoRepository.save(new MemberWithdrawalInfo(command.reason()));
     }
 }

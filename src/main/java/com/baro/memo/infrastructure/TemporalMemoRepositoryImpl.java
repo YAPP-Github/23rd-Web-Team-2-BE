@@ -1,5 +1,6 @@
 package com.baro.memo.infrastructure;
 
+import com.baro.member.domain.Member;
 import com.baro.memo.domain.TemporalMemo;
 import com.baro.memo.domain.TemporalMemoRepository;
 import com.baro.memo.exception.TemporalMemoException;
@@ -45,5 +46,10 @@ public class TemporalMemoRepositoryImpl implements TemporalMemoRepository {
     @Override
     public void deleteAllByCreatedAtLessThanEqual(LocalDateTime weekBefore) {
         temporalMemoJpaRepository.deleteAllByCreatedAtLessThanEqual(weekBefore);
+    }
+
+    @Override
+    public void deleteAllByMember(Member member) {
+        temporalMemoJpaRepository.deleteAllByMember(member);
     }
 }

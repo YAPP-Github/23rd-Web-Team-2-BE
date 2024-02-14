@@ -4,6 +4,7 @@ import com.baro.archive.domain.Archive;
 import com.baro.archive.domain.ArchiveRepository;
 import com.baro.archive.exception.ArchiveException;
 import com.baro.archive.exception.ArchiveExceptionType;
+import com.baro.member.domain.Member;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -82,6 +83,11 @@ public class FakeArchiveRepository implements ArchiveRepository {
                 .filter(archive -> archive.getMember().getId().equals(memberId)
                         && !Objects.isNull(archive.getTemplate()))
                 .toList();
+    }
+
+    @Override
+    public void deleteAllByMember(Member member) {
+        archives.values().removeIf(archive -> archive.getMember().getId().equals(member.getId()));
     }
 
     @Override

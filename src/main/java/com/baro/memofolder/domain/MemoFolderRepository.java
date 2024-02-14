@@ -18,4 +18,6 @@ public interface MemoFolderRepository {
     void delete(MemoFolder memoFolder);
 
     MemoFolder getByMemberIdAndIsDefaultTrue(Long memberId);
+
+    void deleteAllByMember(Member member);
 }

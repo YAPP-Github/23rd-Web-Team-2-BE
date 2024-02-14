@@ -73,4 +73,9 @@ public class FakeMemoFolderRepository implements MemoFolderRepository {
                 .findFirst()
                 .orElseThrow(() -> new MemoFolderException(MemoFolderExceptionType.DEFAULT_FOLDER_NOT_FOUND));
     }
+
+    @Override
+    public void deleteAllByMember(Member member) {
+        memoFolders.values().removeIf(memoFolder -> memoFolder.getMember().getId().equals(member.getId()));
+    }
 }

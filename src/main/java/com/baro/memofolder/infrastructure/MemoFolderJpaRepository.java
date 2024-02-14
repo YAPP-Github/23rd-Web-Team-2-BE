@@ -14,4 +14,6 @@ public interface MemoFolderJpaRepository extends JpaRepository<MemoFolder, Long>
     List<MemoFolder> findAllByMember(Member member);
 
     Optional<MemoFolder> findByMemberIdAndIsDefaultTrue(Long memberId);
+
+    void deleteAllByMember(Member member);
 }
