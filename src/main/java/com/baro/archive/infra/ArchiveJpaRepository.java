@@ -18,4 +18,6 @@ public interface ArchiveJpaRepository extends JpaRepository<Archive, Long> {
     List<Archive> findAllByMemberIdAndMemoFolderIdAndTemplateIdIsNull(Long memberId, Long folderId);
 
     List<Archive> findAllByMemberIdAndMemoFolderIdAndTemplateIdIsNotNull(Long memberId, Long folderId);
+
+    List<Archive> findAllByMemberIdAndTemplateIdIsNotNull(Long memberId);
 }

@@ -17,6 +17,8 @@ import com.baro.template.application.dto.FindTemplateResult;
 import com.baro.template.application.dto.UnArchiveTemplateCommand;
 import com.baro.template.domain.Template;
 import com.baro.template.domain.TemplateRepository;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
@@ -37,8 +39,10 @@ public class TemplateService {
     public Slice<FindTemplateResult> findTemplates(FindTemplateQuery query) {
         PageRequest pageRequest = PageRequest.of(0, Integer.MAX_VALUE - 1, query.sort());
 
+        Set<Long> archivedTemplates = new HashSet<>(archiveRepository.findAllTemplates(query.memberId()).stream()
+                .map(archive -> archive.getTemplate().getId()).toList());
         return templateRepository.findAllByCategory(query.templateCategory(), pageRequest)
-                .map(FindTemplateResult::from);
+                .map(template -> FindTemplateResult.from(template, archivedTemplates));
     }
 
     public void copyTemplate(CopyTemplateCommand command) {

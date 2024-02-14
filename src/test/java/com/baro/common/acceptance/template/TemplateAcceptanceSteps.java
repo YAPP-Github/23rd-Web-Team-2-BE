@@ -195,7 +195,8 @@ public class TemplateAcceptanceSteps {
                 fieldWithPath("content[].subCategory").description("템플릿 서브 카테고리"),
                 fieldWithPath("content[].content").description("템플릿 내용"),
                 fieldWithPath("content[].savedCount").description("템플릿 저장 횟수"),
-                fieldWithPath("content[].copiedCount").description("템플릿 복사 횟수")
+                fieldWithPath("content[].copiedCount").description("템플릿 복사 횟수"),
+                fieldWithPath("content[].isArchived").description("아카이브 여부")
         );
     }
 

@@ -77,6 +77,14 @@ public class FakeArchiveRepository implements ArchiveRepository {
     }
 
     @Override
+    public List<Archive> findAllTemplates(Long memberId) {
+        return archives.values().stream()
+                .filter(archive -> archive.getMember().getId().equals(memberId)
+                        && !Objects.isNull(archive.getTemplate()))
+                .toList();
+    }
+
+    @Override
     public List<Archive> findAllArchives(Long memberId, Long folderId) {
         return archives.values().stream()
                 .filter(archive -> archive.getMember().getId().equals(memberId)
