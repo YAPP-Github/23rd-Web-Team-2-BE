@@ -32,7 +32,6 @@ import com.baro.member.domain.MemberRepository;
 import com.baro.member.exception.MemberException;
 import com.baro.member.exception.MemberExceptionType;
 import com.baro.memofolder.domain.MemoFolderRepository;
-import com.baro.memofolder.presentation.dto.DeleteMemoFolderRequest;
 import com.baro.memofolder.presentation.dto.RenameMemoFolderRequest;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -194,10 +193,9 @@ class MemoFolderApiTest extends RestApiTest {
         // given
         var 토큰 = 로그인(원진());
         var 메모폴더ID = 메모_폴더를_생성_하고_ID를_반환한다(토큰, 폴더_이름_바디);
-        var 바디 = new DeleteMemoFolderRequest(메모폴더ID, true);
 
         // when
-        var 응답 = 폴더_삭제_요청_성공(토큰, 바디);
+        var 응답 = 폴더_삭제_요청_성공(토큰, 메모폴더ID, true);
 
         // then
         응답값을_검증한다(응답, 응답값_없음);
@@ -208,10 +206,9 @@ class MemoFolderApiTest extends RestApiTest {
         // given
         var 토큰 = 로그인(원진());
         var 메모폴더ID = 메모_폴더를_생성_하고_ID를_반환한다(토큰, 폴더_이름_바디);
-        var 바디 = new DeleteMemoFolderRequest(메모폴더ID, false);
 
         // when
-        var 응답 = 폴더_삭제_요청_성공(토큰, 바디);
+        var 응답 = 폴더_삭제_요청_성공(토큰, 메모폴더ID, false);
 
         // then
         응답값을_검증한다(응답, 응답값_없음);
@@ -222,10 +219,9 @@ class MemoFolderApiTest extends RestApiTest {
         // given
         var 토큰 = 로그인(원진());
         var 존재하지않는_메모폴더ID = 999L;
-        var 바디 = new DeleteMemoFolderRequest(존재하지않는_메모폴더ID, false);
 
         // when
-        var 응답 = 폴더_삭제_요청_실패(토큰, 바디);
+        var 응답 = 폴더_삭제_요청_실패(토큰, 존재하지않는_메모폴더ID, false);
 
         // then
         응답값을_검증한다(응답, 존재하지_않음);
@@ -237,10 +233,9 @@ class MemoFolderApiTest extends RestApiTest {
         var 원진토큰 = 로그인(원진());
         var 준희토큰 = 로그인(준희());
         var 메모폴더ID = 메모_폴더를_생성_하고_ID를_반환한다(원진토큰, 폴더_이름_바디);
-        var 바디 = new DeleteMemoFolderRequest(메모폴더ID, false);
 
         // when
-        var 응답 = 폴더_삭제_요청_실패(준희토큰, 바디);
+        var 응답 = 폴더_삭제_요청_실패(준희토큰, 메모폴더ID, false);
 
         // then
         응답값을_검증한다(응답, 권한_없음);
@@ -251,11 +246,9 @@ class MemoFolderApiTest extends RestApiTest {
         // given
         var 토큰 = 로그인(원진());
         var 기본폴더ID = 기본폴더의_ID();
-        var 메모폴더ID = 메모_폴더를_생성_하고_ID를_반환한다(토큰, 폴더_이름_바디);
-        var 바디 = new DeleteMemoFolderRequest(기본폴더ID, false);
 
         // when
-        var 응답 = 폴더_삭제_요청_실패(토큰, 바디);
+        var 응답 = 폴더_삭제_요청_실패(토큰, 기본폴더ID, false);
 
         // then
         응답값을_검증한다(응답, 권한_없음);

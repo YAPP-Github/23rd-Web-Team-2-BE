@@ -7,7 +7,6 @@ import com.baro.memofolder.application.dto.GetMemoFolderResult;
 import com.baro.memofolder.application.dto.RenameMemoFolderCommand;
 import com.baro.memofolder.application.dto.SaveMemoFolderCommand;
 import com.baro.memofolder.application.dto.SaveMemoFolderResult;
-import com.baro.memofolder.presentation.dto.DeleteMemoFolderRequest;
 import com.baro.memofolder.presentation.dto.RenameMemoFolderRequest;
 import com.baro.memofolder.presentation.dto.SaveMemoFolderRequest;
 import java.net.URI;
@@ -17,9 +16,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -56,10 +57,10 @@ public class MemoFolderController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deleteMemoFolder(AuthMember authMember, @RequestBody DeleteMemoFolderRequest request) {
-        DeleteMemoFolderCommand command = new DeleteMemoFolderCommand(authMember.id(), request.memoFolderId(),
-                request.deleteAllMemo());
+    @DeleteMapping("/{memoFolderId}")
+    public ResponseEntity<Void> deleteMemoFolder(AuthMember authMember, @PathVariable("memoFolderId") Long memoFolderId,
+                                                 @RequestParam("deleteAllMemo") boolean deleteAllMemo) {
+        DeleteMemoFolderCommand command = new DeleteMemoFolderCommand(authMember.id(), memoFolderId, deleteAllMemo);
         memoFolderService.deleteMemoFolder(command);
         return ResponseEntity.noContent().build();
     }
