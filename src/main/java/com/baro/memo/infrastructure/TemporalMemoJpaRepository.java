@@ -4,6 +4,7 @@ import com.baro.member.domain.Member;
 import com.baro.memo.domain.TemporalMemo;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TemporalMemoJpaRepository extends JpaRepository<TemporalMemo, Long> {
@@ -13,4 +14,6 @@ public interface TemporalMemoJpaRepository extends JpaRepository<TemporalMemo, L
     void deleteAllByCreatedAtLessThanEqual(LocalDateTime localDateTime);
 
     void deleteAllByMember(Member member);
+
+    Optional<TemporalMemo> findByArchiveId(Long archiveId);
 }

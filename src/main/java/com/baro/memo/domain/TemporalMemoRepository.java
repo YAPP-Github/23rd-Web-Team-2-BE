@@ -19,4 +19,6 @@ public interface TemporalMemoRepository {
     void deleteAllByCreatedAtLessThanEqual(LocalDateTime weekBefore);
 
     void deleteAllByMember(Member member);
+
+    TemporalMemo getByArchiveId(Long archiveId);
 }

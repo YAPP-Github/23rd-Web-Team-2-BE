@@ -11,6 +11,8 @@ import com.baro.archive.exception.ArchiveExceptionType;
 import com.baro.member.domain.Member;
 import com.baro.member.domain.MemberRepository;
 import com.baro.memo.domain.MemoContent;
+import com.baro.memo.domain.TemporalMemo;
+import com.baro.memo.domain.TemporalMemoRepository;
 import com.baro.memofolder.domain.MemoFolder;
 import com.baro.memofolder.domain.MemoFolderRepository;
 import java.util.Comparator;
@@ -28,6 +30,7 @@ public class ArchiveService {
     private final MemberRepository memberRepository;
     private final MemoFolderRepository memoFolderRepository;
     private final ArchiveRepository archiveRepository;
+    private final TemporalMemoRepository temporalMemoRepository;
 
     public List<ArchiveUnitResult> getArchive(GetArchiveQuery query) {
         Member member = memberRepository.getById(query.memberId());
@@ -59,5 +62,9 @@ public class ArchiveService {
         Archive archive = archiveRepository.getById(command.archiveId());
         archive.matchOwner(command.memberId());
         archiveRepository.delete(archive);
+        if (archive.isMemo()) {
+            TemporalMemo temporalMemo = temporalMemoRepository.getByArchiveId(archive.getId());
+            temporalMemo.unarchive();
+        }
     }
 }

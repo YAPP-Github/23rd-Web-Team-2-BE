@@ -103,4 +103,8 @@ public class TemporalMemo extends BaseEntity {
     public boolean isArchived() {
         return Objects.nonNull(this.archive);
     }
+
+    public void unarchive() {
+        this.archive = null;
+    }
 }

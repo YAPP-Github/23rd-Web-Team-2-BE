@@ -23,11 +23,15 @@ import com.baro.member.domain.MemberRepository;
 import com.baro.member.fake.FakeMemberRepository;
 import com.baro.member.fixture.MemberFixture;
 import com.baro.memo.domain.MemoContent;
+import com.baro.memo.domain.TemporalMemo;
+import com.baro.memo.domain.TemporalMemoRepository;
 import com.baro.memo.exception.MemoException;
 import com.baro.memo.exception.MemoExceptionType;
+import com.baro.memo.fake.FakeTemporalMemoRepository;
 import com.baro.memofolder.domain.MemoFolder;
 import com.baro.memofolder.domain.MemoFolderRepository;
 import com.baro.memofolder.fake.FakeMemoFolderRepository;
+import com.baro.template.fixture.TemplateFixture;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -42,13 +46,16 @@ class ArchiveServiceTest {
     private ArchiveRepository archiveRepository;
     private MemberRepository memberRepository;
     private MemoFolderRepository memoFolderRepository;
+    private TemporalMemoRepository temporalMemoRepository;
 
     @BeforeEach
     void setUp() {
         memberRepository = new FakeMemberRepository();
         memoFolderRepository = new FakeMemoFolderRepository();
         archiveRepository = new FakeArchiveRepository();
-        archiveService = new ArchiveService(memberRepository, memoFolderRepository, archiveRepository);
+        temporalMemoRepository = new FakeTemporalMemoRepository();
+        archiveService = new ArchiveService(memberRepository, memoFolderRepository, archiveRepository,
+                temporalMemoRepository);
     }
 
     @Test
@@ -234,11 +241,11 @@ class ArchiveServiceTest {
     }
 
     @Test
-    void 아카이브를_삭제한다() {
+    void 참고하는_아카이브를_삭제한다() {
         // given
         var member = memberRepository.save(MemberFixture.memberWithNickname("바로"));
         var memoFolder = memoFolderRepository.save(MemoFolder.defaultFolder(member));
-        var archive = archiveRepository.save(끄적이는_아카이브1(member, memoFolder));
+        var archive = archiveRepository.save(참고하는_아카이브1(member, memoFolder, TemplateFixture.감사전하기()));
         var command = new DeleteArchiveCommand(member.getId(), archive.getId());
 
         // when
@@ -246,6 +253,26 @@ class ArchiveServiceTest {
 
         // then
         assertThat(archiveRepository.findAll()).hasSize(0);
+    }
+
+    @Test
+    void 끄적이는_아카이브를_삭제한다() {
+        // given
+        var member = memberRepository.save(MemberFixture.memberWithNickname("바로"));
+        var memoFolder = memoFolderRepository.save(MemoFolder.defaultFolder(member));
+        var temporalMemo = temporalMemoRepository.save(TemporalMemo.of(member, "끄적이는 메모"));
+        var archive = archiveRepository.save(끄적이는_아카이브1(member, memoFolder));
+        temporalMemo.archived(archive);
+        var command = new DeleteArchiveCommand(member.getId(), archive.getId());
+
+        // when
+        archiveService.deleteArchive(command);
+
+        // then
+        assertAll(
+                () -> assertThat(archiveRepository.findAll()).hasSize(0),
+                () -> assertThat(temporalMemo.isArchived()).isFalse()
+        );
     }
 
     @Test

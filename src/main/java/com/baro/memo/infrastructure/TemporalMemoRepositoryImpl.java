@@ -52,4 +52,10 @@ public class TemporalMemoRepositoryImpl implements TemporalMemoRepository {
     public void deleteAllByMember(Member member) {
         temporalMemoJpaRepository.deleteAllByMember(member);
     }
+
+    @Override
+    public TemporalMemo getByArchiveId(Long archiveId) {
+        return temporalMemoJpaRepository.findByArchiveId(archiveId)
+                .orElseThrow(() -> new TemporalMemoException(TemporalMemoExceptionType.NOT_EXIST_ARCHIVE));
+    }
 }

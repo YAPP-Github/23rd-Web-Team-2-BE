@@ -11,7 +11,7 @@ public enum TemporalMemoExceptionType implements RequestExceptionType {
     NOT_MATCH_OWNER("TM03", "끄적이는 메모에 대한 접근 권한이 없습니다.", HttpStatus.FORBIDDEN),
     ALREADY_CORRECTED("TO04", "이미 맞춤법 검사가 완료된 끄적이는 메모 입니다.", HttpStatus.BAD_REQUEST),
     NON_SEQUENTIAL_DATES_EXCEPTION("TM05", "조회 기간이 유효하지 않습니다.", HttpStatus.BAD_REQUEST),
-    ;
+    NOT_EXIST_ARCHIVE("TM06", "해당하는 아카이브가 없습니다.", HttpStatus.NOT_FOUND);
 
     private final String errorCode;
     private final String errorMessage;

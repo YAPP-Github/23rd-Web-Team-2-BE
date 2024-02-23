@@ -81,4 +81,12 @@ public class FakeTemporalMemoRepository implements TemporalMemoRepository {
     public void deleteAllByMember(Member member) {
         temporalMemos.values().removeIf(temporalMemo -> temporalMemo.getMember().getId().equals(member.getId()));
     }
+
+    @Override
+    public TemporalMemo getByArchiveId(Long archiveId) {
+        return temporalMemos.values().stream()
+                .filter(temporalMemo -> temporalMemo.getArchive().getId().equals(archiveId))
+                .findFirst()
+                .orElseThrow(() -> new TemporalMemoException(TemporalMemoExceptionType.NOT_EXIST_ARCHIVE));
+    }
 }
