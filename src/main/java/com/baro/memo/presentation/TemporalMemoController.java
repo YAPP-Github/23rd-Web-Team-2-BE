@@ -11,6 +11,7 @@ import com.baro.memo.application.dto.FindTemporalMemoHistoriesQuery;
 import com.baro.memo.application.dto.FindTemporalMemoHistoriesResult;
 import com.baro.memo.application.dto.SaveTemporalMemoCommand;
 import com.baro.memo.application.dto.SaveTemporalMemoResult;
+import com.baro.memo.application.dto.UnarchiveTemporalMemoCommand;
 import com.baro.memo.application.dto.UpdateTemporalMemoCommand;
 import com.baro.memo.presentation.dto.ApplyCorrectionRequest;
 import com.baro.memo.presentation.dto.ArchiveTemporalMemoRequest;
@@ -111,5 +112,15 @@ public class TemporalMemoController {
                 .buildAndExpand(result.id())
                 .toUri();
         return ResponseEntity.created(location).build();
+    }
+
+    @DeleteMapping("/{temporalMemoId}/archive")
+    public ResponseEntity<Void> deleteArchive(
+            AuthMember authMember,
+            @PathVariable Long temporalMemoId
+    ) {
+        UnarchiveTemporalMemoCommand command = new UnarchiveTemporalMemoCommand(authMember.id(), temporalMemoId);
+        temporalMemoService.deleteArchive(command);
+        return ResponseEntity.noContent().build();
     }
 }

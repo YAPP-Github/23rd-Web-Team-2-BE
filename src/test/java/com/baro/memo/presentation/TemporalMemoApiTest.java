@@ -21,6 +21,7 @@ import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는메모_생성_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는메모_수정_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는메모_아카이빙_요청;
+import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는메모_아카이빙_해제_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.끄적이는메모를_생성하고_ID를_반환한다;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.맞춤법_검사_결과_반영_바디;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.메모_아카이브_요청_바디;
@@ -30,6 +31,7 @@ import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.잘못
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.잘못된_끄적이는메모_삭제_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.잘못된_끄적이는메모_수정_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.잘못된_끄적이는메모_아카이빙_요청;
+import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.잘못된_끄적이는메모_아카이빙_해제_요청;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.크기_초과_끄적이는_메모_수정_바디;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.크기_초과_끄적이는_메모_작성_바디;
 import static com.baro.common.acceptance.memo.TemporalMemoAcceptanceSteps.크기_초과_맞춤법_검사_결과_반영_바디;
@@ -337,6 +339,51 @@ public class TemporalMemoApiTest extends RestApiTest {
 
         // when
         var 응답 = 잘못된_끄적이는메모_아카이빙_요청(유빈, 유빈의_끄적이는_메모_ID, 메모_아카이브_요청_바디);
+
+        // then
+        응답값을_검증한다(응답, 존재하지_않음);
+    }
+
+    @Test
+    void 끄적이는_메모_아카이브_해제() {
+        // given
+        var 유빈 = 로그인(유빈());
+        var 유빈의_끄적이는_메모_ID = 끄적이는메모를_생성하고_ID를_반환한다(유빈, 끄적이는_메모_바디);
+        var 메모_아카이브_요청_바디 = 메모_아카이브_요청_바디(유빈의_끄적이는_메모_ID);
+        끄적이는메모_아카이빙_요청(유빈, 유빈의_끄적이는_메모_ID, 메모_아카이브_요청_바디);
+
+        // when
+        var 응답 = 끄적이는메모_아카이빙_해제_요청(유빈, 유빈의_끄적이는_메모_ID);
+
+        // then
+        응답값을_검증한다(응답, 응답값_없음);
+    }
+
+    @Test
+    void 다른사람의_끄적이는_메모_아카이브_해제_시_예외_발생() {
+        // given
+        var 유빈 = 로그인(유빈());
+        var 유빈의_끄적이는_메모_ID = 끄적이는메모를_생성하고_ID를_반환한다(유빈, 끄적이는_메모_바디);
+        var 메모_아카이브_요청_바디 = 메모_아카이브_요청_바디(유빈의_끄적이는_메모_ID);
+        끄적이는메모_아카이빙_요청(유빈, 유빈의_끄적이는_메모_ID, 메모_아카이브_요청_바디);
+
+        var 태연 = 로그인(태연());
+
+        // when
+        var 응답 = 잘못된_끄적이는메모_아카이빙_해제_요청(태연, 유빈의_끄적이는_메모_ID);
+
+        // then
+        응답값을_검증한다(응답, 권한_없음);
+    }
+
+    @Test
+    void 아카이브_되지_않은_메모_아카이브_해제_시_예외_발생() {
+        // given
+        var 유빈 = 로그인(유빈());
+        var 유빈의_끄적이는_메모_ID = 끄적이는메모를_생성하고_ID를_반환한다(유빈, 끄적이는_메모_바디);
+
+        // when
+        var 응답 = 잘못된_끄적이는메모_아카이빙_해제_요청(유빈, 유빈의_끄적이는_메모_ID);
 
         // then
         응답값을_검증한다(응답, 존재하지_않음);
