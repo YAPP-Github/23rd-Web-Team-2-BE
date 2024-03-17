@@ -11,6 +11,6 @@ class RandomNicknameCreator implements NicknameCreator {
 
     @Override
     public String create() {
-        return MemberNameAdjectives.pickRandom() + MemberNameNouns.pickRandom();
+        return MemberNameAdjectives.pickRandom() + " " + MemberNameNouns.pickRandom();
     }
 }
