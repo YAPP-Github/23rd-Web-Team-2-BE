@@ -90,7 +90,8 @@ class MemberServiceTest {
     @Test
     void 사용자_프로필_수정_닉네임_중복_예외_발생() {
         // given
-        Member savedMember = memberRepository.save(MemberFixture.memberWithNickname("바로닉네임"));
+        memberRepository.save(MemberFixture.memberWithNickname("바로닉네임"));
+        Member savedMember = memberRepository.save(MemberFixture.memberWithNickname("이전닉네임"));
         UpdateMemberProfileCommand command = new UpdateMemberProfileCommand(
                 savedMember.getId(),
                 "바로",

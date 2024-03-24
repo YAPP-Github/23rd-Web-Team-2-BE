@@ -39,7 +39,9 @@ public class MemberService {
 
     public void updateProfile(UpdateMemberProfileCommand command) {
         Member member = memberRepository.getById(command.id());
-        validateDuplicatedNickname(command.nickname());
+        if (member.isOtherNickname(command.nickname())) {
+            validateDuplicatedNickname(command.nickname());
+        }
         member.updateProfile(command.name(), command.nickname());
     }
 

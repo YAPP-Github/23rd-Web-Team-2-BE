@@ -98,4 +98,8 @@ public class Member extends BaseEntity {
     public void updateProfileImage(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
     }
+
+    public boolean isOtherNickname(String nickname) {
+        return !this.nickname.value().equals(nickname);
+    }
 }
